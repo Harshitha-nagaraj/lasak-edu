@@ -1,0 +1,53 @@
+[
+  {
+    "path": "/",
+    "label": "Home"
+  },
+  {
+    "path": "/programs",
+    "label": "Workshops"
+  },
+  {
+    "path": "/courses",
+    "label": "Courses",
+    "submenu": [
+      {
+        "path": "/courses/IT",
+        "label": "CSE / IT"
+      },
+      {
+        "path": "/courses/Mechanical",
+        "label": "Mechanical"
+      },
+      {
+        "path": "/courses/Civil",
+        "label": "Civil"
+      },
+      {
+        "path": "/courses/Arts",
+        "label": "Arts"
+      },
+      {
+        "path": "/courses/Kids",
+        "label": "Kids"
+      }
+    ]
+  },
+  {
+    "path": "https://lasak.edumilestones.com/",
+    "label": "Overseas Education",
+    "external": true
+  },
+  {
+    "path": "/blog",
+    "label": "Blog"
+  },
+  {
+    "path": "/about",
+    "label": "About"
+  },
+  {
+    "path": "/contact",
+    "label": "Contact"
+  }
+]

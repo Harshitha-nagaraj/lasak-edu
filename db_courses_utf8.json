@@ -1,0 +1,486 @@
+﻿[
+  {
+    "id": "mech6",
+    "title": "HyperMesh",
+    "category": "Mechanical",
+    "modules": [
+      "Introduction to FEA & HyperMesh",
+      "Geometry Import & Cleanup",
+      "Meshing Fundamentals",
+      "3D Meshing & Advanced Tools",
+      "Material, Properties & Loads",
+      "Solver Interface",
+      "Post-Processing & Results",
+      "Industry Cases & Projects"
+    ]
+  },
+  {
+    "id": "mech5",
+    "title": "ANSYS Simulation",
+    "category": "Mechanical",
+    "modules": [
+      "Introduction to CAE & ANSYS",
+      "ANSYS Workbench Overview",
+      "Geometry Import & Creation",
+      "Meshing",
+      "Static Structural Analysis",
+      "Modal Analysis",
+      "Transient Structural Analysis",
+      "Fatigue Analysis",
+      "Steady-State Thermal Analysis",
+      "Transient Thermal Analysis",
+      "Thermo-Structural Coupling",
+      "Explicit Dynamics",
+      "Acoustic Analysis",
+      "Optimization & Design Validation",
+      "Post-Processing & Reporting",
+      "Industry-Based Project"
+    ]
+  },
+  {
+    "id": "mech4",
+    "title": "CATIA V5",
+    "category": "Mechanical",
+    "modules": [
+      "Introduction to CATIA",
+      "Sketcher Workbench",
+      "Part Design",
+      "Assembly Design",
+      "Drafting & Detailing",
+      "Surface & Generative Shape Design",
+      "Sheet Metal Design",
+      "Digital Mockup & DMU",
+      "Simulation & Analysis",
+      "Advanced Features",
+      "Manufacturing & CAM Integration"
+    ]
+  },
+  {
+    "id": "mech7",
+    "title": "ANSA Pre-processing",
+    "category": "Mechanical",
+    "modules": [
+      "Introduction to ANSA & CAE",
+      "CAD Import & Geometry Management",
+      "FEA Fundamentals",
+      "1D Meshing",
+      "2D Meshing",
+      "3D Meshing",
+      "Connections & Assembly Setup",
+      "Model Setup & Export",
+      "Post-Processing Basics",
+      "CFD Meshing (Specialized)",
+      "Industry Projects & Real-World Cases"
+    ]
+  },
+  {
+    "id": "mech9",
+    "title": "NX CAD (Unigraphics)",
+    "category": "Mechanical",
+    "modules": [
+      "Introduction & User Interface",
+      "Sketching & Constraints",
+      "3D Part Modeling",
+      "Assembly Modeling",
+      "Drafting & Technical Drawings",
+      "Sheet Metal Design",
+      "Surface Modeling",
+      "Synchronous Modeling",
+      "Large Assembly Management",
+      "CAM/CAM Basics (Optional Advanced)",
+      "PLM Integration & Advanced Workflows"
+    ]
+  },
+  {
+    "id": "mech10",
+    "title": "Autodesk Inventor",
+    "category": "Mechanical",
+    "modules": [
+      "Introduction to Autodesk Inventor",
+      "Sketching Fundamentals",
+      "Basic Part Modeling",
+      "Assembly Modeling",
+      "Drafting & Detailing",
+      "Sheet Metal Design",
+      "Weldments & Frame Generator",
+      "Surface Modeling",
+      "Design Automation & iLogic",
+      "Simulation",
+      "Mold Design & Tooling (Optional)"
+    ]
+  },
+  {
+    "id": "mech11",
+    "title": "Wiring Harness Design",
+    "category": "Mechanical",
+    "modules": [
+      "Introduction to Wiring Harness",
+      "Components & Terminology",
+      "Electrical Schematics & Diagrams",
+      "Harness Layout & Routing",
+      "Software-Based Design",
+      "Bill of Materials (BOM) & Reports",
+      "Flattening & Formboard Creation",
+      "Electrical Analysis & Testing",
+      "Industry Projects"
+    ]
+  },
+  {
+    "id": "mech3",
+    "title": "Creo Parametric",
+    "category": "Mechanical",
+    "modules": [
+      "Introduction & User Interface",
+      "Sketching & Datum Features",
+      "Basic Part Modeling",
+      "Advanced Part Modeling",
+      "Assembly Design",
+      "Drawings & Detailing",
+      "Sheet Metal Design",
+      "Surface Modeling",
+      "Flexible / Advanced Modeling",
+      "Advanced Part & Assembly",
+      "Design Productivity & Best Practices",
+      "Product Data Management & File Management"
+    ]
+  },
+  {
+    "id": "mech2",
+    "title": "SolidWorks Masterclass",
+    "category": "Mechanical",
+    "modules": [
+      "Introduction & User Interface",
+      "Part Modeling",
+      "Assembly Design",
+      "2D Drawings & Detailing",
+      "Sheet Metal Design",
+      "Surfacing",
+      "Weldments",
+      "Advanced Part & Assembly",
+      "Mold Design",
+      "Simulation & Validation",
+      "Product Data Management & File Management"
+    ]
+  },
+  {
+    "id": "mech12",
+    "title": "3D Printing & Prototyping",
+    "category": "Mechanical",
+    "modules": [
+      "Introduction to Additive Manufacturing (AM)",
+      "3D Printing Technologies",
+      "Design for Additive Manufacturing (DfAM)",
+      "3D CAD Modeling & File Preparation",
+      "Slicing & Print Setup",
+      "Materials & Applications",
+      "3D Printer Operation",
+      "Post-Processing Techniques",
+      "Prototyping Workflows",
+      "Industrial 3D Printing & Automation",
+      "Capstone Project / Portfolio"
+    ]
+  },
+  {
+    "id": "civil3",
+    "title": "SketchUp",
+    "category": "Civil",
+    "modules": [
+      "Introduction to SketchUp",
+      "Basic Modeling Tools",
+      "Architectural Modeling",
+      "Materials & Texturing",
+      "Lighting, Shadows & Scenes",
+      "Components & 3D Warehouse",
+      "Layout & Documentation (SketchUp Pro)",
+      "Plugins & Extensions",
+      "Visualization & Rendering (Optional / Add-on)",
+      "Industry Applications & Projects"
+    ]
+  },
+  {
+    "id": "arts5",
+    "title": "Tally with GST",
+    "category": "Arts",
+    "modules": [
+      "Accounting Basics",
+      "Tally ERP",
+      "GST Filing",
+      "Reports & Compliance"
+    ]
+  },
+  {
+    "id": "arts4",
+    "title": "MS Office",
+    "category": "Arts",
+    "modules": [
+      "MS Word",
+      "MS Excel",
+      "MS PowerPoint",
+      "Email & Outlook"
+    ]
+  },
+  {
+    "id": "civil1",
+    "title": "Civil CAD",
+    "category": "Civil",
+    "modules": [
+      "Introduction to Civil CAD",
+      "AutoCAD for Civil Engineers",
+      "Building Planning & Layout",
+      "Structural Drawings",
+      "Road Design & Layout",
+      "Water Supply & Drainage",
+      "Surveying & Contours",
+      "AutoCAD Civil 3D",
+      "3D Building Modeling (Intro)",
+      "Project Work"
+    ]
+  },
+  {
+    "id": "arts1",
+    "title": "Digital Marketing (Media)",
+    "category": "Arts",
+    "modules": [
+      "Search Engine Optimization (SEO) - Keywords, On-page, Technical, Off-page",
+      "Search Engine Marketing (SEM) - Google Ads, Search, Display, Video Ads",
+      "Social Media Marketing (SMM) - Instagram, Facebook, LinkedIn Ads",
+      "Analytics & Performance Tracking - Google Analytics, Reporting",
+      "Lead Generation & Sales Funnel - Landing Pages, Email, WhatsApp Marketing",
+      "Brand Presence & Content Creation Strategy",
+      "Analyze & Optimize Campaigns Using Data",
+      "Real-time Campaign Management & Live Projects"
+    ]
+  },
+  {
+    "id": "kid1",
+    "title": "Robotics for Kids",
+    "category": "Kids",
+    "modules": [
+      "Basic Electronics",
+      "Sensors & Motors",
+      "Robot Building",
+      "Mini Projects"
+    ]
+  },
+  {
+    "id": "kid2",
+    "title": "Scratch Coding",
+    "category": "Kids",
+    "modules": [
+      "Block Coding Basics",
+      "Animations",
+      "Games",
+      "Story Projects"
+    ]
+  },
+  {
+    "id": "it3",
+    "title": "Software Testing Course ΓÇô Become a QA Expert",
+    "category": "IT",
+    "modules": [
+      "Introduction to Software Testing - Types, Methods, Principles",
+      "Software Testing Life Cycle (STLC) - Requirements to Closure",
+      "Test Case Design - Writing effective test scenarios",
+      "Defect Management - Bug Life Cycle, Jira, Bugzilla",
+      "API Testing - Postman, REST API Basics",
+      "Database Testing - SQL Queries for Validation",
+      "Automation Testing (Selenium) - Java Basics, WebDriver, Locators",
+      "Frameworks - TestNG, Cucumber (BDD), Page Object Model",
+      "Mobile Testing Basics (Appium Overview)",
+      "Real-Time Project Work"
+    ]
+  },
+  {
+    "id": "it1",
+    "title": "Full Stack Development Course ΓÇô Build Complete Web Applications",
+    "category": "IT",
+    "modules": [
+      "Frontend Development - HTML5, CSS3, JavaScript (ES6+)",
+      "React JS - Components, Hooks, State Management (Redux/Context API)",
+      "Backend Development - Node.js Architecture, Express.js Framework",
+      "Database Management - MongoDB (NoSQL), MySQL (SQL), Mongoose ODM",
+      "API Development - RESTful APIs, Postman Testing, Authentication (JWT)",
+      "Version Control - Git commands, GitHub collaboration",
+      "Deployment - Hosting on Vercel, Netlify, Render, AWS Basics",
+      "Real-Time Projects - E-commerce App, Social Media Dashboard, CMS"
+    ]
+  },
+  {
+    "id": "mech8",
+    "title": "Computational Fluid Dynamics (CFD)",
+    "category": "Mechanical",
+    "modules": [
+      "Introduction to CFD",
+      "Numerical Methods & Discretization",
+      "Geometry & Mesh Generation",
+      "CFD Setup & Boundary Conditions",
+      "Solver Configuration",
+      "Heat Transfer & Multiphysics",
+      "Advanced Flow Modeling",
+      "Results Visualization",
+      "Project Work & Case Studies",
+      "Industry Projects & Capstone"
+    ]
+  },
+  {
+    "id": "it8",
+    "title": "UI/UX Design Course ΓÇô Master Digital Product Design",
+    "category": "IT",
+    "modules": [
+      "Introduction to UI/UX - Differences, Roles, Design Thinking",
+      "User Research - Methods, Personas, Empathy Maps, User Journeys",
+      "Information Architecture & Wireframing - Sitemaps, Low-fidelity Sketches",
+      "Visual Design Principles - Color Theory, Typography, Grids, Layouts",
+      "Prototyping & Interaction Design - High-fidelity Mockups, Animations",
+      "Tools Mastery - Figma, Adobe XD (Deep Dive)",
+      "Usability Testing - Heuristic Evaluation, User Testing",
+      "Portfolio Building & Career Guidance"
+    ]
+  },
+  {
+    "id": "civil5",
+    "title": "BIM Professional",
+    "category": "Civil",
+    "modules": [
+      "Introduction to BIM",
+      "BIM Architecture (Revit Architecture)",
+      "BIM Structure (Revit Structure)",
+      "BIM MEP (Revit MEP)",
+      "BIM Coordination & Clash Detection",
+      "4D BIM (Time Scheduling)",
+      "5D BIM (Cost Estimation)",
+      "BIM Documentation & Deliverables",
+      "BIM Standards & Collaboration",
+      "Advanced BIM (Optional / Add-On)",
+      "BIM Project Work"
+    ]
+  },
+  {
+    "id": "it2",
+    "title": "Web Development Course ΓÇô Become a Full Stack Developer",
+    "category": "IT",
+    "modules": [
+      "HTML & CSS - Responsive layouts, Flexbox, Grid, CSS animations",
+      "JavaScript - ES6+, DOM manipulation, Async/Await, API calls",
+      "React JS - Components, Hooks, State management, Routing",
+      "Node.js & Express - Server setup, RESTful APIs, Middleware",
+      "Databases - MongoDB models, MySQL queries, Data persistence",
+      "Authentication - JWT, Session management, Secure routes",
+      "Deployment - Hosting on Vercel/Netlify/Heroku, CI/CD basics",
+      "Real-Time Full Stack Projects & Performance Optimization"
+    ]
+  },
+  {
+    "id": "mech1",
+    "title": "AutoCAD Mechanical",
+    "category": "Mechanical",
+    "modules": [
+      "Introduction to AutoCAD",
+      "Basic Drawing Tools",
+      "Modify Tools",
+      "Drawing Accuracy & Control",
+      "Layers & Properties",
+      "Text, Dimensions & Annotations",
+      "Blocks & Attributes",
+      "Hatching & Gradients",
+      "Layouts & Plotting",
+      "Advanced Drafting Tools",
+      "3D Basics (Optional)",
+      "Industry-Specific Practices",
+      "Project Work"
+    ]
+  },
+  {
+    "id": "civil4",
+    "title": "STAAD.Pro",
+    "category": "Civil",
+    "modules": [
+      "Introduction to STAAD.Pro",
+      "Geometry Modeling",
+      "Material Properties",
+      "Section Properties",
+      "Support & Boundary Conditions",
+      "Load Definition & Load Cases",
+      "Structural Analysis",
+      "RCC Design (As per IS Codes)",
+      "Steel Design (As per IS Codes)",
+      "Post-Processing & Reports",
+      "Advanced Applications",
+      "Project Work"
+    ]
+  },
+  {
+    "id": "civil2",
+    "title": "Revit Architecture",
+    "category": "Civil",
+    "modules": [
+      "Introduction to BIM & Revit",
+      "Basic Modeling Tools",
+      "View Creation & Control",
+      "Architectural Modeling",
+      "Families & Components",
+      "Revit Structure",
+      "Revit MEP (Basics)",
+      "Schedules & Quantification",
+      "Sheets, Annotations & Printing",
+      "Coordination & Clash Detection",
+      "Worksharing & Collaboration",
+      "Visualization & Rendering",
+      "Industry Project"
+    ]
+  },
+  {
+    "id": "it5",
+    "title": "Java Programming Course | Beginner to Advanced Training",
+    "category": "IT",
+    "modules": [
+      "Java Fundamentals - Variables, Data Types, Control Flow, Loops",
+      "Object-Oriented Programming (OOP) - Classes, Inheritance, Polymorphism",
+      "Arrays & Collections - ArrayList, HashMap, LinkedList, Collection Framework",
+      "Exception Handling - Try-Catch Blocks, Custom Exceptions, Error Handling",
+      "File Handling - Reading/Writing Files, BufferedReader, FileWriter",
+      "Practical Mini Projects - Student Management, Banking, Billing Apps"
+    ]
+  },
+  {
+    "id": "it6",
+    "title": "Python Programming | Beginner to Advanced Training",
+    "category": "IT",
+    "modules": [
+      "Python Fundamentals - Variables, Data Types, Operators, Input/Output",
+      "Conditional Statements & Loops - If-Else, For/While Loops, Control Flow",
+      "Functions & Modules - Lambda Functions, Built-in & Custom Modules",
+      "Object-Oriented Programming (OOP) - Classes, Inheritance, Encapsulation",
+      "File Handling & Exception Handling - CRUD operations, Error handling",
+      "Real-Time Mini Projects - Calculator, Management System, Automation Scripts"
+    ]
+  },
+  {
+    "id": "it7",
+    "title": "Digital Marketing (Adv)",
+    "category": "IT",
+    "modules": [
+      "Search Engine Optimization (SEO) - Keywords, On-page, Technical, Off-page",
+      "Search Engine Marketing (SEM) - Google Ads, Search, Display, Video Ads",
+      "Social Media Marketing (SMM) - Instagram, Facebook, LinkedIn Ads",
+      "Analytics & Performance Tracking - Google Analytics, Reporting",
+      "Lead Generation & Sales Funnel - Landing Pages, Email, WhatsApp Marketing",
+      "Brand Presence & Content Creation Strategy",
+      "Analyze & Optimize Campaigns Using Data",
+      "Real-time Campaign Management & Live Projects"
+    ]
+  },
+  {
+    "id": "it4",
+    "title": "Data Analytics Course ΓÇô Turn Data into Powerful Insights",
+    "category": "IT",
+    "modules": [
+      "Microsoft Excel - Advanced formulas, Pivot Tables, Data cleaning, Charts & Dashboards",
+      "SQL - Database concepts, Joins, Subqueries, Aggregate Functions, Data management",
+      "Power BI - Data modeling, Interactive dashboards, DAX basics, Visualization techniques",
+      "Python for Data Analytics - Pandas, Matplotlib, Data cleaning & transformation",
+      "Business Analytics - KPI tracking, Sales analysis, Financial data, Customer behavior",
+      "Report Presentation & Professional Communication skills"
+    ]
+  }
+]
