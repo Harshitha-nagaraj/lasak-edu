@@ -5,6 +5,7 @@ import { motion, useScroll, useSpring, AnimatePresence } from 'framer-motion';
 import { COMPANY_LOGOS } from '../constants';
 import { db } from '../lib/firebase';
 import { collection, query, where, getDocs, orderBy, limit } from 'firebase/firestore';
+import { fetchWithCache } from '../lib/cacheUtils';
 import SEO from './SEO';
 import ChatWidget from './ChatWidget/ChatWidget';
 import chatIcon from "./ChatWidget/chatbot-icon.png";
@@ -122,9 +123,8 @@ const Navbar = () => {
     try {
       // Simplified query to avoid index requirement for orderBy
       const q = query(collection(db, 'contact_info'), where('active', '==', true));
-      const snapshot = await getDocs(q);
-      if (!snapshot.empty) {
-        const data = snapshot.docs.map(doc => doc.data());
+      const data = await fetchWithCache('cache_contact_info', q);
+      if (data && data.length > 0) {
         const email = data.find(c => c.type === 'email')?.value;
         const address = data.find(c => c.type === 'address')?.value;
         const phone = data.find(c => c.type === 'phone')?.value;
@@ -138,9 +138,8 @@ const Navbar = () => {
   const fetchNavigation = async () => {
     try {
       const q = query(collection(db, 'site_settings'), where('key', 'in', ['nav_menu', 'rec_course_button']));
-      const snapshot = await getDocs(q);
-      if (!snapshot.empty) {
-        const settings = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as any));
+      const settings = await fetchWithCache('cache_site_settings_nav', q);
+      if (settings && settings.length > 0) {
         const navSetting = settings.find(s => s.id === 'nav_menu' || s.key === 'nav_menu');
         if (navSetting && navSetting.value && navSetting.value.items && navSetting.value.items.length > 0) {
           const mappedLinks = navSetting.value.items.map((item: any) => ({
@@ -307,9 +306,9 @@ const CompanyTicker = () => {
   useEffect(() => { fetchPlacementPartners(); }, []);
   const fetchPlacementPartners = async () => {
     try {
-      const q = query(collection(db, 'partners'), where('type', '==', 'placement'), orderBy('created_at', 'desc'));
-      const snapshot = await getDocs(q);
-      if (!snapshot.empty) setLogos(snapshot.docs.map(doc => doc.data().logo));
+      const q = query(collection(db, 'partners'), where('type', '==', 'placement'), orderBy('created_at', 'desc'), limit(30));
+      const partners = await fetchWithCache('cache_placement_partners', q);
+      if (partners && partners.length > 0) setLogos(partners.map((p: any) => p.logo));
     } catch (error) { console.error('Error fetching placement partners:', error); }
   };
   return (
@@ -360,21 +359,22 @@ const Footer = () => {
   const fetchFooterData = async () => {
     try {
       // Simplified query to avoid index requirement for orderBy
-      const contactSnapshot = await getDocs(query(collection(db, 'contact_info'), where('active', '==', true)));
-      const contactData = contactSnapshot.docs
-        .map(doc => ({ id: doc.id, ...doc.data() }))
-        .sort((a: any, b: any) => (a.order_num || 0) - (b.order_num || 0));
+      const qContact = query(collection(db, 'contact_info'), where('active', '==', true));
+      const contactData = await fetchWithCache('cache_contact_info', qContact);
 
-      setSocialLinks(contactData.filter((c: any) => c.type === 'social_media' || c.type === 'social'));
+      if (contactData && contactData.length > 0) {
+        contactData.sort((a: any, b: any) => (a.order_num || 0) - (b.order_num || 0));
+        setSocialLinks(contactData.filter((c: any) => c.type === 'social_media' || c.type === 'social'));
 
-      // Use Firestore contact data directly if available, replacing fallback entirely
-      const firestoreContacts = contactData.filter((c: any) => ['address', 'phone', 'email'].includes(c.type));
-      if (firestoreContacts.length > 0) {
-        setContactText(firestoreContacts);
+        // Use Firestore contact data directly if available, replacing fallback entirely
+        const firestoreContacts = contactData.filter((c: any) => ['address', 'phone', 'email'].includes(c.type));
+        if (firestoreContacts.length > 0) {
+          setContactText(firestoreContacts);
+        }
       }
 
-      const settingsSnapshot = await getDocs(query(collection(db, 'site_settings')));
-      const settings = settingsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as any));
+      const qSettings = query(collection(db, 'site_settings'));
+      const settings = await fetchWithCache('cache_site_settings_all', qSettings);
 
       const ql = settings.find(s => s.id === 'footer_quick_links' || s.key === 'footer_quick_links'); if (ql) setQuickLinks(ql.value.items || []);
       const dep = settings.find(s => s.id === 'footer_departments' || s.key === 'footer_departments'); if (dep) setDepartments(dep.value.items || []);
@@ -511,9 +511,9 @@ const FloatingButtons = () => {
   }, []);
   const fetchContactNumbers = async () => {
     try {
-      const snapshot = await getDocs(query(collection(db, 'contact_info'), where('active', '==', true)));
-      if (!snapshot.empty) {
-        const data = snapshot.docs.map(doc => doc.data());
+      const q = query(collection(db, 'contact_info'), where('active', '==', true));
+      const data = await fetchWithCache('cache_contact_info', q);
+      if (data && data.length > 0) {
         const phoneEntry = data.find(c => c.type === 'phone' || c.label?.toLowerCase().includes('call'));
         const whatsappEntry = data.find(c => c.label?.toLowerCase().includes('whatsapp'));
         if (phoneEntry) setPhone(phoneEntry.value.replace(/\s+/g, ''));
@@ -524,8 +524,8 @@ const FloatingButtons = () => {
   const fetchSiteSettings = async () => {
     try {
       const q = query(collection(db, 'site_settings'), where('key', '==', 'online_course_button'), limit(1));
-      const snapshot = await getDocs(q);
-      if (!snapshot.empty) setOnlineCourseButton(snapshot.docs[0].data().value);
+      const data = await fetchWithCache('cache_site_settings_online_course', q);
+      if (data && data.length > 0) setOnlineCourseButton(data[0].value);
     } catch (error) { console.warn('FloatingButtons: Failed to fetch online course button settings'); }
   };
   const scrollToTop = () => window.scrollTo({ top: 0, behavior: 'smooth' });

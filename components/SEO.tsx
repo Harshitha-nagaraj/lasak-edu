@@ -3,6 +3,7 @@ import { Helmet } from "react-helmet";
 import { useLocation } from "react-router-dom";
 import { db } from "../lib/firebase";
 import { collection, query, where, getDocs, limit } from "firebase/firestore";
+import { fetchWithCache } from "../lib/cacheUtils";
 
 interface SEOProps {
   title: string;
@@ -36,10 +37,10 @@ const SEO: React.FC<SEOProps> = ({
     try {
       const currentPath = location.pathname;
       const q = query(collection(db, 'page_seo'), where('page_path', '==', currentPath), limit(1));
-      const querySnapshot = await getDocs(q);
+      const seoData = await fetchWithCache(`cache_seo_${currentPath}`, q);
 
-      if (!querySnapshot.empty) {
-        const data = querySnapshot.docs[0].data();
+      if (seoData && seoData.length > 0) {
+        const data = seoData[0];
         setSeoData({
           title: data.title || defaultTitle,
           description: data.description || defaultDescription,

@@ -5,6 +5,7 @@ import type { CertificateData } from '../types';
 import SEO from '../components/SEO';
 import { db } from '../lib/firebase';
 import { collection, query, where, getDocs, orderBy, limit, doc, getDoc } from 'firebase/firestore';
+import { fetchWithCache } from '../lib/cacheUtils';
 import { normalizeImagePath } from '../lib/imageUtils';
 import { CERTIFICATES } from '../constants';
 
@@ -69,10 +70,10 @@ const Verification = () => {
           where('active', '==', true),
           orderBy('order_num', 'asc')
         );
-        const stepsSnapshot = await getDocs(stepsQ);
+        const stepsData = await fetchWithCache('cache_cert_steps', stepsQ);
 
-        if (!stepsSnapshot.empty) {
-          setHowItWorksSteps(stepsSnapshot.docs.map(doc => doc.data()));
+        if (stepsData && stepsData.length > 0) {
+          setHowItWorksSteps(stepsData);
         } else {
           // Fallback content
           setHowItWorksSteps([
@@ -84,10 +85,10 @@ const Verification = () => {
 
         // Fetch Credentials Section
         const credQ = query(collection(db, 'cert_credentials_section'), limit(1));
-        const credSnapshot = await getDocs(credQ);
+        const credData = await fetchWithCache('cache_cert_cred', credQ);
 
-        if (!credSnapshot.empty) {
-          setCredentialsSection(credSnapshot.docs[0].data());
+        if (credData && credData.length > 0) {
+          setCredentialsSection(credData[0]);
         } else {
           // Fallback content
           setCredentialsSection({
@@ -106,10 +107,10 @@ const Verification = () => {
           where('active', '==', true),
           orderBy('order_num', 'asc')
         );
-        const faqsSnapshot = await getDocs(faqsQ);
+        const faqsData = await fetchWithCache('cache_cert_faqs', faqsQ);
 
-        if (!faqsSnapshot.empty) {
-          setFaqs(faqsSnapshot.docs.map(doc => doc.data()));
+        if (faqsData && faqsData.length > 0) {
+          setFaqs(faqsData);
         } else {
           // Fallback content
           setFaqs([
@@ -122,10 +123,10 @@ const Verification = () => {
 
         // Fetch Support Section
         const supportQ = query(collection(db, 'cert_support_section'), limit(1));
-        const supportSnapshot = await getDocs(supportQ);
+        const supportData = await fetchWithCache('cache_cert_support', supportQ);
 
-        if (!supportSnapshot.empty) {
-          setSupportSection(supportSnapshot.docs[0].data());
+        if (supportData && supportData.length > 0) {
+          setSupportSection(supportData[0]);
         } else {
           // Fallback content
           setSupportSection({
@@ -139,10 +140,10 @@ const Verification = () => {
         }
         // Fetch Lasak Standard Section
         const lasakStandardQ = query(collection(db, 'cert_lasak_standard_section'), limit(1));
-        const lasakStandardSnapshot = await getDocs(lasakStandardQ);
+        const lasakStandardData = await fetchWithCache('cache_cert_lasak', lasakStandardQ);
 
-        if (!lasakStandardSnapshot.empty) {
-          setLasakStandardSection(lasakStandardSnapshot.docs[0].data());
+        if (lasakStandardData && lasakStandardData.length > 0) {
+          setLasakStandardSection(lasakStandardData[0]);
         }
 
       } catch (error) {

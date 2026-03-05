@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import { db } from '../lib/firebase';
 import { collection, query, where, getDocs, orderBy, doc, getDoc } from 'firebase/firestore';
+import { fetchWithCache } from '../lib/cacheUtils';
 import SEO from '../components/SEO';
 
 const cleanPath = (url: string) => {
@@ -206,13 +207,13 @@ const About = () => {
   const fetchAboutContent = async () => {
     try {
       const aboutQ = query(collection(db, 'about_content'), orderBy('order_num', 'asc'));
-      const aboutSnapshot = await getDocs(aboutQ);
+      const aboutData = await fetchWithCache('cache_about_content', aboutQ);
 
-      if (!aboutSnapshot.empty) {
-        const data = aboutSnapshot.docs.map(doc => doc.data());
-        const missionData = data.find(item => item.section === 'mission');
-        const visionData = data.find(item => item.section === 'vision');
-        const journeyData = data.find(item => item.section === 'journey');
+      if (aboutData && aboutData.length > 0) {
+        const data = aboutData;
+        const missionData = data.find((item: any) => item.section === 'mission');
+        const visionData = data.find((item: any) => item.section === 'vision');
+        const journeyData = data.find((item: any) => item.section === 'journey');
         const teachingData = data.find(item => item.section === 'teaching_approach');
         const infrastructureData = data.find(item => item.section === 'infrastructure');
         const coreValuesData = data.find(item => item.section === 'core_values');
@@ -247,12 +248,11 @@ const About = () => {
       // Fetch MOUs (independent of about_content)
       try {
         const mousQ = query(collection(db, 'mous'));
-        const mousSnapshot = await getDocs(mousQ);
-        if (!mousSnapshot.empty) {
-          const mousData = mousSnapshot.docs
-            .map(doc => ({ id: doc.id, ...doc.data() } as any))
+        const mousData = await fetchWithCache('cache_mous', mousQ);
+        if (mousData && mousData.length > 0) {
+          const sortedMous = mousData
             .sort((a: any, b: any) => (a.order_num || 0) - (b.order_num || 0));
-          setMous(mousData);
+          setMous(sortedMous);
         }
       } catch (mouError) {
         console.warn('Could not fetch MOUs from Firestore, using fallback data:', mouError);
@@ -261,9 +261,9 @@ const About = () => {
 
       // Fetch Categories
       const categoriesQ = query(collection(db, 'categories'), orderBy('order_num', 'asc'));
-      const categoriesSnapshot = await getDocs(categoriesQ);
-      if (!categoriesSnapshot.empty) {
-        setCategories(categoriesSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as any)));
+      const categoriesData = await fetchWithCache('cache_categories_all', categoriesQ);
+      if (categoriesData && categoriesData.length > 0) {
+        setCategories(categoriesData);
       }
     } catch (error: any) {
       console.error('Error fetching about content:', error);

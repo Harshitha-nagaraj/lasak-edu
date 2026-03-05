@@ -8,6 +8,7 @@ import SEO from '../components/SEO';
 import { auth, db } from '../lib/firebase';
 import { onAuthStateChanged } from 'firebase/auth';
 import { collection, getDocs, query, where, limit } from 'firebase/firestore';
+import { fetchWithCache } from '../lib/cacheUtils';
 import { Course } from '../types';
 import InquiryModal from '../components/InquiryModal';
 import RazorpayButton from '../components/RazorpayButton';
@@ -78,24 +79,23 @@ const Courses = () => {
   const fetchCourses = async () => {
     setLoading(true);
     try {
-      const querySnapshot = await getDocs(collection(db, 'courses'));
-      const fetchedCourses: Course[] = querySnapshot.docs.map(doc => {
-        const c = doc.data();
-        return {
-          id: doc.id,
-          title: c.title,
-          category: c.category,
-          price: c.price,
-          oldPrice: c.old_price !== undefined ? c.old_price : c.oldPrice,
-          duration: c.duration,
-          image: c.image,
-          description: c.description,
-          modules: c.modules || [],
-          isFree: c.isFree
-        } as Course;
-      });
+      const rawCourses = await fetchWithCache('cache_all_courses', query(collection(db, 'courses'), limit(50)));
 
-      if (fetchedCourses.length > 0) {
+      if (rawCourses && rawCourses.length > 0) {
+        const fetchedCourses: Course[] = rawCourses.map((c: any) => {
+          return {
+            id: c.id,
+            title: c.title,
+            category: c.category,
+            price: c.price,
+            oldPrice: c.old_price !== undefined ? c.old_price : c.oldPrice,
+            duration: c.duration,
+            image: c.image,
+            description: c.description,
+            modules: c.modules || [],
+            isFree: c.isFree
+          } as Course;
+        });
         // Merge with static data — Firestore values ALWAYS take priority
         const mergedCourses = fetchedCourses.map(fetched => {
           const staticCourse = COURSES.find(c => c.id === fetched.id || c.title === fetched.title);
@@ -124,12 +124,8 @@ const Courses = () => {
 
   const fetchCategories = async () => {
     try {
-      const querySnapshot = await getDocs(collection(db, 'categories'));
-      const fetchedCats = querySnapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      }));
-      if (fetchedCats.length > 0) {
+      const fetchedCats = await fetchWithCache('cache_categories_all', query(collection(db, 'categories')));
+      if (fetchedCats && fetchedCats.length > 0) {
         setDbCategories(fetchedCats);
       }
     } catch (error) {

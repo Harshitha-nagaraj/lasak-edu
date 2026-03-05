@@ -12,6 +12,7 @@ import { COMPANY_LOGOS, getCompaniesForCourse, COURSES } from '../constants';
 import { auth, db } from '../lib/firebase';
 import { onAuthStateChanged } from 'firebase/auth';
 import { collection, doc, getDoc, getDocs, query, where, limit, addDoc } from 'firebase/firestore';
+import { fetchWithCache } from '../lib/cacheUtils';
 import SEO from '../components/SEO';
 import ScholarshipCalculator from '../components/ScholarshipCalculator';
 import InquiryModal from '../components/InquiryModal';
@@ -160,12 +161,12 @@ const CourseDetails = () => {
             }
         });
 
-        // Fetch active coupons from Firestore
-        getDocs(collection(db, 'coupons')).then(snap => {
-            const active = snap.docs
-                .map(d => ({ id: d.id, ...d.data() }))
-                .filter((c: any) => c.active !== false);
-            setFirestoreCoupons(active);
+        // Fetch active coupons from Firestore using cache
+        fetchWithCache('cache_coupons', query(collection(db, 'coupons'))).then(data => {
+            if (data) {
+                const active = data.filter((c: any) => c.active !== false);
+                setFirestoreCoupons(active);
+            }
         }).catch(() => { /* silent fail — fallback coupons still work */ });
 
         return () => unsubscribe();

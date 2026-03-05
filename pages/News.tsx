@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Calendar, ArrowRight, Newspaper, Bell, ExternalLink } from 'lucide-react';
 import { db } from '../lib/firebase';
-import { collection, query, getDocs, orderBy } from 'firebase/firestore';
+import { collection, query, getDocs, orderBy, limit } from 'firebase/firestore';
+import { fetchWithCache } from '../lib/cacheUtils';
 import SEO from '../components/SEO';
 
 // Static news cards — shown immediately as fallback and when no Firestore news exists
@@ -37,11 +38,22 @@ const News = () => {
     const fetchNews = async () => {
         try {
             // Fetch from 'news' collection (not 'blogs')
-            const newsQ = query(collection(db, 'news'), orderBy('created_at', 'desc'));
-            const querySnapshot = await getDocs(newsQ);
+            const newsQ = query(collection(db, 'news'), orderBy('created_at', 'desc'), limit(20));
+            const data = await fetchWithCache(
+                'cache_news',
+                newsQ,
+                24 * 60 * 60 * 1000,
+                (docData: any) => ({
+                    id: docData.id,
+                    title: docData.title,
+                    excerpt: docData.excerpt,
+                    image: docData.image,
+                    category: docData.category,
+                    date: docData.date
+                })
+            );
 
-            if (!querySnapshot.empty) {
-                const data = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as any));
+            if (data && data.length > 0) {
                 setNews(data);
             }
             // If empty, keep MOCK_NEWS as fallback

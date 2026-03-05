@@ -5,7 +5,8 @@ import { BLOGS } from '../constants';
 import { Calendar, User, ArrowRight } from 'lucide-react';
 import SEO from '../components/SEO';
 import { db } from '../lib/firebase';
-import { collection, query, orderBy, getDocs } from 'firebase/firestore';
+import { collection, query, orderBy, getDocs, limit } from 'firebase/firestore';
+import { fetchWithCache } from '../lib/cacheUtils';
 import { normalizeImagePath } from '../lib/imageUtils';
 
 const Blog = () => {
@@ -21,13 +22,20 @@ const Blog = () => {
     setLoading(true);
     try {
       const blogsRef = collection(db, 'blogs');
-      const q = query(blogsRef, orderBy('createdAt', 'desc')); // Assuming createdAt instead of created_at
-      const querySnapshot = await getDocs(q);
-
-      const fetchedBlogs = querySnapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      })) as any[];
+      const q = query(blogsRef, orderBy('createdAt', 'desc'), limit(20)); // Assuming createdAt instead of created_at
+      const fetchedBlogs = await fetchWithCache(
+        'cache_blogs',
+        q,
+        24 * 60 * 60 * 1000,
+        (data: any) => ({
+          id: data.id,
+          title: data.title,
+          excerpt: data.excerpt,
+          image: data.image,
+          category: data.category,
+          date: data.date
+        })
+      );
 
       console.log('📊 [Blog.tsx] Query result:', {
         dataLength: fetchedBlogs.length,
@@ -59,12 +67,20 @@ const Blog = () => {
       // Try again with 'created_at' if 'createdAt' fails or just use fallback
       try {
         const blogsRef = collection(db, 'blogs');
-        const q = query(blogsRef, orderBy('created_at', 'desc'));
-        const querySnapshot = await getDocs(q);
-        const fetchedBlogs = querySnapshot.docs.map(doc => ({
-          id: doc.id,
-          ...doc.data()
-        })) as any[];
+        const q = query(blogsRef, orderBy('created_at', 'desc'), limit(20));
+        const fetchedBlogs = await fetchWithCache(
+          'cache_blogs_fallback',
+          q,
+          24 * 60 * 60 * 1000,
+          (data: any) => ({
+            id: data.id,
+            title: data.title,
+            excerpt: data.excerpt,
+            image: data.image,
+            category: data.category,
+            date: data.date
+          })
+        );
 
         if (fetchedBlogs.length > 0) {
           const mergedBlogs = fetchedBlogs.map(fetched => {

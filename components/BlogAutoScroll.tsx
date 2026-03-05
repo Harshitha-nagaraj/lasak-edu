@@ -5,6 +5,7 @@ import { Calendar, User, ArrowRight } from "lucide-react";
 import { db } from "../lib/firebase";
 import { collection, query, orderBy, getDocs } from "firebase/firestore";
 import { normalizeImagePath } from "../lib/imageUtils";
+import { fetchWithCache } from "../lib/cacheUtils";
 
 const BlogAutoScroll = () => {
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -16,13 +17,9 @@ const BlogAutoScroll = () => {
     const fetchBlogs = async () => {
       try {
         const q = query(collection(db, 'blogs'), orderBy('created_at', 'desc'));
-        const querySnapshot = await getDocs(q);
+        const fetchedBlogs = await fetchWithCache('cache_home_blogs', q);
 
-        if (!querySnapshot.empty) {
-          const fetchedBlogs = querySnapshot.docs.map(doc => ({
-            id: doc.id,
-            ...doc.data()
-          }));
+        if (fetchedBlogs && fetchedBlogs.length > 0) {
           setBlogs(fetchedBlogs as any);
         }
       } catch (error) {

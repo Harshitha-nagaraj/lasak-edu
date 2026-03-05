@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Mail, Phone, MapPin, ArrowRight, CheckCircle } from "lucide-react";
 import { db } from "../lib/firebase";
 import { collection, query, where, getDocs, orderBy, doc, getDoc, addDoc, serverTimestamp } from "firebase/firestore";
+import { fetchWithCache } from "../lib/cacheUtils";
 import SEO from "../components/SEO";
 
 const Contact = () => {
@@ -31,13 +32,12 @@ const Contact = () => {
         collection(db, 'contact_info'),
         where('active', '==', true)
       );
-      const querySnapshot = await getDocs(q);
-      if (!querySnapshot.empty) {
-        const data = querySnapshot.docs
-          .map(doc => ({ id: doc.id, ...doc.data() } as any))
-          .sort((a, b) => (a.order_num || 0) - (b.order_num || 0));
+      const data = await fetchWithCache('cache_contact_info', q);
+      if (data && data.length > 0) {
+        const sortedData = data
+          .sort((a: any, b: any) => (a.order_num || 0) - (b.order_num || 0));
 
-        const displayContacts = data.filter(c => ['address', 'phone', 'email'].includes(c.type));
+        const displayContacts = sortedData.filter((c: any) => ['address', 'phone', 'email'].includes(c.type));
         setContactInfo(displayContacts);
       }
     } catch (error) {

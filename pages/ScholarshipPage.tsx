@@ -4,6 +4,7 @@ import { GraduationCap, Award, HelpCircle, ChevronDown, ChevronUp, BookOpen } fr
 import { db } from '../lib/firebase';
 import { collection, query, where, getDocs, orderBy } from 'firebase/firestore';
 import { Course } from '../types';
+import { fetchWithCache } from '../lib/cacheUtils';
 import ScholarshipCalculator from '../components/ScholarshipCalculator';
 import SEO from '../components/SEO';
 
@@ -62,18 +63,17 @@ const ScholarshipPage: React.FC = () => {
     const fetchData = async () => {
         try {
             // Fetch courses
-            const coursesSnapshot = await getDocs(collection(db, 'courses'));
-            if (!coursesSnapshot.empty) {
-                const fetched = coursesSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as any));
+            const coursesData = await fetchWithCache('cache_courses_all', query(collection(db, 'courses')));
+            if (coursesData && coursesData.length > 0) {
+                const fetched = coursesData;
                 fetched.sort((a: any, b: any) => (a.title || '').localeCompare(b.title || ''));
                 setCourses(fetched);
             }
 
             // Fetch scholarship rules (active only, sorted by priority)
-            const rulesSnapshot = await getDocs(collection(db, 'scholarship_rules'));
-            if (!rulesSnapshot.empty) {
-                const activeRules = rulesSnapshot.docs
-                    .map(doc => ({ id: doc.id, ...doc.data() } as any))
+            const rulesData = await fetchWithCache('cache_scholarship_rules', query(collection(db, 'scholarship_rules')));
+            if (rulesData && rulesData.length > 0) {
+                const activeRules = rulesData
                     .filter((r: any) => r.is_active)
                     .sort((a: any, b: any) => (a.priority || 0) - (b.priority || 0));
                 if (activeRules.length > 0) setRules(activeRules);

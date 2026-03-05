@@ -3,7 +3,8 @@ import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { CheckCircle, Award, Target, ArrowRight, Zap, Briefcase, BookOpen, MapPin, Settings, Percent, Flame, Calendar, Clock } from 'lucide-react';
 import { db } from '../lib/firebase';
-import { collection, query, where, getDocs, orderBy, addDoc, serverTimestamp } from 'firebase/firestore';
+import { collection, query, where, getDocs, orderBy, limit, addDoc, serverTimestamp } from 'firebase/firestore';
+import { fetchWithCache } from '../lib/cacheUtils';
 import SEO from '../components/SEO';
 import InquiryModal from '../components/InquiryModal';
 
@@ -69,19 +70,19 @@ const Programs = () => {
         where('active', '==', true),
         orderBy('order_num', 'asc')
       );
-      const wsSnapshot = await getDocs(wsQ);
+      const wsData = await fetchWithCache('cache_workshops', wsQ);
 
-      if (!wsSnapshot.empty) {
-        setWorkshops(wsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as any)));
+      if (wsData && wsData.length > 0) {
+        setWorkshops(wsData);
       } else {
         setWorkshops(DEFAULT_WORKSHOPS);
       }
 
       // Fetch Features
       const featQ = query(collection(db, 'program_features'), orderBy('order_num', 'asc'));
-      const featSnapshot = await getDocs(featQ);
-      if (!featSnapshot.empty) {
-        setProgramFeatures(featSnapshot.docs.map(doc => doc.data()));
+      const featData = await fetchWithCache('cache_program_features', featQ);
+      if (featData && featData.length > 0) {
+        setProgramFeatures(featData);
       }
     } catch (error) {
       console.error("Error fetching programs data:", error);

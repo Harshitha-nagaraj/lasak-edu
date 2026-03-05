@@ -14,6 +14,7 @@ import BlogAutoScroll from "../components/BlogAutoScroll";
 import { auth, db } from '../lib/firebase';
 import { onAuthStateChanged } from 'firebase/auth';
 import { collection, query, where, getDocs, orderBy, limit, doc, getDoc } from 'firebase/firestore';
+import { fetchWithCache } from '../lib/cacheUtils';
 import InquiryModal from '../components/InquiryModal';
 import RazorpayButton from '../components/RazorpayButton';
 import { normalizeImagePath } from '../lib/imageUtils';
@@ -551,32 +552,31 @@ const Home = () => {
     try {
       // Execute all Firestore queries in parallel to eliminate the waterfall delay
       const [
-        partnersSnapshot,
-        testimonialsSnapshot,
-        heroSnapshot,
-        ytSnapshot,
-        vtSnapshot,
-        coursesSnapshot,
-        accreditationsSnapshot,
-        categoriesSnapshot
+        partnersRaw,
+        testimonialsRaw,
+        heroRaw,
+        ytRaw,
+        vtRaw,
+        coursesRaw,
+        accreditationsRaw,
+        categoriesRaw
       ] = await Promise.all([
-        getDocs(collection(db, 'partners')), // Fetch all partners
-        getDocs(collection(db, 'testimonials')),
-        getDocs(query(collection(db, 'hero_slides'), where('active', '==', true))),
-        getDocs(query(collection(db, 'youtube_videos'), where('active', '==', true))),
-        getDocs(query(collection(db, 'video_testimonials'), where('active', '==', true))),
-        getDocs(query(collection(db, 'courses'), where('show_on_home', '==', true))),
-        getDocs(query(collection(db, 'accreditations'), orderBy('order_num', 'asc'))),
-        getDocs(query(collection(db, 'categories'), orderBy('order_num', 'asc')))
+        fetchWithCache('cache_home_partners', query(collection(db, 'partners'), limit(40))),
+        fetchWithCache('cache_home_testimonials', query(collection(db, 'testimonials'), limit(15))),
+        fetchWithCache('cache_hero_slides', query(collection(db, 'hero_slides'), where('active', '==', true))),
+        fetchWithCache('cache_youtube_videos', query(collection(db, 'youtube_videos'), where('active', '==', true))),
+        fetchWithCache('cache_video_testimonials', query(collection(db, 'video_testimonials'), where('active', '==', true))),
+        fetchWithCache('cache_courses_home', query(collection(db, 'courses'), where('show_on_home', '==', true))),
+        fetchWithCache('cache_accreditations', query(collection(db, 'accreditations'), orderBy('order_num', 'asc'))),
+        fetchWithCache('cache_categories', query(collection(db, 'categories'), orderBy('order_num', 'asc')))
       ]);
 
       // Process Partners
-      if (!partnersSnapshot.empty) {
-        const allPartnersData = partnersSnapshot.docs
-          .map(doc => {
-            const data = doc.data();
+      if (partnersRaw && partnersRaw.length > 0) {
+        const allPartnersData = partnersRaw
+          .map((data: any) => {
             return {
-              id: doc.id,
+              id: data.id,
               name: data.name || 'Partner',
               logo: cleanPath(data.logo || ''),
               type: data.type || 'training',
@@ -585,19 +585,18 @@ const Home = () => {
           });
 
         const trainingPartners = allPartnersData
-          .filter(p => p.type === 'training')
-          .sort((a, b) => (b.created_at || 0) - (a.created_at || 0));
+          .filter((p: any) => p.type === 'training')
+          .sort((a: any, b: any) => (b.created_at || 0) - (a.created_at || 0));
 
         setPartners(trainingPartners);
       }
 
       // Process Testimonials
-      if (!testimonialsSnapshot.empty) {
-        const testimonialsData = testimonialsSnapshot.docs
-          .map(doc => {
-            const data = doc.data() as any;
+      if (testimonialsRaw && testimonialsRaw.length > 0) {
+        const testimonialsData = testimonialsRaw
+          .map((data: any) => {
             return {
-              id: doc.id,
+              id: data.id,
               name: data.name || '',
               role: data.role || 'Student',
               content: data.quote || data.content || data.text || '',
@@ -608,7 +607,7 @@ const Home = () => {
               created_at: data.created_at || 0
             };
           })
-          .sort((a, b) => (b.created_at || 0) - (a.created_at || 0));
+          .sort((a: any, b: any) => (b.created_at || 0) - (a.created_at || 0));
         setTestimonials(testimonialsData);
       } else {
         setTestimonials(FALLBACK_STORIES.map(s => ({
@@ -625,57 +624,47 @@ const Home = () => {
       }
 
       // Process Accreditations
-      if (!accreditationsSnapshot.empty) {
-        const accData = accreditationsSnapshot.docs.map(doc => ({
-          ...doc.data(),
-          id: doc.id
-        }));
-        setAccreditations(accData);
+      if (accreditationsRaw && accreditationsRaw.length > 0) {
+        setAccreditations(accreditationsRaw);
       }
 
       // Process Categories
-      if (!categoriesSnapshot.empty) {
-        const catData = categoriesSnapshot.docs.map(doc => ({
-          ...doc.data(),
-          id: doc.id
-        }));
-        setCategories(catData);
+      if (categoriesRaw && categoriesRaw.length > 0) {
+        setCategories(categoriesRaw);
       }
+
       // Process Hero Slides
-      if (!heroSnapshot.empty) {
-        const heroData = heroSnapshot.docs
-          .map(doc => ({ id: doc.id, ...doc.data() } as any))
-          .sort((a, b) => (a.order_num || 0) - (b.order_num || 0));
+      if (heroRaw && heroRaw.length > 0) {
+        const heroData = heroRaw
+          .sort((a: any, b: any) => (a.order_num || 0) - (b.order_num || 0));
         setHeroSlides(heroData);
       }
 
       // Process Youtube Videos
-      if (!ytSnapshot.empty) {
-        const ytData = ytSnapshot.docs
-          .map(v => ({
+      if (ytRaw && ytRaw.length > 0) {
+        const ytData = ytRaw
+          .map((v: any) => ({
             id: v.id,
-            video_id: (v.data() as any).video_id,
-            order_num: (v.data() as any).order_num || 0,
-            thumbnail: `https://img.youtube.com/vi/${(v.data() as any).video_id}/mqdefault.jpg`
+            video_id: v.video_id,
+            order_num: v.order_num || 0,
+            thumbnail: `https://img.youtube.com/vi/${v.video_id}/mqdefault.jpg`
           }))
-          .sort((a, b) => a.order_num - b.order_num);
+          .sort((a: any, b: any) => a.order_num - b.order_num);
         setYoutubeVideos(ytData);
       }
 
       // Process Video Testimonials
-      if (!vtSnapshot.empty) {
-        const vtData = vtSnapshot.docs
-          .map(doc => ({ id: doc.id, ...doc.data() } as any))
-          .sort((a, b) => (a.order_num || 0) - (b.order_num || 0));
+      if (vtRaw && vtRaw.length > 0) {
+        const vtData = vtRaw
+          .sort((a: any, b: any) => (a.order_num || 0) - (b.order_num || 0));
         setVideoTestimonials(vtData);
       }
 
       // Process Courses
-      if (!coursesSnapshot.empty) {
-        const fetchedCourses = coursesSnapshot.docs.map((doc: any) => {
-          const c = doc.data();
+      if (coursesRaw && coursesRaw.length > 0) {
+        const fetchedCourses = coursesRaw.map((c: any) => {
           return {
-            id: doc.id,
+            id: c.id,
             ...c,
             image: c.image,
             oldPrice: c.old_price || c.oldPrice,
@@ -683,7 +672,7 @@ const Home = () => {
           };
         });
 
-        const mergedCourses = fetchedCourses.map(fetched => {
+        const mergedCourses = fetchedCourses.map((fetched: any) => {
           const staticCourse = COURSES.find(c => c.id === fetched.id || c.title === fetched.title);
           if (!staticCourse) {
             return {
@@ -742,14 +731,13 @@ const Home = () => {
 
           if (configData.enabled) {
             // Fetch slides without orderBy to avoid index requirement
-            const slidesSnapshot = await getDocs(query(collection(db, 'popup_slides'), where('active', '==', true)));
+            const slidesRaw = await fetchWithCache('cache_popup_slides', query(collection(db, 'popup_slides'), where('active', '==', true)));
 
-            if (!slidesSnapshot.empty) {
-              const slidesData = slidesSnapshot.docs
-                .map(doc => {
-                  const s = doc.data();
+            if (slidesRaw && slidesRaw.length > 0) {
+              const slidesData = slidesRaw
+                .map((s: any) => {
                   return {
-                    id: doc.id,
+                    id: s.id,
                     image: cleanPath(s.image_url),
                     clickable: s.clickable,
                     style: s.style || 'standard',
@@ -760,7 +748,7 @@ const Home = () => {
                     features: [s.feature_1, s.feature_2, s.feature_3].filter(Boolean)
                   };
                 })
-                .sort((a, b) => a.order_num - b.order_num);
+                .sort((a: any, b: any) => a.order_num - b.order_num);
 
               setPromoSlides(slidesData);
               setTimeout(() => setShowPromoPopup(true), 3000);

@@ -5,6 +5,7 @@ import { auth, db } from '../lib/firebase';
 import { onAuthStateChanged } from 'firebase/auth';
 import { collection, getDocs, orderBy, query, where, addDoc, serverTimestamp } from 'firebase/firestore';
 import { useNavigate } from 'react-router-dom';
+import { fetchWithCache } from '../lib/cacheUtils';
 
 interface InquiryModalProps {
     isOpen: boolean;
@@ -71,12 +72,14 @@ const InquiryModal: React.FC<InquiryModalProps> = ({
 
         const fetchCourses = async () => {
             try {
-                const querySnapshot = await getDocs(query(collection(db, 'courses'), orderBy('title', 'asc')));
-                const fetchedCourses = querySnapshot.docs.map(doc => ({
-                    id: doc.id,
-                    title: doc.data().title
-                }));
-                setCourses(fetchedCourses);
+                const fetchedCourses = await fetchWithCache('cache_courses_dropdown', query(collection(db, 'courses'), orderBy('title', 'asc')));
+                if (fetchedCourses) {
+                    const mappedCourses = fetchedCourses.map((doc: any) => ({
+                        id: doc.id,
+                        title: doc.title
+                    }));
+                    setCourses(mappedCourses);
+                }
             } catch (err) {
                 console.error('Error fetching courses:', err);
             }

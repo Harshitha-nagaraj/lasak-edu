@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { GraduationCap, Percent, BookOpen, AlertCircle, CheckCircle2, X, Sparkles, Info, Phone, Camera } from 'lucide-react';
 import { auth, db } from '../lib/firebase';
 import { collection, query, where, getDocs, orderBy, limit, addDoc, serverTimestamp } from 'firebase/firestore';
+import { fetchWithCache } from '../lib/cacheUtils';
 
 interface ScholarshipRule {
   id: string;
@@ -114,10 +115,10 @@ const ScholarshipCalculator: React.FC<ScholarshipCalculatorProps> = ({
   const fetchRules = async () => {
     try {
       const q = query(collection(db, 'scholarship_rules'), where('is_active', '==', true), orderBy('priority', 'asc'));
-      const snapshot = await getDocs(q);
+      const rulesData = await fetchWithCache('cache_scholarship_rules', q);
 
-      if (!snapshot.empty) {
-        setAllRules(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as any)));
+      if (rulesData && rulesData.length > 0) {
+        setAllRules(rulesData as any);
       }
     } catch (err) {
       console.log('Using default scholarship rules', err);
@@ -127,10 +128,10 @@ const ScholarshipCalculator: React.FC<ScholarshipCalculatorProps> = ({
   const fetchSettings = async () => {
     try {
       const q = query(collection(db, 'scholarship_settings'), limit(1));
-      const snapshot = await getDocs(q);
+      const settingsData = await fetchWithCache('cache_scholarship_settings', q);
 
-      if (!snapshot.empty) {
-        setSettings(snapshot.docs[0].data() as ScholarshipSettings);
+      if (settingsData && settingsData.length > 0) {
+        setSettings(settingsData[0] as ScholarshipSettings);
       }
     } catch (err) {
       console.error('Error fetching scholarship settings:', err);
