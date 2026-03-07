@@ -4,18 +4,15 @@ import { Play, X } from "lucide-react";
 
 /* ---------------- DATA ---------------- */
 const FALLBACK_VIDEOS = [
-  { video_url: "/img/videostestimonial/video1.mp4", title: "Campus Tour" },
-  { video_url: "/img/videostestimonial/video2.mp4", title: "Workshop Experience" },
-  { video_url: "/img/videostestimonial/video3.mp4", title: "Student Project" },
-  { video_url: "/img/videostestimonial/video4.mp4", title: "Student success story" },
-  { video_url: "/img/videostestimonial/video5.mp4", title: "Student success story" },
-  { video_url: "/img/videostestimonial/video6.mp4", title: "Student success story" },
-  { video_url: "/img/videostestimonial/video7.mp4", title: "Student success story" },
-  { video_url: "/img/videostestimonial/video8.mp4", title: "Student success story" },
-  { video_url: "/img/videostestimonial/video9.mp4", title: "Student success story" },
-  { video_url: "/img/videostestimonial/video10.mp4", title: "Student success story" },
-  { video_url: "/img/videostestimonial/video11.mp4", title: "Student success story" },
-  { video_url: "/img/videostestimonial/video12.mp4", title: "Student success story" },
+  { video_url: "https://youtube.com/shorts/1fi4stfhFxc?feature=share", title: "Student success story" },
+  { video_url: "https://youtube.com/shorts/R9YEUvcamTY?feature=share", title: "Student success story" },
+  { video_url: "https://youtube.com/shorts/I3c4t4_0QYE?feature=share", title: "Student success story" },
+  { video_url: "https://youtube.com/shorts/4b79hKynNl0?feature=share", title: "Student success story" },
+  { video_url: "https://youtube.com/shorts/QYwDl90Sgbw?feature=share", title: "Student success story" },
+  { video_url: "https://youtube.com/shorts/Ieo5f-hb3M8?feature=share", title: "Student success story" },
+  { video_url: "https://youtube.com/shorts/6PHA749J-ec?feature=share", title: "Student success story" },
+  { video_url: "https://youtube.com/shorts/Fbw1g-TGemI?feature=share", title: "Student success story" },
+  { video_url: "https://youtube.com/shorts/kwIZNS4KaDY?feature=share", title: "Student success story" },
 ];
 
 const cleanPath = (url: string) => {

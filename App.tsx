@@ -18,7 +18,7 @@ import Maintenance from './pages/Maintenance';
 const IS_MAINTENANCE_MODE = false; // Set to true to enable "Under Service" page
 
 // Lazy Load Pages for performance
-const Home = lazy(() => import('./pages/Home'));
+import Home from './pages/Home';
 const Courses = lazy(() => import('./pages/Courses'));
 const Verification = lazy(() => import('./pages/Verification'));
 const CourseDetails = lazy(() => import('./pages/CourseDetails')); // New Page

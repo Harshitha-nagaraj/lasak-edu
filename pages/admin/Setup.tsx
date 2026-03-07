@@ -331,18 +331,15 @@ const Setup = () => {
             // Migrate Video Testimonials
             setStatus('Migrating Video Testimonials...');
             const videoRawData = [
-                { video_url: "/img/videostestimonial/video1.mp4", order_num: 1, created_at: serverTimestamp() },
-                { video_url: "/img/videostestimonial/video2.mp4", order_num: 2, created_at: serverTimestamp() },
-                { video_url: "/img/videostestimonial/video3.mp4", order_num: 3, created_at: serverTimestamp() },
-                { video_url: "/img/videostestimonial/video4.mp4", order_num: 4, created_at: serverTimestamp() },
-                { video_url: "/img/videostestimonial/video5.mp4", order_num: 5, created_at: serverTimestamp() },
-                { video_url: "/img/videostestimonial/video6.mp4", order_num: 6, created_at: serverTimestamp() },
-                { video_url: "/img/videostestimonial/video7.mp4", order_num: 7, created_at: serverTimestamp() },
-                { video_url: "/img/videostestimonial/video8.mp4", order_num: 8, created_at: serverTimestamp() },
-                { video_url: "/img/videostestimonial/video9.mp4", order_num: 9, created_at: serverTimestamp() },
-                { video_url: "/img/videostestimonial/video10.mp4", order_num: 10, created_at: serverTimestamp() },
-                { video_url: "/img/videostestimonial/video11.mp4", order_num: 11, created_at: serverTimestamp() },
-                { video_url: "/img/videostestimonial/video12.mp4", order_num: 12, created_at: serverTimestamp() },
+                { video_url: "https://youtube.com/shorts/1fi4stfhFxc?feature=share", order_num: 1, created_at: serverTimestamp() },
+                { video_url: "https://youtube.com/shorts/R9YEUvcamTY?feature=share", order_num: 2, created_at: serverTimestamp() },
+                { video_url: "https://youtube.com/shorts/I3c4t4_0QYE?feature=share", order_num: 3, created_at: serverTimestamp() },
+                { video_url: "https://youtube.com/shorts/4b79hKynNl0?feature=share", order_num: 4, created_at: serverTimestamp() },
+                { video_url: "https://youtube.com/shorts/QYwDl90Sgbw?feature=share", order_num: 5, created_at: serverTimestamp() },
+                { video_url: "https://youtube.com/shorts/Ieo5f-hb3M8?feature=share", order_num: 6, created_at: serverTimestamp() },
+                { video_url: "https://youtube.com/shorts/6PHA749J-ec?feature=share", order_num: 7, created_at: serverTimestamp() },
+                { video_url: "https://youtube.com/shorts/Fbw1g-TGemI?feature=share", order_num: 8, created_at: serverTimestamp() },
+                { video_url: "https://youtube.com/shorts/kwIZNS4KaDY?feature=share", order_num: 9, created_at: serverTimestamp() },
             ];
             for (const video of videoRawData) {
                 const id = video.video_url.split('/').pop()?.split('.')[0] || `video-${Math.random()}`;

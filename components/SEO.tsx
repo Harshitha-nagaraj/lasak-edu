@@ -95,7 +95,7 @@ const SEO: React.FC<SEOProps> = ({
       <meta name="twitter:image" content={seoData.image_url} />
 
       {/* Favicon */}
-      <link rel="icon" href="/favicon.png" />
+      <link rel="icon" href="/favicon-Photoroom.png" />
 
       {/* Structured Data */}
       <script type="application/ld+json">

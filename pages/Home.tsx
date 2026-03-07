@@ -161,7 +161,7 @@ const AchieversScroller = React.memo(({ testimonials }: { testimonials: any[] })
               key={`${story.id}-${i}`}
               className="w-[220px] xs:w-[300px] bg-white p-6 rounded-2xl shadow-lg border border-slate-100 flex-shrink-0 mr-4 md:mr-8"
             >
-              <div className="flex items-center gap-4 mb-4">
+              <div className="flex flex-col items-center text-center gap-3 mb-4">
                 <div className="w-16 h-16 rounded-full border-2 border-white shadow-md overflow-hidden bg-blue-50 flex items-center justify-center shrink-0">
                   {story.image ? (
                     <img
@@ -179,24 +179,24 @@ const AchieversScroller = React.memo(({ testimonials }: { testimonials: any[] })
                     <div className="w-full h-full flex items-center justify-center bg-blue-600 text-white font-bold text-xl">{story.name.charAt(0)}</div>
                   )}
                 </div>
-                <div>
+                <div className="flex flex-col items-center text-center">
                   <h4 className="font-bold text-lg text-slate-900">{story.name}</h4>
-                  <p className="text-sm text-blue-600 font-semibold">
+                  <p className="text-sm text-blue-600 font-semibold leading-tight mt-1">
                     {story.role}
                   </p>
-                  <div className="flex text-yellow-400 text-xs mt-1">
+                  <div className="flex justify-center text-yellow-400 text-xs mt-2">
                     {[...Array(story.rating || 5)].map((_, i) => <span key={i}>★</span>)}
                   </div>
                 </div>
               </div>
               {story.company && (
-                <p className="text-xs text-slate-500 font-semibold mb-2 flex items-center gap-1">
+                <p className="text-xs text-slate-500 font-semibold mb-3 flex items-center justify-center gap-1 w-full text-center">
                   <span className="w-1.5 h-1.5 rounded-full bg-blue-500 inline-block"></span>
                   {story.company}
-                  {story.package && <span className="ml-2 text-green-600 font-bold">{story.package}</span>}
+                  {story.package && <span className="ml-1 text-green-600 font-bold">{story.package}</span>}
                 </p>
               )}
-              <p className="text-slate-600 italic leading-relaxed line-clamp-4">
+              <p className="text-slate-600 italic leading-relaxed line-clamp-4 text-center">
                 &ldquo;{story.content || story.quote || ''}&rdquo;
               </p>
             </div>
@@ -1398,7 +1398,7 @@ const Home = () => {
             </div>
 
             {/* RIGHT: Sliding Review Cards */}
-            <div className="w-full xl:w-3/4 relative">
+            <div className="w-full xl:w-3/4 relative flex flex-col justify-center">
 
               {/* Review Carousel Container */}
               <div className="overflow-hidden px-2 py-4">
@@ -1418,7 +1418,7 @@ const Home = () => {
                       const review = testimonials[index];
 
                       return (
-                        <div key={index} className="bg-white border border-slate-100 shadow-lg rounded-3xl p-8 relative hover:shadow-xl transition-shadow flex flex-col">
+                        <div key={index} className="bg-white border border-slate-100 shadow-lg rounded-3xl p-8 relative hover:shadow-xl transition-shadow flex flex-col h-full">
                           <div className="flex items-center gap-3 mb-4">
                             <div className="w-12 h-12 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold text-lg border border-slate-100 uppercase">
                               {review.name.charAt(0)}

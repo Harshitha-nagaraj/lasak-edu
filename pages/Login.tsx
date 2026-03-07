@@ -1,15 +1,18 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
-import { Lock, Mail, ArrowRight, UserPlus, AlertCircle, CheckCircle2 } from 'lucide-react';
+import { Lock, Mail, ArrowRight, UserPlus, AlertCircle, CheckCircle2, KeyRound, Eye, EyeOff } from 'lucide-react';
 import { auth } from '../lib/firebase';
-import { signInWithEmailAndPassword } from 'firebase/auth';
+import { signInWithEmailAndPassword, sendPasswordResetEmail } from 'firebase/auth';
 
 const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [isForgotPassword, setIsForgotPassword] = useState(false);
+    const [resetSuccess, setResetSuccess] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
     const navigate = useNavigate();
     const location = useLocation();
     const signupSuccess = new URLSearchParams(location.search).get('signupSuccess') === 'true';
@@ -18,8 +21,17 @@ const Login = () => {
         e.preventDefault();
         setLoading(true);
         setError(null);
+        setResetSuccess(false);
         try {
             const normalizedEmail = email.trim().toLowerCase();
+
+            if (isForgotPassword) {
+                await sendPasswordResetEmail(auth, normalizedEmail);
+                setResetSuccess(true);
+                setError(null);
+                return;
+            }
+
             const normalizedPassword = password.trim();
 
             await signInWithEmailAndPassword(
@@ -33,7 +45,15 @@ const Login = () => {
             navigate(from, { replace: true });
         } catch (err: any) {
             console.error("Login Error:", err);
-            setError(err.message || "An error occurred during login.");
+            if (err.code === 'auth/user-not-found') {
+                setError("No account found with this email address.");
+            } else if (err.code === 'auth/wrong-password' || err.code === 'auth/invalid-credential') {
+                setError("Invalid email or password.");
+            } else if (err.code === 'auth/too-many-requests') {
+                setError("Too many attempts. Please try again later.");
+            } else {
+                setError(err.message || "An error occurred. Please try again.");
+            }
         } finally {
             setLoading(false);
         }
@@ -55,12 +75,14 @@ const Login = () => {
             >
                 <div className="text-center mb-8">
                     <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                        Welcome Back
+                        {isForgotPassword ? 'Reset Password' : 'Welcome Back'}
                     </h1>
-                    <p className="text-gray-500 mt-2">Sign in to your Lasak Edu account</p>
+                    <p className="text-gray-500 mt-2">
+                        {isForgotPassword ? 'Enter your email to receive a password reset link' : 'Sign in to your Lasak Edu account'}
+                    </p>
                 </div>
 
-                {signupSuccess && (
+                {signupSuccess && !isForgotPassword && (
                     <motion.div
                         initial={{ opacity: 0, height: 0 }}
                         animate={{ opacity: 1, height: 'auto' }}
@@ -70,6 +92,20 @@ const Login = () => {
                         <div>
                             <p className="font-bold">Account Created Successfully!</p>
                             <p className="text-sm">Please login with your email and password to continue.</p>
+                        </div>
+                    </motion.div>
+                )}
+
+                {resetSuccess && (
+                    <motion.div
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: 'auto' }}
+                        className="bg-green-50 border border-green-200 text-green-700 p-4 rounded-xl mb-6 flex items-start gap-3"
+                    >
+                        <CheckCircle2 className="w-6 h-6 shrink-0 text-green-500" />
+                        <div>
+                            <p className="font-bold">Reset Link Sent!</p>
+                            <p className="text-sm">Please check your email inbox (and spam folder) for the password reset link.</p>
                         </div>
                     </motion.div>
                 )}
@@ -101,26 +137,39 @@ const Login = () => {
                         </div>
                     </div>
 
-                    <div>
-                        <div className="flex justify-between mb-2">
-                            <label className="block text-sm font-medium text-gray-700">Password</label>
-                            <Link to="/admin/login" className="text-sm text-blue-600 hover:text-blue-800 font-medium">
-                                Forgot?
-                            </Link>
+                    {!isForgotPassword && (
+                        <div>
+                            <div className="flex justify-between mb-2">
+                                <label className="block text-sm font-medium text-gray-700">Password</label>
+                                <button
+                                    type="button"
+                                    onClick={() => { setIsForgotPassword(true); setError(null); setResetSuccess(false); }}
+                                    className="text-sm text-blue-600 hover:text-blue-800 font-medium"
+                                >
+                                    Forgot?
+                                </button>
+                            </div>
+                            <div className="relative">
+                                <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5 z-10" />
+                                <input
+                                    type={showPassword ? "text" : "password"}
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    className="w-full pl-10 pr-12 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all outline-none"
+                                    placeholder="••••••••"
+                                    required
+                                    minLength={6}
+                                />
+                                <button
+                                    type="button"
+                                    onClick={() => setShowPassword(!showPassword)}
+                                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 focus:outline-none z-10"
+                                >
+                                    {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                                </button>
+                            </div>
                         </div>
-                        <div className="relative">
-                            <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-                            <input
-                                type="password"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all outline-none"
-                                placeholder="••••••••"
-                                required
-                                minLength={6}
-                            />
-                        </div>
-                    </div>
+                    )}
 
                     <motion.button
                         whileHover={{ scale: 1.02 }}
@@ -128,16 +177,36 @@ const Login = () => {
                         disabled={loading}
                         className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 rounded-xl font-semibold shadow-lg shadow-blue-500/30 flex items-center justify-center gap-2 disabled:opacity-70"
                     >
-                        {loading ? 'Signing In...' : 'Sign In'} <ArrowRight className="w-5 h-5" />
+                        {loading ? (
+                            <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                        ) : (
+                            <>
+                                {isForgotPassword ? (
+                                    <><KeyRound className="w-5 h-5" /> Send Reset Link</>
+                                ) : (
+                                    <>Sign In <ArrowRight className="w-5 h-5" /></>
+                                )}
+                            </>
+                        )}
                     </motion.button>
 
                     <div className="text-center mt-6 space-y-4">
-                        <p className="text-sm text-gray-500">
-                            Don't have an account?{' '}
-                            <Link to={`/signup${location.search}`} className="text-blue-600 hover:text-blue-800 font-bold flex items-center justify-center gap-1 mt-1">
-                                <UserPlus className="w-4 h-4" /> Create one now
-                            </Link>
-                        </p>
+                        {isForgotPassword ? (
+                            <button
+                                type="button"
+                                onClick={() => { setIsForgotPassword(false); setError(null); setResetSuccess(false); }}
+                                className="text-sm text-blue-600 hover:text-blue-800 font-medium"
+                            >
+                                ← Back to Login
+                            </button>
+                        ) : (
+                            <p className="text-sm text-gray-500">
+                                Don't have an account?{' '}
+                                <Link to={`/signup${location.search}`} className="text-blue-600 hover:text-blue-800 font-bold flex items-center justify-center gap-1 mt-1">
+                                    <UserPlus className="w-4 h-4" /> Create one now
+                                </Link>
+                            </p>
+                        )}
                     </div>
                 </form>
             </motion.div>

@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { Trash2, UserPlus, Shield, User, Save, X, Edit2, CheckCircle } from 'lucide-react';
-import { db } from '../../lib/firebase';
+import { Trash2, UserPlus, Shield, User, Save, X, Edit2, CheckCircle, KeyRound, Eye, EyeOff } from 'lucide-react';
+import { db, auth } from '../../lib/firebase';
 import { collection, query, orderBy, getDocs, doc, deleteDoc, updateDoc, setDoc, serverTimestamp } from 'firebase/firestore';
+import { sendPasswordResetEmail } from 'firebase/auth';
 import { useUserRole } from '../../hooks/useUserRole';
 
 interface UserData {
@@ -26,6 +27,7 @@ const UserManager = () => {
     const [editingId, setEditingId] = useState<string | null>(null);
     const [editRole, setEditRole] = useState<'admin' | 'editor' | 'viewer'>('viewer');
     const [editPassword, setEditPassword] = useState('');
+    const [showNewPassword, setShowNewPassword] = useState(false);
 
     useEffect(() => {
         fetchUsers();
@@ -111,6 +113,17 @@ const UserManager = () => {
         setEditRole(user.role);
     };
 
+    const handleSendPasswordReset = async (email: string) => {
+        if (!confirm(`Are you sure you want to send a password reset email to ${email}?`)) return;
+        try {
+            await sendPasswordResetEmail(auth, email);
+            alert(`✅ Password reset email sent to ${email}`);
+        } catch (error: any) {
+            console.error('Password reset error:', error);
+            alert('Error sending password reset email: ' + error.message);
+        }
+    };
+
     const handleUpdateUser = async (user: UserData) => {
         try {
             await updateDoc(doc(db, 'user_roles', user.id), {
@@ -185,15 +198,24 @@ const UserManager = () => {
                         </div>
                         <div className="flex-1 w-full">
                             <label className="block text-sm font-bold text-slate-700 mb-2">Password</label>
-                            <input
-                                type="password"
-                                value={newUserPassword}
-                                onChange={(e) => setNewUserPassword(e.target.value)}
-                                placeholder="••••••••"
-                                className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none"
-                                required
-                                minLength={6}
-                            />
+                            <div className="relative">
+                                <input
+                                    type={showNewPassword ? "text" : "password"}
+                                    value={newUserPassword}
+                                    onChange={(e) => setNewUserPassword(e.target.value)}
+                                    placeholder="••••••••"
+                                    className="w-full pl-4 pr-12 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none"
+                                    required
+                                    minLength={6}
+                                />
+                                <button
+                                    type="button"
+                                    onClick={() => setShowNewPassword(!showNewPassword)}
+                                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 focus:outline-none"
+                                >
+                                    {showNewPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                                </button>
+                            </div>
                         </div>
                         <div className="w-full md:w-48">
                             <label className="block text-sm font-bold text-slate-700 mb-2">Role</label>
@@ -302,13 +324,22 @@ const UserManager = () => {
                                                 </button>
                                             </>
                                         ) : (
-                                            <button
-                                                onClick={() => startEdit(user)}
-                                                className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
-                                                title="Edit Role"
-                                            >
-                                                <Edit2 size={18} />
-                                            </button>
+                                            <>
+                                                <button
+                                                    onClick={() => handleSendPasswordReset(user.email)}
+                                                    className="p-2 text-yellow-600 hover:bg-yellow-50 rounded-lg transition-colors"
+                                                    title="Send Password Reset"
+                                                >
+                                                    <KeyRound size={18} />
+                                                </button>
+                                                <button
+                                                    onClick={() => startEdit(user)}
+                                                    className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                                                    title="Edit Role"
+                                                >
+                                                    <Edit2 size={18} />
+                                                </button>
+                                            </>
                                         )}
                                         <button
                                             onClick={() => handleDeleteUser(user.id, user.email)}
