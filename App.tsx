@@ -209,6 +209,7 @@ const AnimatedRoutes = () => {
           <Route path="/programs" element={<PageWrapper><Programs /></PageWrapper>} />
           <Route path="/courses" element={<PageWrapper><Courses /></PageWrapper>} />
           <Route path="/courses/:category" element={<PageWrapper><Courses /></PageWrapper>} />
+          <Route path="/courses/:category/:slug" element={<PageWrapper><CourseDetails /></PageWrapper>} />
           <Route path="/course/:id" element={<PageWrapper><CourseDetails /></PageWrapper>} />
           <Route path="/verify" element={<PageWrapper><Verification /></PageWrapper>} />
           <Route path="/contact" element={<PageWrapper><Contact /></PageWrapper>} />

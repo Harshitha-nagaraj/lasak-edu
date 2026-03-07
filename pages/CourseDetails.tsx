@@ -25,10 +25,10 @@ const cleanPath = (url: string) => {
 };
 
 const CourseDetails = () => {
-    const { id } = useParams();
+    const { id, slug } = useParams();
     const navigate = useNavigate();
-    const [course, setCourse] = useState<Course | null>(COURSES.find(c => c.id === id) || null);
-    const [loading, setLoading] = useState(!COURSES.find(c => c.id === id));
+    const [course, setCourse] = useState<Course | null>(COURSES.find(c => (id && c.id === id) || (slug && c.slug === slug)) || null);
+    const [loading, setLoading] = useState(!COURSES.find(c => (id && c.id === id) || (slug && c.slug === slug)));
     const [showScholarshipModal, setShowScholarshipModal] = useState(false);
     const [activeAccordion, setActiveAccordion] = useState<number | null>(null);
     const scrollRef = React.useRef<HTMLDivElement>(null);
@@ -358,14 +358,19 @@ const CourseDetails = () => {
         fetchSettings();
 
         const fetchCourse = async () => {
-            if (!id) return;
+            if (!id && !slug) return;
             try {
-                const courseDoc = await getDoc(doc(db, 'courses', id));
-                let courseData = courseDoc.exists() ? courseDoc.data() : null;
-                if (courseData) courseData.id = courseDoc.id;
+                // If we have an ID, try Firestore first
+                let courseData = null;
+                if (id) {
+                    const courseDoc = await getDoc(doc(db, 'courses', id));
+                    courseData = courseDoc.exists() ? courseDoc.data() : null;
+                    if (courseData) courseData.id = courseDoc.id;
+                }
 
+                // If not found by ID or we only have a slug, try searching by slug in Firestore or constants
                 if (!courseData) {
-                    const staticData = COURSES.find(c => c.id === id);
+                    const staticData = COURSES.find(c => (id && c.id === id) || (slug && c.slug === slug));
                     if (staticData) courseData = staticData;
                 }
 
