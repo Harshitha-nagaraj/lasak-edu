@@ -1,11 +1,12 @@
 {
-  "name": "of--lasak-edu-website",
+  "name": "lasak-edu-website",
   "private": true,
   "version": "0.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "start": "vite preview --port $PORT --host",
     "preview": "vite preview",
     "migrate": "npx tsx scripts/migrate-data.ts"
   },
