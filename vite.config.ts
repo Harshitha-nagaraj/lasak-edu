@@ -21,7 +21,6 @@ export default defineConfig(({ mode }) => {
     resolve: {
       alias: {
         '@': path.resolve(__dirname, '.'),
-        // Fix for micromark-extension-gfm-strikethrough and other extensions ESM build error
         'micromark-extension-gfm-strikethrough': path.resolve(__dirname, 'node_modules/micromark-extension-gfm-strikethrough/dev/index.js'),
         'micromark-extension-gfm-strikethrough/html': path.resolve(__dirname, 'node_modules/micromark-extension-gfm-strikethrough/dev/html.js'),
         'micromark-extension-gfm-autolink-literal': path.resolve(__dirname, 'node_modules/micromark-extension-gfm-autolink-literal/dev/index.js'),
@@ -31,13 +30,12 @@ export default defineConfig(({ mode }) => {
         'micromark-extension-gfm-table': path.resolve(__dirname, 'node_modules/micromark-extension-gfm-table/dev/index.js'),
         'micromark-extension-gfm-table/html': path.resolve(__dirname, 'node_modules/micromark-extension-gfm-table/dev/html.js'),
         'micromark-util-normalize-identifier': path.resolve(__dirname, 'node_modules/micromark-util-normalize-identifier/dev/index.js'),
-
       }
     },
 
-    // 🚀 PERFORMANCE OPTIMIZATION (IMPORTANT)
     build: {
-      target: 'es2018', // Smaller modern output
+      outDir: 'dist',          // ✅ Explicit output folder for Hostinger
+      target: 'es2018',        
       minify: 'esbuild',
       cssCodeSplit: true,
       sourcemap: false,
@@ -47,7 +45,7 @@ export default defineConfig(({ mode }) => {
 
       rollupOptions: {
         output: {
-          // Default chunking is safer to avoid circular dependencies
+          // default chunking
         }
       }
     }

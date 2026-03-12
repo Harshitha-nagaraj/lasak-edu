@@ -51,7 +51,7 @@ const ChatWidget = ({ isOpen, onClose }) => {
       const sessionId = localStorage.getItem('chatSessionId');
 
       const response = await fetch(
-        'https://n8n.srv1443461.hstgr.cloud/webhook/86e428b1-c897-44c9-8599-424213e04a79/chat',
+        'https://n8n.lasak.in/webhook/86e428b1-c897-44c9-8599-424213e04a79/chat',
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
