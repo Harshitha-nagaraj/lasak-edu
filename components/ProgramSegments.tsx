@@ -38,30 +38,30 @@ const ProgramSegments = ({ segments }: { segments?: any[] }) => {
         </div>
 
         {/* Sticky Cards Container */}
-        <div className="relative max-w-[1200px] mx-auto w-full px-4 md:px-8">
+        <div className="relative max-w-[1300px] mx-auto w-full px-4 md:px-10">
           {displaySegments.map((program, i) => {
             return (
               <div
                 key={program.id}
-                className="sticky w-full mb-[10vh] last:mb-0"
+                className="sticky w-full mb-[8vh] last:mb-0"
                 style={{ 
-                  top: `calc(130px + ${i * 32}px)`, 
+                  top: `calc(100px + ${i * 32}px)`, // Adjusted to sit just below header
                   zIndex: i + 1
                 }}
               >
                 <div 
-                  className={`w-full h-[75vh] md:h-[85vh] rounded-[24px] md:rounded-[40px] shadow-2xl overflow-hidden relative flex flex-col transition-all duration-700`}
+                  className={`w-full h-[70vh] md:h-[80vh] max-h-[750px] rounded-[32px] md:rounded-[48px] shadow-2xl overflow-hidden relative flex flex-col transition-all duration-700`}
                   style={{ 
                     backgroundColor: program.bgColor,
-                    boxShadow: '0 30px 60px -12px rgba(0, 0, 0, 0.4)'
+                    boxShadow: '0 40px 80px -15px rgba(0, 0, 0, 0.4)'
                   }}
                 >
-                  <div className="relative flex flex-col h-full p-6 md:p-14 custom-scrollbar">
-                    <div className="w-full max-w-5xl mx-auto h-full flex flex-col">
+                  <div className="relative flex flex-col h-full p-6 md:p-14">
+                    <div className="w-full max-w-5xl mx-auto h-full flex flex-col justify-between">
                       
-                      {/* Compact Header Area */}
-                      <div className="flex items-center gap-4 md:gap-8 mb-6 md:mb-8 flex-shrink-0">
-                        <div className="w-16 h-16 md:w-24 md:h-24 flex-shrink-0 bg-white/20 backdrop-blur-lg border border-white/30 rounded-2xl md:rounded-3xl flex items-center justify-center text-white p-4 md:p-6">
+                      {/* 1. Header Area */}
+                      <div className="flex items-center gap-4 md:gap-8 flex-shrink-0">
+                        <div className="w-14 h-14 md:w-24 md:h-24 flex-shrink-0 bg-white/20 backdrop-blur-lg border border-white/30 rounded-2xl md:rounded-[2rem] flex items-center justify-center text-white p-3 md:p-6 shadow-xl">
                           {typeof program.categories?.[0]?.icon === 'string' ? getIcon(program.categories[0].icon) : getIcon('star')}
                         </div>
 
@@ -69,50 +69,50 @@ const ProgramSegments = ({ segments }: { segments?: any[] }) => {
                           <span className="inline-block px-3 py-1 rounded-full bg-white/10 text-white text-[8px] md:text-[10px] font-black uppercase tracking-widest mb-2 border border-white/20">
                             {program.badge}
                           </span>
-                          <h2 className="text-xl md:text-4xl lg:text-6xl font-black text-white leading-tight tracking-tight">
+                          <h2 className="text-xl md:text-5xl lg:text-6xl font-black text-white leading-tight tracking-tighter">
                             {program.title}
                           </h2>
                         </div>
                       </div>
 
-                      {/* Description */}
-                      <p className="text-white/90 text-[10px] md:text-xl mb-6 md:mb-10 max-w-4xl leading-relaxed font-semibold opacity-95 flex-shrink-0">
+                      {/* 2. Description */}
+                      <p className="text-white/90 text-[10px] md:text-xl lg:text-2xl my-4 md:my-8 max-w-4xl leading-relaxed font-bold opacity-95 line-clamp-3">
                         {program.description}
                       </p>
 
-                      {/* Autoscrolling Courses Ticker */}
-                      <div className="w-full overflow-hidden relative py-4 mb-6 md:mb-10 flex-shrink-0">
-                        <div className="flex animate-scroll hover:pause space-x-4 md:space-x-6">
+                      {/* 3. Autoscrolling Courses Ticker */}
+                      <div className="w-full overflow-hidden relative py-4 my-2 flex-shrink-0">
+                        <div className="flex animate-scroll hover:pause space-x-4 md:space-x-8">
                           {[...(program.categories || []), ...(program.categories || []), ...(program.categories || [])].map((cat: any, idx: number) => (
                             <div
                               key={idx}
-                              className="flex-shrink-0 w-32 md:w-60 bg-white/10 backdrop-blur-2xl border border-white/20 p-4 md:p-8 rounded-[1.5rem] group cursor-pointer transition-all duration-500 hover:bg-white/20"
+                              className="flex-shrink-0 w-32 md:w-64 bg-white/10 backdrop-blur-3xl border border-white/20 p-4 md:p-8 rounded-[2rem] group cursor-pointer transition-all duration-500 hover:bg-white/20 shadow-lg"
                             >
-                              <div className="w-8 h-8 md:w-14 md:h-14 rounded-xl bg-white/20 flex items-center justify-center text-white mb-3 md:mb-6 group-hover:bg-white group-hover:text-slate-900 transition-all">
-                                <div className="w-5 h-5 md:w-8 md:h-8">
+                              <div className="w-8 h-8 md:w-16 md:h-16 rounded-xl md:rounded-2xl bg-white/20 flex items-center justify-center text-white mb-3 md:mb-6 group-hover:bg-white group-hover:text-slate-900 transition-all duration-500">
+                                <div className="w-5 h-5 md:w-9 md:h-9">
                                   {typeof cat.icon === 'string' ? getIcon(cat.icon) : <Star className="w-full h-full" />}
                                 </div>
                               </div>
-                              <h3 className="text-[9px] md:text-base font-black text-white leading-tight uppercase tracking-wider">{cat.name}</h3>
+                              <h3 className="text-[9px] md:text-base lg:text-lg font-black text-white leading-tight uppercase tracking-wider">{cat.name}</h3>
                             </div>
                           ))}
                         </div>
                       </div>
 
-                      {/* CTA Buttons */}
-                      <div className="flex flex-wrap gap-4 md:gap-8 mt-auto pb-4 flex-shrink-0">
+                      {/* 4. CTA Buttons */}
+                      <div className="flex flex-wrap gap-4 md:gap-10 pt-4 flex-shrink-0">
                         <Link
                           to="/contact"
-                          className="px-8 py-3.5 md:px-14 md:py-6 bg-white text-slate-900 font-black text-[10px] md:text-xl rounded-xl hover:shadow-2xl transition-all duration-300 active:scale-95 flex items-center gap-3 group"
+                          className="px-8 py-3.5 md:px-16 md:py-6 bg-white text-slate-900 font-black text-[10px] md:text-xl rounded-2xl hover:shadow-2xl transition-all duration-300 active:scale-95 flex items-center gap-4 group"
                         >
-                          <ArrowRight size={22} className="group-hover:translate-x-1 transition-transform" />
+                          <ArrowRight size={24} className="group-hover:translate-x-2 transition-transform" />
                           Register Now
                         </Link>
                         <Link
                           to="/courses"
-                          className="px-8 py-3.5 md:px-14 md:py-6 bg-transparent border-2 md:border-4 border-white text-white font-black text-[10px] md:text-xl rounded-xl hover:bg-white/10 transition-all duration-300 active:scale-95 flex items-center gap-3 group"
+                          className="px-8 py-3.5 md:px-16 md:py-6 bg-transparent border-2 md:border-4 border-white text-white font-black text-[10px] md:text-xl rounded-2xl hover:bg-white/10 transition-all duration-300 active:scale-95 flex items-center gap-4 group"
                         >
-                          View Tracks
+                          Explore First
                         </Link>
                       </div>
 
