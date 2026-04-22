@@ -288,38 +288,30 @@ const Home = () => {
   const [courses, setCourses] = useState<Course[]>(getInitialCourses());
 
   useEffect(() => {
-    const runHeavyTasks = () => {
-      fetchData();
+    fetchData();
 
-      let unsubscribe: any;
-      const initAuth = async () => {
-        try {
-          const { getFirebaseAuth } = await import('../lib/firebase');
-          const { onAuthStateChanged } = await import('firebase/auth');
-          const auth = await getFirebaseAuth();
-          unsubscribe = onAuthStateChanged(auth, (u: any) => {
-            setUser(u);
-            if (u) {
-              checkInquiryStatus(u.email || undefined);
-            } else {
-              setHasSubmittedInquiry(false);
-            }
-          });
-        } catch (err) {
-          console.error('Auth initialization error:', err);
-        }
-      };
-      initAuth();
-      getPopupData();
-
-      return () => { if (unsubscribe) unsubscribe(); };
+    let unsubscribe: any;
+    const initAuth = async () => {
+      try {
+        const { getFirebaseAuth } = await import('../lib/firebase');
+        const { onAuthStateChanged } = await import('firebase/auth');
+        const auth = await getFirebaseAuth();
+        unsubscribe = onAuthStateChanged(auth, (u: any) => {
+          setUser(u);
+          if (u) {
+            checkInquiryStatus(u.email || undefined);
+          } else {
+            setHasSubmittedInquiry(false);
+          }
+        });
+      } catch (err) {
+        console.error('Auth initialization error:', err);
+      }
     };
+    initAuth();
+    getPopupData();
 
-    if ('requestIdleCallback' in window) {
-      requestIdleCallback(runHeavyTasks);
-    } else {
-      setTimeout(runHeavyTasks, 2000);
-    }
+    return () => { if (unsubscribe) unsubscribe(); };
   }, []);
 
   const checkInquiryStatus = async (email: string | undefined) => {
@@ -487,7 +479,7 @@ const Home = () => {
       }
 
       // Process Learning Ecosystem
-      if (learningEcosystemRaw && learningEcosystemRaw.length > 0) {
+      if (learningEcosystemRaw) {
         setLearningEcosystem(learningEcosystemRaw);
       }
 

@@ -102,7 +102,7 @@ const LearningBenefits = ({ benefitsData }: { benefitsData?: any[] }) => {
     }
   ];
 
-  const benefits = benefitsData && benefitsData.length > 0 ? benefitsData : defaultBenefits;
+  const benefits = (benefitsData && benefitsData.length > 0) ? benefitsData : defaultBenefits;
 
   return (
     <section className="py-24 bg-white overflow-hidden border-t border-slate-100">
