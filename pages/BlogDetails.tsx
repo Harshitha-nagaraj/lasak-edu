@@ -2,10 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { motion, useScroll } from 'framer-motion';
 import { Calendar, User, ArrowLeft, Tag } from 'lucide-react';
-import { BLOGS } from '../constants';
+import { BLOGS } from '../constants/blogDetails';
 import SEO from '../components/SEO';
-import { db } from '../lib/firebase';
-import { doc, getDoc } from 'firebase/firestore';
 import { normalizeImagePath } from '../lib/imageUtils';
 
 import ReactMarkdown from 'react-markdown';
@@ -27,6 +25,9 @@ const BlogDetails = () => {
 
   const fetchBlog = async (blogId: string) => {
     try {
+      const { getFirestoreDb } = await import('../lib/firebase');
+      const { doc, getDoc } = await import('firebase/firestore');
+      const db = await getFirestoreDb();
       const blogRef = doc(db, 'blogs', blogId);
       const blogDoc = await getDoc(blogRef);
 
@@ -210,6 +211,8 @@ const BlogDetails = () => {
                     <img
                       src={normalizeImagePath(src) || ''}
                       alt={alt || ''}
+                      loading="lazy"
+                      fetchPriority="low"
                       className="w-full h-auto object-cover"
                       onError={(e) => {
                         (e.target as HTMLImageElement).src = `https://placehold.co/800x600/f1f5f9/64748b?text=${encodeURIComponent(alt || 'Image')}`;
@@ -227,7 +230,7 @@ const BlogDetails = () => {
 
         {/* Tags */}
         <div className="mt-16 pt-8 border-t border-slate-100 flex items-center gap-3">
-          <Tag size={18} className="text-slate-400" />
+          <Tag size={18} className="text-slate-600" />
           <span className="text-slate-600 text-sm">
             Education, Technology, Career Growth
           </span>

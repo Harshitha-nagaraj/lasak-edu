@@ -3,6 +3,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import compression from 'compression';
 
 // Load environment variables
 dotenv.config();
@@ -14,11 +15,18 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Middleware
+app.use(compression());
 app.use(cors());
 app.use(express.json());
 
-// Serve static files from the 'dist' directory after the build
-app.use(express.static(path.join(__dirname, 'dist')));
+// Serve static files from the 'dist' directory with a 1-year cache lifetime
+// This matches Lighthouse recommendations for efficient caching
+app.use(express.static(path.join(__dirname, 'dist'), {
+  maxAge: '1y',
+  immutable: true,
+  etag: true,
+  lastModified: true
+}));
 
 // Handle Single Page Application (SPA) routing
 // This ensures that all routes are handled by index.html

@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Briefcase, CheckCircle, Send, Sparkles } from 'lucide-react';
-import { db } from '../lib/firebase';
-import { collection, addDoc } from 'firebase/firestore';
 
 const EnquirySegment = () => {
     const [submitting, setSubmitting] = useState(false);
@@ -27,26 +25,34 @@ const EnquirySegment = () => {
         };
 
         try {
+            const { getFirestoreDb } = await import('../lib/firebase');
+            const { collection, addDoc } = await import('firebase/firestore');
+            const db = await getFirestoreDb();
             // 1. Save to Firestore
             await addDoc(collection(db, 'enquiries'), submission);
 
             // 2. Send to Google Sheets (External)
-            const response = await fetch(
-                "https://script.google.com/macros/s/AKfycbzUBPbp3yuUtgj12J6l7RHs-Zixa30HBjKcinGTkgBiD0hJ_5FpBLaVhm_TL8oJDMe9/exec",
-                {
-                    method: "POST",
-                    body: formData,
-                }
-            );
+            const scriptURL = "https://script.google.com/macros/s/AKfycbyCXeBcecLMxEqsI895ypcAgNwa0v4obpE6lXMczvDolz3kaMRPf6aDxmTH9vEL5FzKsw/exec";
+            
+            const sheetsData = {
+                fullName: String(submission.full_name),
+                email: String(submission.email),
+                phone: String(submission.phone),
+                qualification: String(submission.qualification),
+                department: String(submission.department),
+                status: String(submission.status),
+                course: String(submission.source),
+                preferredBranch: String(submission.message)
+            };
 
-            const text = await response.text();
+            fetch(scriptURL, {
+                method: "POST",
+                mode: "no-cors",
+                body: JSON.stringify(sheetsData)
+            }).catch(err => console.error("Google Sheets Error:", err));
 
-            if (text === "success") {
-                alert("Enquiry Submitted Successfully! Our team will contact you soon.");
-                form.reset();
-            } else {
-                alert("Enquiry received! We will get back to you shortly.");
-            }
+            alert("Enquiry Submitted Successfully! Our team will contact you soon.");
+            form.reset();
         } catch (error) {
             console.error("Submission error:", error);
             alert("Submission Failed! Please try again later or contact us directly.");
@@ -79,7 +85,7 @@ const EnquirySegment = () => {
                             Take Your <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">First Step</span> Toward Success
                         </h2>
 
-                        <p className="text-slate-400 text-lg mb-12 leading-relaxed max-w-xl">
+                        <p className="text-slate-600 text-lg mb-12 leading-relaxed max-w-xl">
                             Unlock industry-leading training, guaranteed placement support, and real-world project experience. Fill out the form and our career experts will map out your journey.
                         </p>
 

@@ -1,6 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { db } from '../../lib/firebase';
-import { collection, query, orderBy, getDocs, doc, deleteDoc, updateDoc, addDoc, serverTimestamp, getDoc } from 'firebase/firestore';
 import { useUserRole } from '../../hooks/useUserRole';
 import { Plus, Trash2, Save, X, Edit, Zap, MapPin, Percent, Calendar, Clock, Image as ImageIcon } from 'lucide-react';
 
@@ -47,6 +45,10 @@ const WorkshopManager = () => {
 
     const fetchWorkshops = async () => {
         try {
+            const { getFirestoreDb } = await import('../../lib/firebase');
+            const { collection, query, orderBy, getDocs } = await import('firebase/firestore');
+            const db = await getFirestoreDb();
+
             const snapshot = await getDocs(query(collection(db, 'workshops'), orderBy('order_num', 'asc')));
             const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Workshop));
             setWorkshops(data || []);
@@ -73,6 +75,10 @@ const WorkshopManager = () => {
         let createdId = '';
 
         try {
+            const { getFirestoreDb } = await import('../../lib/firebase');
+            const { collection, addDoc, doc, getDoc, deleteDoc, serverTimestamp } = await import('firebase/firestore');
+            const db = await getFirestoreDb();
+
             // 1. Test Insert
             addToLog('1. Attempting INSERT to Firestore...');
             const docRef = await addDoc(collection(db, 'workshops'), {
@@ -109,7 +115,12 @@ const WorkshopManager = () => {
 
             // Clean up
             if (createdId) {
-                try { await deleteDoc(doc(db, 'workshops', createdId)); } catch (e) { }
+                try {
+                    const { getFirestoreDb } = await import('../../lib/firebase');
+                    const { doc, deleteDoc } = await import('firebase/firestore');
+                    const db = await getFirestoreDb();
+                    await deleteDoc(doc(db, 'workshops', createdId));
+                } catch (e) { }
             }
         }
     };
@@ -136,6 +147,10 @@ const WorkshopManager = () => {
         addToLog(`Payload prepared. Title: "${workshopData.title}"`);
 
         try {
+            const { getFirestoreDb } = await import('../../lib/firebase');
+            const { collection, addDoc, updateDoc, doc, serverTimestamp } = await import('firebase/firestore');
+            const db = await getFirestoreDb();
+
             if (currentId) {
                 // Ensure ID is trimmed just in case
                 const safeId = currentId.trim();
@@ -177,6 +192,10 @@ const WorkshopManager = () => {
         addToLog(`Attempting delete for: "${workshop.title}" (ID: ${id})`);
 
         try {
+            const { getFirestoreDb } = await import('../../lib/firebase');
+            const { doc, deleteDoc } = await import('firebase/firestore');
+            const db = await getFirestoreDb();
+
             await deleteDoc(doc(db, 'workshops', id));
             setWorkshops(workshops.filter(w => w.id !== id));
             addToLog(`Success: Deleted.`);
@@ -270,7 +289,7 @@ const WorkshopManager = () => {
                 <div className="bg-white p-6 rounded-xl shadow-lg border border-gray-200 animate-fade-in">
                     <div className="flex justify-between mb-4">
                         <h3 className="text-lg font-bold">{currentId ? 'Edit Workshop' : 'Add New Workshop'}</h3>
-                        <button onClick={() => setIsEditing(false)} className="text-gray-500 hover:text-gray-700"><X size={24} /></button>
+                        <button onClick={() => setIsEditing(false)} aria-label="Close form" className="text-gray-500 hover:text-gray-700"><X size={24} /></button>
                     </div>
 
                     <form onSubmit={handleSave} className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -341,12 +360,12 @@ const WorkshopManager = () => {
                                     className="w-full p-2 border rounded-lg"
                                     placeholder="Add tag..."
                                 />
-                                <button type="button" onClick={addTag} className="bg-gray-200 px-3 rounded-lg">+</button>
+                                <button type="button" onClick={addTag} aria-label="Add tag" className="bg-gray-200 px-3 rounded-lg">+</button>
                             </div>
                             <div className="flex flex-wrap gap-2 mt-2">
                                 {formData.tags?.map((tag, i) => (
                                     <span key={i} className="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded flex items-center gap-1">
-                                        {tag} <button type="button" onClick={() => removeTag(i)} className="text-blue-900 font-bold">&times;</button>
+                                        {tag} <button type="button" onClick={() => removeTag(i)} aria-label={`Remove tag ${tag}`} className="text-blue-900 font-bold">&times;</button>
                                     </span>
                                 ))}
                             </div>
@@ -405,8 +424,8 @@ const WorkshopManager = () => {
                             <div className="flex gap-2">
                                 {canEdit && (
                                     <>
-                                        <button onClick={() => handleEdit(workshop)} className="p-2 text-blue-500 hover:bg-blue-50 rounded-lg"><Edit size={18} /></button>
-                                        <button onClick={() => handleDelete(workshop)} className="p-2 text-red-500 hover:bg-red-50 rounded-lg"><Trash2 size={18} /></button>
+                                        <button onClick={() => handleEdit(workshop)} aria-label={`Edit ${workshop.title}`} className="p-2 text-blue-500 hover:bg-blue-50 rounded-lg"><Edit size={18} /></button>
+                                        <button onClick={() => handleDelete(workshop)} aria-label={`Delete ${workshop.title}`} className="p-2 text-red-500 hover:bg-red-50 rounded-lg"><Trash2 size={18} /></button>
                                     </>
                                 )}
                             </div>

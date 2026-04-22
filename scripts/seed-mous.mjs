@@ -17,7 +17,9 @@ for (const line of envText.split('\n')) {
     const idx = trimmed.indexOf('=');
     if (idx === -1) continue;
     const key = trimmed.slice(0, idx).trim();
-    const val = trimmed.slice(idx + 1).trim();
+    let val = trimmed.slice(idx + 1).trim();
+    if (val.startsWith('"') && val.endsWith('"')) val = val.slice(1, -1);
+    if (val.startsWith("'") && val.endsWith("'")) val = val.slice(1, -1);
     env[key] = val;
 }
 
@@ -82,7 +84,7 @@ async function seedMOUs() {
             {
                 college_name: 'Government College of Technology, Coimbatore',
                 description: 'Lasak Edu is proud to partner with GCT Coimbatore to provide advanced technical training and skill development programs for engineering students. Our collaboration focuses on bridging the gap between academic theory and industrial practice.',
-                image: '/img/mou-gct.webp',
+                image: 'public/img/mou-jct.webp',
                 date: 'March 2024',
                 order_num: 1,
                 active: true
@@ -90,7 +92,7 @@ async function seedMOUs() {
             {
                 college_name: 'Bishop Appasamy College of Arts and Science',
                 description: 'Lasak Edu has signed a strategic MOU with Bishop Appasamy College to empower students with industry-relevant IT skills and placement-oriented training. We provide specialized workshops and internships for final-year students.',
-                image: '/img/mou-bishop.webp',
+                image: 'public/img/moubishop.webp',
                 date: 'February 2024',
                 order_num: 2,
                 active: true

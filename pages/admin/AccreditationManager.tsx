@@ -2,18 +2,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Plus, Trash2, Edit2, Save, X, Upload, Image as ImageIcon } from 'lucide-react';
-import { db, storage } from '../../lib/firebase';
-import {
-    collection,
-    query,
-    orderBy,
-    getDocs,
-    doc,
-    setDoc,
-    deleteDoc,
-    updateDoc,
-    serverTimestamp
-} from 'firebase/firestore';
 import ImageUploader from '../../components/admin/ImageUploader';
 import { useUserRole } from '../../hooks/useUserRole';
 
@@ -45,6 +33,10 @@ const AccreditationManager = () => {
 
     const fetchAccreditations = async () => {
         try {
+            const { getFirestoreDb } = await import('../../lib/firebase');
+            const { collection, query, orderBy, getDocs } = await import('firebase/firestore');
+            const db = await getFirestoreDb();
+
             const q = query(collection(db, 'accreditations'), orderBy('order_num', 'asc'));
             const snapshot = await getDocs(q);
             const data = snapshot.docs.map(doc => ({
@@ -68,6 +60,10 @@ const AccreditationManager = () => {
         }
 
         try {
+            const { getFirestoreDb } = await import('../../lib/firebase');
+            const { doc, setDoc, serverTimestamp } = await import('firebase/firestore');
+            const db = await getFirestoreDb();
+
             const id = isEditing || formData.alt.toLowerCase().replace(/\s+/g, '-');
             const data = {
                 alt: formData.alt,
@@ -91,6 +87,10 @@ const AccreditationManager = () => {
     const handleDelete = async (id: string) => {
         if (!window.confirm('Delete this accreditation?')) return;
         try {
+            const { getFirestoreDb } = await import('../../lib/firebase');
+            const { doc, deleteDoc } = await import('firebase/firestore');
+            const db = await getFirestoreDb();
+
             await deleteDoc(doc(db, 'accreditations', id));
             fetchAccreditations();
         } catch (error) {

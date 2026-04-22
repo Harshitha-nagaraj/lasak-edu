@@ -1,6 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { db } from '../../lib/firebase';
-import { collection, query, orderBy, getDocs, doc, deleteDoc, updateDoc, serverTimestamp } from 'firebase/firestore';
 import { Save, Plus, Trash2, Edit2 } from 'lucide-react';
 import { useUserRole } from '../../hooks/useUserRole';
 
@@ -25,6 +23,10 @@ const AboutContentManager = () => {
 
     const fetchContents = async () => {
         try {
+            const { getFirestoreDb } = await import('../../lib/firebase');
+            const { collection, query, orderBy, getDocs } = await import('firebase/firestore');
+            const db = await getFirestoreDb();
+
             const snapshot = await getDocs(query(collection(db, 'about_content'), orderBy('order_num', 'asc')));
             const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as AboutContent));
             setContents(data || []);
@@ -42,6 +44,10 @@ const AboutContentManager = () => {
 
     const handleSave = async (id: string, section: string) => {
         try {
+            const { getFirestoreDb } = await import('../../lib/firebase');
+            const { doc, updateDoc, serverTimestamp } = await import('firebase/firestore');
+            const db = await getFirestoreDb();
+
             // Clean up the form data before saving
             let cleanedForm = { ...editForm };
 
@@ -72,6 +78,10 @@ const AboutContentManager = () => {
         if (!confirm('Are you sure you want to delete this content?')) return;
 
         try {
+            const { getFirestoreDb } = await import('../../lib/firebase');
+            const { doc, deleteDoc } = await import('firebase/firestore');
+            const db = await getFirestoreDb();
+
             await deleteDoc(doc(db, 'about_content', id));
             fetchContents();
         } catch (error: any) {

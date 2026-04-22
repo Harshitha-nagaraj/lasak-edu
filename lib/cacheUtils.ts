@@ -1,6 +1,6 @@
-import { getDocs, Query, DocumentData } from 'firebase/firestore';
+import { Query, DocumentData } from 'firebase/firestore';
 
-const CACHE_EXPIRATION_MS = 24 * 60 * 60 * 1000; // 24 hours
+const CACHE_EXPIRATION_MS = 1000; // 1 second (Prevents immediate repeated requests but allows fast updates)
 
 export const fetchWithCache = async (
     cacheKey: string,
@@ -29,6 +29,7 @@ export const fetchWithCache = async (
 
     // 2. Fetch from Firestore if no valid cache
     try {
+        const { getDocs } = await import('firebase/firestore');
         const querySnapshot = await getDocs(firestoreQuery);
         const results = querySnapshot.docs.map(doc => {
             const data = doc.data();

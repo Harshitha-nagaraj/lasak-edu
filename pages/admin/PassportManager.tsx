@@ -1,6 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { collection, doc, getDoc, setDoc, getDocs } from 'firebase/firestore';
-import { db } from '../../lib/firebase';
 import { Save, Plus, Trash2, Award, ChevronDown } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 
@@ -58,6 +56,10 @@ const PassportManager = () => {
     useEffect(() => {
         const fetchCategories = async () => {
             try {
+                const { getFirestoreDb } = await import('../../lib/firebase');
+                const { collection, getDocs } = await import('firebase/firestore');
+                const db = await getFirestoreDb();
+
                 const catsSnapshot = await getDocs(collection(db, 'categories'));
                 const catsList = catsSnapshot.docs.map(doc => doc.data().name);
                 setCategories(['default', ...catsList]);
@@ -74,6 +76,10 @@ const PassportManager = () => {
         const fetchSettings = async () => {
             setLoading(true);
             try {
+                const { getFirestoreDb } = await import('../../lib/firebase');
+                const { doc, getDoc } = await import('firebase/firestore');
+                const db = await getFirestoreDb();
+
                 const docRef = doc(db, 'passport_settings', selectedCategory);
                 const docSnap = await getDoc(docRef);
 
@@ -102,6 +108,10 @@ const PassportManager = () => {
     const handleSave = async () => {
         setSaving(true);
         try {
+            const { getFirestoreDb } = await import('../../lib/firebase');
+            const { doc, setDoc } = await import('firebase/firestore');
+            const db = await getFirestoreDb();
+
             await setDoc(doc(db, 'passport_settings', selectedCategory), {
                 ...settings,
                 updatedAt: new Date()
@@ -185,7 +195,7 @@ const PassportManager = () => {
                             <option key={cat} value={cat}>{cat === 'default' ? 'Default (Fallback)' : cat}</option>
                         ))}
                     </select>
-                    <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" size={20} />
+                    <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-600 pointer-events-none" size={20} />
                 </div>
                 <p className="text-xs text-slate-500 mt-2">Any course belonging to this category will automatically fetch these passport values.</p>
             </div>

@@ -2,8 +2,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Save } from 'lucide-react';
-import { db } from '../../lib/firebase';
-import { doc, getDoc, setDoc, updateDoc, serverTimestamp } from 'firebase/firestore';
 import ImageUploader from '../../components/admin/ImageUploader';
 
 const TestimonialEditor = () => {
@@ -28,6 +26,10 @@ const TestimonialEditor = () => {
 
     const fetchTestimonial = async (testimonialId: string) => {
         try {
+            const { getFirestoreDb } = await import('../../lib/firebase');
+            const { doc, getDoc } = await import('firebase/firestore');
+            const db = await getFirestoreDb();
+            
             const testimonialDoc = await getDoc(doc(db, 'testimonials', testimonialId));
             if (!testimonialDoc.exists()) {
                 alert('Testimonial not found!');
@@ -56,13 +58,15 @@ const TestimonialEditor = () => {
         setFormData(prev => ({ ...prev, [name]: value }));
     };
 
-
-
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
 
         try {
+            const { getFirestoreDb } = await import('../../lib/firebase');
+            const { doc, setDoc, updateDoc, serverTimestamp } = await import('firebase/firestore');
+            const db = await getFirestoreDb();
+
             const now = serverTimestamp();
             const testimonialData: any = {
                 ...formData,

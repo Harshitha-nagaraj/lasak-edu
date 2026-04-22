@@ -1,17 +1,15 @@
 
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import { motion, AnimatePresence, Variants } from 'framer-motion';
+import { m, AnimatePresence, Variants } from 'framer-motion';
 import { Download, Check, Gamepad2, Rocket, Bot, ArrowRight } from 'lucide-react';
-import { CATEGORIES, COURSES } from '../constants';
+import { COURSE_SUMMARIES } from '../constants/courseSummaries';
+import { CATEGORIES } from '../constants/ui';
 import SEO from '../components/SEO';
-import { auth, db } from '../lib/firebase';
-import { onAuthStateChanged } from 'firebase/auth';
-import { collection, getDocs, query, where, limit } from 'firebase/firestore';
 import { fetchWithCache } from '../lib/cacheUtils';
-import { Course } from '../types';
-import InquiryModal from '../components/InquiryModal';
-import RazorpayButton from '../components/RazorpayButton';
+import { Course, CourseSummary } from '../types';
+const InquiryModal = React.lazy(() => import('../components/InquiryModal'));
+const RazorpayButton = React.lazy(() => import('../components/RazorpayButton'));
 import { normalizeImagePath } from '../lib/imageUtils';
 
 const Courses = () => {
@@ -24,8 +22,9 @@ const Courses = () => {
   };
 
   const [activeCategory, setActiveCategory] = useState(getCategoryFromUrl());
-  const [courses, setCourses] = useState<Course[]>(COURSES);
+  const [courses, setCourses] = useState<CourseSummary[]>(COURSE_SUMMARIES);
   const [loading, setLoading] = useState(false);
+  const [visibleCount, setVisibleCount] = useState(12);
   const [user, setUser] = useState<any>(null);
   const [hasSubmittedInquiry, setHasSubmittedInquiry] = useState(false);
   const [inquiryModal, setInquiryModal] = useState({
@@ -44,21 +43,31 @@ const Courses = () => {
     fetchCategories();
 
     // Listen for auth changes
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setUser(user);
-      if (user) {
-        checkInquiryStatus(user.email || undefined);
-      } else {
-        setHasSubmittedInquiry(false);
-      }
-    });
+    let unsubscribe: any;
+    const initAuth = async () => {
+      const { getFirebaseAuth } = await import('../lib/firebase');
+      const { onAuthStateChanged } = await import('firebase/auth');
+      const auth = await getFirebaseAuth();
+      unsubscribe = onAuthStateChanged(auth, (user) => {
+        setUser(user);
+        if (user) {
+          checkInquiryStatus(user.email || undefined);
+        } else {
+          setHasSubmittedInquiry(false);
+        }
+      });
+    };
+    initAuth();
 
-    return () => unsubscribe();
+    return () => { if (unsubscribe) unsubscribe(); };
   }, []);
 
   const checkInquiryStatus = async (email: string | undefined) => {
     if (!email) return;
     try {
+      const { getFirestoreDb } = await import('../lib/firebase');
+      const { collection, query, where, getDocs, limit } = await import('firebase/firestore');
+      const db = await getFirestoreDb();
       const enquiriesRef = collection(db, 'enquiries');
       const q = query(enquiriesRef, where('email', '==', email), limit(1));
       const querySnapshot = await getDocs(q);
@@ -74,11 +83,15 @@ const Courses = () => {
   // Effect to update state when URL changes (e.g. clicking submenu links)
   useEffect(() => {
     setActiveCategory(getCategoryFromUrl());
+    setVisibleCount(12); // Reset pagination on category change
   }, [category]);
 
   const fetchCourses = async () => {
     setLoading(true);
     try {
+      const { getFirestoreDb } = await import('../lib/firebase');
+      const { collection, query, limit } = await import('firebase/firestore');
+      const db = await getFirestoreDb();
       const rawCourses = await fetchWithCache('cache_all_courses', query(collection(db, 'courses'), limit(50)));
 
       if (rawCourses && rawCourses.length > 0) {
@@ -98,7 +111,8 @@ const Courses = () => {
         });
         // Merge with static data — Firestore values ALWAYS take priority
         const mergedCourses = fetchedCourses.map(fetched => {
-          const staticCourse = COURSES.find(c => c.id === fetched.id || c.title === fetched.title);
+          const staticCourse = COURSE_SUMMARIES.find(c => c.id === fetched.id || c.title === fetched.title);
+
           if (!staticCourse) return fetched;
 
           return {
@@ -113,6 +127,14 @@ const Courses = () => {
             modules: (fetched.modules && fetched.modules.length > 0) ? fetched.modules : staticCourse.modules,
           } as Course;
         });
+        
+        // Sort courses by order property
+        mergedCourses.sort((a, b) => {
+          const orderA = a.order !== undefined ? a.order : 999;
+          const orderB = b.order !== undefined ? b.order : 999;
+          return orderA - orderB;
+        });
+        
         setCourses(mergedCourses);
       }
     } catch (error) {
@@ -124,20 +146,38 @@ const Courses = () => {
 
   const fetchCategories = async () => {
     try {
-      const fetchedCats = await fetchWithCache('cache_categories_all', query(collection(db, 'categories')));
-      if (fetchedCats && fetchedCats.length > 0) {
-        setDbCategories(fetchedCats);
+      const { getFirestoreDb } = await import('../lib/firebase');
+      const { collection, query } = await import('firebase/firestore');
+      const db = await getFirestoreDb();
+      const rawCategories = await fetchWithCache('cache_course_categories', query(collection(db, 'course_categories')));
+      if (rawCategories && rawCategories.length > 0) {
+        setDbCategories(rawCategories);
       }
     } catch (error) {
       console.error('Error fetching categories:', error);
     }
   };
 
-  const filteredCourses = activeCategory === 'All'
-    ? courses
-    : courses.filter(c => c.category === activeCategory);
+  const filteredCourses = React.useMemo(() => {
+    return activeCategory === 'All'
+      ? courses
+      : courses.filter(c => c.category === activeCategory);
+  }, [activeCategory, courses]);
 
-  const filterTabs = ['All', ...(dbCategories.length > 0 ? dbCategories.map(c => c.id) : CATEGORIES.map(c => c.id))];
+  const predefinedIds = CATEGORIES.map(c => c.id);
+  const dbCatIds = Array.from(new Set([...predefinedIds, ...dbCategories.map(c => c.id)]));
+  
+  // Sort dbCatIds using the hardcoded predefined order
+  dbCatIds.sort((a, b) => {
+    const i = predefinedIds.indexOf(a);
+    const j = predefinedIds.indexOf(b);
+    if (i === -1 && j === -1) return 0;
+    if (i === -1) return 1; // Unrecognized DB categories go at the end
+    if (j === -1) return -1;
+    return i - j;
+  });
+
+  const filterTabs = ['All', ...dbCatIds];
 
   // Animation variants
   const bounceVariant: Variants = {
@@ -156,14 +196,14 @@ const Courses = () => {
     show: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.1
+        staggerChildren: 0.05 // Sped up from 0.1
       }
     }
   };
 
   const itemVariants: Variants = {
-    hidden: { opacity: 0, y: 30, scale: 0.9 },
-    show: { opacity: 1, y: 0, scale: 1, transition: { type: "spring", stiffness: 300, damping: 24 } }
+    hidden: { opacity: 0, y: 10 },
+    show: { opacity: 1, y: 0, transition: { type: "tween", duration: 0.2, ease: "easeOut" } }
   };
 
   return (
@@ -177,18 +217,13 @@ const Courses = () => {
       {/* Hero */}
       <div className="bg-white py-24 px-4 text-center relative overflow-hidden border-b border-slate-200">
         <div className="absolute top-0 left-0 w-full h-full bg-slate-50/50 z-0"></div>
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          className="relative z-10"
-        >
+        <div className="relative z-10">
           <h1 className="text-4xl md:text-6xl font-black mb-4 text-slate-900 font-tech">Our Courses</h1>
-          <p className="text-slate-500 max-w-2xl mx-auto text-lg">Industry-designed curriculums that get you hired.</p>
-          <p className="text-slate-600 mt-4 text-base">
+          <p className="text-slate-500 max-w-2xl mx-auto text-lg leading-relaxed">Industry-designed curriculums that get you hired.</p>
+          <p className="text-slate-600 mt-4 text-base font-medium">
             Learn more about our <a href="/programs" className="text-blue-600 font-bold hover:text-blue-700 hover:underline transition-all">Workshops here →</a>
           </p>
-        </motion.div>
+        </div>
       </div>
 
       {/* Filters */}
@@ -207,7 +242,7 @@ const Courses = () => {
                 : 'bg-white border-slate-200 text-slate-500 hover:bg-slate-50 hover:text-slate-800'
                 }`}
             >
-              {dbCategories.find(c => c.id === cat)?.name || cat}
+              {CATEGORIES.find(c => c.id === cat)?.name || dbCategories.find(c => c.id === cat)?.name || cat}
             </button>
           ))}
         </div>
@@ -216,38 +251,69 @@ const Courses = () => {
       {/* Kids Zone Header (Conditional) */}
       <AnimatePresence>
         {activeCategory === 'Kids' && (
-          <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: 'auto', opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
+          <m.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.95 }}
             className="overflow-hidden"
           >
             <div className="container mx-auto px-4 pt-8">
-              <div className="bg-white rounded-3xl p-8 border border-yellow-200 relative overflow-hidden text-center shadow-xl">
-                <div className="absolute inset-0 bg-yellow-50/50"></div>
-                {/* Floating Icons */}
-                <motion.div variants={bounceVariant} animate="hover" className="absolute top-4 left-10 text-yellow-500 opacity-80 hidden md:block z-10">
-                  <Gamepad2 size={48} />
-                </motion.div>
-                <motion.div variants={bounceVariant} animate="hover" className="absolute top-10 right-20 text-blue-500 opacity-80 hidden md:block z-10" style={{ animationDelay: '0.5s' }}>
-                  <Rocket size={48} />
-                </motion.div>
-                <motion.div variants={bounceVariant} animate="hover" className="absolute bottom-4 left-1/4 text-purple-500 opacity-80 hidden md:block z-10" style={{ animationDelay: '0.2s' }}>
-                  <Bot size={48} />
-                </motion.div>
+              <div className="bg-gradient-to-br from-yellow-400 via-orange-400 to-red-400 rounded-3xl p-1 shadow-2xl overflow-hidden group">
+                <div className="bg-white rounded-[1.4rem] p-8 relative overflow-hidden text-center">
+                  <div className="absolute inset-0 bg-gradient-to-b from-yellow-50/30 to-transparent pointer-events-none"></div>
+                  
+                  {/* Floating Elements for "Wow" factor */}
+                  <m.div 
+                    animate={{ 
+                      y: [0, -20, 0],
+                      rotate: [0, 10, 0]
+                    }} 
+                    transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+                    className="absolute top-4 left-10 text-yellow-500 opacity-60 hidden md:block z-10"
+                  >
+                    <Gamepad2 size={64} />
+                  </m.div>
+                  <m.div 
+                    animate={{ 
+                      y: [0, 20, 0],
+                      scale: [1, 1.1, 1]
+                    }} 
+                    transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+                    className="absolute top-10 right-20 text-blue-500 opacity-60 hidden md:block z-10"
+                  >
+                    <Rocket size={64} />
+                  </m.div>
+                  <m.div 
+                    animate={{ 
+                      x: [-10, 10, -10],
+                      rotate: [0, -10, 0]
+                    }} 
+                    transition={{ duration: 3, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
+                    className="absolute bottom-4 left-1/4 text-purple-500 opacity-60 hidden md:block z-10"
+                  >
+                    <Bot size={64} />
+                  </m.div>
 
-                <div className="relative z-10">
-                  <h2 className="text-3xl md:text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-yellow-500 via-orange-500 to-red-500 mb-4 font-tech drop-shadow-sm leading-tight">
-                    KIDS ZONE
-                  </h2>
-                  <p className="text-lg md:text-xl text-slate-700 font-bold max-w-2xl mx-auto">
-                    Future Innovators Start Here! 🚀 <br />
-                    <span className="text-sm text-slate-500 font-medium">Robotics • Coding • Fun</span>
-                  </p>
+                  <div className="relative z-10">
+                    <m.span 
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className="inline-block px-4 py-1.5 rounded-full bg-yellow-100 text-yellow-700 text-xs font-black uppercase tracking-widest mb-6"
+                    >
+                      Future Creators
+                    </m.span>
+                    <h2 className="text-5xl md:text-8xl font-black text-transparent bg-clip-text bg-gradient-to-r from-yellow-500 via-orange-500 to-red-600 mb-6 font-tech drop-shadow-sm leading-tight tracking-tighter">
+                      KIDS ZONE
+                    </h2>
+                    <p className="text-xl md:text-2xl text-slate-800 font-bold max-w-2xl mx-auto leading-tight italic">
+                      Turning Screen Time into Coding Time! 🚀 <br />
+                      <span className="text-sm md:text-base text-slate-500 font-medium not-italic mt-2 block">Robotics • Coding • Game Design • Fun Projects</span>
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
-          </motion.div>
+          </m.div>
         )}
       </AnimatePresence>
 
@@ -258,17 +324,17 @@ const Courses = () => {
             <div className="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
           </div>
         ) : (
-          <motion.div
-            layout
+          <>
+            <h2 className="sr-only">{activeCategory === 'All' ? 'All Courses' : `${activeCategory} Courses`}</h2>
+            <m.div
             variants={containerVariants}
             initial="hidden"
             animate="show"
             key={activeCategory} // Forces re-render of staggered animation on category change
             className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
           >
-            {filteredCourses.map((course) => (
-              <motion.div
-                layout
+            {filteredCourses.slice(0, visibleCount).map((course, index) => (
+              <m.div
                 variants={itemVariants}
                 whileTap={{ scale: 0.98, boxShadow: "0 0 30px rgba(37, 99, 235, 0.4)" }} // Lighting shadow
                 whileHover={{ y: -10 }}
@@ -277,8 +343,18 @@ const Courses = () => {
                 className={`bg-white rounded-2xl overflow-hidden border flex flex-col h-full group transition-all duration-300 hover:-translate-y-2 cursor-pointer ${course.category === 'Kids' ? 'border-yellow-200 hover:shadow-yellow-100 hover:shadow-2xl' : 'border-slate-200 hover:shadow-2xl'
                   }`}
               >
-                <div className="h-56 relative overflow-hidden">
-                  <img src={course.image} alt={course.title} width="400" height="224" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" loading="lazy" />
+                <div className="h-56 relative overflow-hidden bg-slate-100">
+                  <img 
+                    src={course.image} 
+                    alt={course.title} 
+                    width="600" 
+                    height="337" 
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" 
+                    decoding="async" 
+                    loading={index < 6 ? "eager" : "lazy"}
+                    fetchpriority={index < 3 ? "high" : "low"}
+                  />
                   <div className={`absolute top-4 right-4 px-3 py-1 rounded-full text-xs font-bold border backdrop-blur-md shadow-sm ${course.category === 'Kids'
                     ? 'bg-yellow-100 text-yellow-800 border-yellow-200'
                     : 'bg-white text-slate-800 border-slate-100'
@@ -309,8 +385,8 @@ const Courses = () => {
                       ) : (
                         <div className="flex items-center gap-3">
                           {/* Show old price with strikethrough if it exists */}
-                          {course.oldPrice && course.oldPrice !== course.price && (
-                            <span className="text-base text-slate-400 line-through font-medium">
+                          {course.oldPrice && (
+                            <span className="text-base text-gray-700 line-through font-medium">
                               {course.oldPrice}
                             </span>
                           )}
@@ -318,6 +394,12 @@ const Courses = () => {
                           <span className="text-2xl font-bold text-slate-900">
                             {course.price}
                           </span>
+                          {/* Offer badge */}
+                          {course.oldPrice && (
+                            <span className="bg-green-100 text-green-700 text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-wider">
+                              Offer
+                            </span>
+                          )}
                         </div>
                       )}
                     </div>
@@ -381,40 +463,57 @@ const Courses = () => {
                           Modules
                         </button>
                       </div>
-                      <RazorpayButton
-                        amount={Number((course.price || "0").toString().replace(/[^0-9]/g, ''))}
-                        courseId={course.id}
-                        courseTitle={course.title}
-                        courseCategory={course.category}
-                        buttonLabel="Enroll Now"
-                        studentInfo={{
-                          full_name: user?.user_metadata?.full_name || user?.user_metadata?.name,
-                          email: user?.email,
-                          phone: user?.user_metadata?.phone
-                        }}
-                        className={`w-full py-3 rounded font-bold text-sm shadow-md hover:shadow-lg transition-all ${course.category === 'Kids'
-                          ? 'bg-white border-2 border-yellow-500 text-yellow-600 hover:bg-yellow-50'
-                          : 'bg-white border-2 border-blue-600 text-blue-600 hover:bg-blue-50'
-                          }`}
-                      />
+                      <React.Suspense fallback={<div className="h-12 w-full bg-slate-100 animate-pulse rounded"></div>}>
+                        <RazorpayButton
+                          amount={Number((course.price || "0").toString().replace(/[^0-9]/g, ''))}
+                          courseId={course.id}
+                          courseTitle={course.title}
+                          courseCategory={course.category}
+                          buttonLabel="Enroll Now"
+                          studentInfo={{
+                            full_name: user?.user_metadata?.full_name || user?.user_metadata?.name,
+                            email: user?.email,
+                            phone: user?.user_metadata?.phone
+                          }}
+                          className={`w-full py-3 rounded font-bold text-sm shadow-md hover:shadow-lg transition-all ${course.category === 'Kids'
+                            ? 'bg-white border-2 border-yellow-500 text-yellow-700 hover:bg-yellow-50'
+                            : 'bg-white border-2 border-blue-600 text-blue-700 hover:bg-blue-50'
+                            }`}
+                        />
+                      </React.Suspense>
                     </div>
                   </div>
                 </div>
-              </motion.div>
+              </m.div>
             ))}
-          </motion.div>
+          </m.div>
+
+          {/* Load More button */}
+          {visibleCount < filteredCourses.length && (
+            <div className="flex justify-center mt-10">
+              <button
+                onClick={() => setVisibleCount(v => v + 12)}
+                className="px-8 py-3 bg-blue-600 text-white font-bold rounded-full shadow-lg hover:bg-blue-700 transition-all hover:-translate-y-1"
+              >
+                Load More Courses ({filteredCourses.length - visibleCount} remaining)
+              </button>
+            </div>
+          )}
+          </>
         )}
       </div>
 
-      <InquiryModal
-        isOpen={inquiryModal.isOpen}
-        onClose={() => setInquiryModal(prev => ({ ...prev, isOpen: false }))}
-        courseId={inquiryModal.courseId}
-        courseTitle={inquiryModal.courseTitle}
-        category={inquiryModal.category}
-        actionType={inquiryModal.actionType}
-        onSuccess={inquiryModal.onSuccess}
-      />
+      <React.Suspense fallback={null}>
+        <InquiryModal
+          isOpen={inquiryModal.isOpen}
+          onClose={() => setInquiryModal(prev => ({ ...prev, isOpen: false }))}
+          courseId={inquiryModal.courseId}
+          courseTitle={inquiryModal.courseTitle}
+          category={inquiryModal.category}
+          actionType={inquiryModal.actionType}
+          onSuccess={inquiryModal.onSuccess}
+        />
+      </React.Suspense>
     </div>
   );
 };

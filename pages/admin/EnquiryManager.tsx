@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, Mail, Phone, Calendar, User, Trash2, X, CheckCircle, Clock } from 'lucide-react';
-import { db } from '../../lib/firebase';
-import { collection, query, orderBy, getDocs, doc, updateDoc, deleteDoc } from 'firebase/firestore';
 import { useUserRole } from '../../hooks/useUserRole';
 
 interface Enquiry {
@@ -36,6 +34,10 @@ const EnquiryManager = () => {
     const fetchEnquiries = async () => {
         try {
             setLoading(true);
+            const { getFirestoreDb } = await import('../../lib/firebase');
+            const { collection, getDocs } = await import('firebase/firestore');
+            const db = await getFirestoreDb();
+
             const enquiriesRef = collection(db, 'enquiries');
             const querySnapshot = await getDocs(enquiriesRef);
 
@@ -77,6 +79,10 @@ const EnquiryManager = () => {
 
     const toggleReadStatus = async (id: string, currentStatus: boolean) => {
         try {
+            const { getFirestoreDb } = await import('../../lib/firebase');
+            const { doc, updateDoc } = await import('firebase/firestore');
+            const db = await getFirestoreDb();
+
             const enquiryRef = doc(db, 'enquiries', id);
             await updateDoc(enquiryRef, { is_read: !currentStatus });
 
@@ -90,6 +96,10 @@ const EnquiryManager = () => {
     const deleteEnquiry = async (id: string) => {
         if (!confirm('Are you sure you want to delete this enquiry?')) return;
         try {
+            const { getFirestoreDb } = await import('../../lib/firebase');
+            const { doc, deleteDoc } = await import('firebase/firestore');
+            const db = await getFirestoreDb();
+
             await deleteDoc(doc(db, 'enquiries', id));
             setEnquiries(enquiries.filter(e => e.id !== id));
             setSelectedEnquiry(null);

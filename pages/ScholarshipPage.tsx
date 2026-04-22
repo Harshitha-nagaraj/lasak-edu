@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { GraduationCap, Award, HelpCircle, ChevronDown, ChevronUp, BookOpen } from 'lucide-react';
-import { db } from '../lib/firebase';
-import { collection, query, where, getDocs, orderBy } from 'firebase/firestore';
 import { Course } from '../types';
 import { fetchWithCache } from '../lib/cacheUtils';
 import ScholarshipCalculator from '../components/ScholarshipCalculator';
@@ -62,6 +60,9 @@ const ScholarshipPage: React.FC = () => {
 
     const fetchData = async () => {
         try {
+            const { getFirestoreDb } = await import('../lib/firebase');
+            const { collection, query } = await import('firebase/firestore');
+            const db = await getFirestoreDb();
             // Fetch courses
             const coursesData = await fetchWithCache('cache_courses_all', query(collection(db, 'courses')));
             if (coursesData && coursesData.length > 0) {
@@ -245,15 +246,15 @@ const ScholarshipPage: React.FC = () => {
                                         >
                                             <span className="font-semibold text-slate-700">{faq.question}</span>
                                             {expandedFAQ === index ? (
-                                                <ChevronUp className="text-slate-400" size={20} />
+                                                <ChevronUp className="text-slate-600" size={20} />
                                             ) : (
-                                                <ChevronDown className="text-slate-400" size={20} />
+                                                <ChevronDown className="text-slate-600" size={20} />
                                             )}
                                         </button>
                                         {expandedFAQ === index && (
                                             <motion.div
-                                                initial={{ opacity: 0, height: 0 }}
-                                                animate={{ opacity: 1, height: 'auto' }}
+                                                initial={{ opacity: 0, y: -10 }}
+                                                animate={{ opacity: 1, y: 0 }}
                                                 className="px-4 pb-4"
                                             >
                                                 <p className="text-slate-600 text-sm leading-relaxed">{faq.answer}</p>

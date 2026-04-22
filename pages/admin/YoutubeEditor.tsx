@@ -2,8 +2,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Save, Youtube, ExternalLink } from 'lucide-react';
-import { db } from '../../lib/firebase';
-import { doc, getDoc, setDoc, updateDoc, serverTimestamp } from 'firebase/firestore';
 
 const YoutubeEditor = () => {
     const { id } = useParams();
@@ -25,6 +23,10 @@ const YoutubeEditor = () => {
 
     const fetchVideo = async (videoId: string) => {
         try {
+            const { getFirestoreDb } = await import('../../lib/firebase');
+            const { doc, getDoc } = await import('firebase/firestore');
+            const db = await getFirestoreDb();
+
             const videoDoc = await getDoc(doc(db, 'youtube_videos', videoId));
             if (!videoDoc.exists()) {
                 alert('Video not found!');
@@ -58,6 +60,10 @@ const YoutubeEditor = () => {
         setLoading(true);
 
         try {
+            const { getFirestoreDb } = await import('../../lib/firebase');
+            const { doc, setDoc, updateDoc, serverTimestamp } = await import('firebase/firestore');
+            const db = await getFirestoreDb();
+
             // Extract video ID if user pastes full URL
             let vidId = formData.video_id;
             const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
@@ -154,7 +160,7 @@ const YoutubeEditor = () => {
                             <label className="block text-sm font-medium text-gray-700">Preview</label>
                             <div className="aspect-video bg-black rounded-xl overflow-hidden relative shadow-inner">
                                 <img
-                                    src={`https://img.youtube.com/vi/${formData.video_id}/maxresdefault.jpg`}
+                                    src={`https://img.youtube.com/vi/${formData.video_id}/hqdefault.jpg`}
                                     className="w-full h-full object-cover"
                                     alt="Thumbnail Preview"
                                     onError={(e) => {

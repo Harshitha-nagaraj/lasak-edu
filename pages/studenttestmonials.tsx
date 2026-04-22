@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { m, AnimatePresence } from "framer-motion";
 import { Play, X } from "lucide-react";
 
 /* ---------------- DATA ---------------- */
@@ -15,36 +15,7 @@ const FALLBACK_VIDEOS = [
   { video_url: "https://youtube.com/shorts/kwIZNS4KaDY?feature=share", title: "Student success story" },
 ];
 
-const cleanPath = (url: string) => {
-  if (!url) return url;
-  if (url.startsWith('https://') || url.startsWith('http://')) return url;
-
-  // Ensure we don't have double slashes and remove 'public' if it exists at the start
-  let cleaned = url.replace(/^\/?public\//, '/').replace(/\/+/g, '/');
-
-  // Normalize the final filename part to match our strict on-disk naming
-  const parts = cleaned.split('/');
-  const lastPart = parts[parts.length - 1];
-  if (lastPart.includes('.')) {
-    const extIndex = lastPart.lastIndexOf('.');
-    const base = lastPart.slice(0, extIndex);
-    const ext = lastPart.slice(extIndex).toLowerCase();
-    // Normalize base: lowercase, replace non-alphanumeric with hyphen
-    const normalizedBase = base.toLowerCase().replace(/[^a-z0-9]/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '');
-    parts[parts.length - 1] = normalizedBase + ext;
-
-    // Also normalize mid-path directories if any
-    for (let i = 0; i < parts.length - 1; i++) {
-      if (parts[i] && parts[i] !== 'img') {
-        parts[i] = parts[i].toLowerCase().replace(/[^a-z0-9]/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '');
-      }
-    }
-
-    cleaned = parts.join('/');
-  }
-
-  return cleaned.startsWith('/') ? cleaned : '/' + cleaned;
-};
+import { normalizeImagePath as cleanPath } from "../lib/imageUtils";
 
 export const getYoutubeId = (url: string) => {
   if (!url) return null;
@@ -53,6 +24,12 @@ export const getYoutubeId = (url: string) => {
   // If it's just an 11-char ID without / or .mp4
   if (url.length === 11 && !url.includes('/') && !url.includes('.mp4')) return url;
   return null;
+};
+
+export const getGoogleDriveId = (url: string) => {
+  if (!url) return null;
+  const match = url.match(/(?:drive\.google\.com\/(?:file\/d\/|open\?id=))([a-zA-Z0-9_-]+)/);
+  return match ? match[1] : null;
 };
 
 const StudentTestimonials = ({ videos = [] }: { videos?: any[] }) => {
@@ -95,11 +72,22 @@ const StudentTestimonials = ({ videos = [] }: { videos?: any[] }) => {
               ? [...displayVideos, ...displayVideos]
               : displayVideos
             ).map((v, i) => (
-              <motion.div
+              <m.div
                 key={`${v.id || 'fallback'}-${i}`}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.97 }}
-                onClick={() => setActiveVideo(cleanPath(v.video_url))}
+                onClick={() => {
+                  const ytId = getYoutubeId(v.video_url);
+                  const driveId = getGoogleDriveId(v.video_url);
+                  setActiveVideo(ytId || driveId ? v.video_url : cleanPath(v.video_url));
+                }}
+                onKeyDown={(e) => { 
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    const ytId = getYoutubeId(v.video_url);
+                    const driveId = getGoogleDriveId(v.video_url);
+                    setActiveVideo(ytId || driveId ? v.video_url : cleanPath(v.video_url));
+                  }
+                }}
                 className="
                   relative cursor-pointer
                   w-[140px] xs:w-[180px] md:w-[260px]
@@ -115,16 +103,17 @@ const StudentTestimonials = ({ videos = [] }: { videos?: any[] }) => {
                 {/* Thumbnail Logic */}
                 {getYoutubeId(v.video_url) ? (
                   <img
-                    src={`https://img.youtube.com/vi/${getYoutubeId(v.video_url)}/maxresdefault.jpg`}
+                    src={`https://img.youtube.com/vi/${getYoutubeId(v.video_url)}/hqdefault.jpg`}
                     className="w-full h-full object-cover pointer-events-none group-hover:scale-110 transition-transform duration-500"
                     alt="Video Thumbnail"
+                    loading="lazy"
                     onError={(e) => {
                       (e.target as HTMLImageElement).src = `https://img.youtube.com/vi/${getYoutubeId(v.video_url)}/mqdefault.jpg`;
                     }}
                   />
                 ) : (
                   <video
-                    src={`${cleanPath(v.video_url)}#t=0.5`}
+                    src={v.video_url.startsWith('http') ? v.video_url : `${cleanPath(v.video_url)}#t=0.5`}
                     muted
                     playsInline
                     preload="metadata"
@@ -155,7 +144,7 @@ const StudentTestimonials = ({ videos = [] }: { videos?: any[] }) => {
                     </p>
                   )}
                 </div>
-              </motion.div>
+              </m.div>
             ))}
           </div>
         </div>
@@ -168,7 +157,7 @@ const StudentTestimonials = ({ videos = [] }: { videos?: any[] }) => {
       {/* ---------------- MODAL VIDEO ---------------- */}
       <AnimatePresence>
         {activeVideo && (
-          <motion.div
+          <m.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -179,7 +168,7 @@ const StudentTestimonials = ({ videos = [] }: { videos?: any[] }) => {
               px-4
             "
           >
-            <motion.div
+            <m.div
               initial={{ scale: 0.9, y: 30 }}
               animate={{ scale: 1, y: 0 }}
               exit={{ scale: 0.9, y: 30 }}
@@ -193,6 +182,7 @@ const StudentTestimonials = ({ videos = [] }: { videos?: any[] }) => {
               {/* Close Button */}
               <button
                 onClick={() => setActiveVideo(null)}
+                aria-label="Close video"
                 className="
                   absolute top-3 right-3 z-10
                   w-10 h-10
@@ -213,6 +203,13 @@ const StudentTestimonials = ({ videos = [] }: { videos?: any[] }) => {
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                     allowFullScreen
                   />
+                ) : getGoogleDriveId(activeVideo) ? (
+                  <iframe
+                    src={`https://drive.google.com/file/d/${getGoogleDriveId(activeVideo)}/preview`}
+                    className="w-full h-full border-0"
+                    allow="autoplay"
+                    allowFullScreen
+                  />
                 ) : (
                   <video
                     src={activeVideo}
@@ -226,8 +223,8 @@ const StudentTestimonials = ({ videos = [] }: { videos?: any[] }) => {
                   />
                 )}
               </div>
-            </motion.div>
-          </motion.div>
+            </m.div>
+          </m.div>
         )}
       </AnimatePresence>
     </section>

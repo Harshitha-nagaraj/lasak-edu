@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Plus, Search, Edit2, Trash2, Award, AlertCircle } from 'lucide-react';
-import { db } from '../../lib/firebase';
-import { collection, query, getDocs, orderBy, doc, deleteDoc } from 'firebase/firestore';
 import { useUserRole } from '../../hooks/useUserRole';
 import { motion } from 'framer-motion';
 
@@ -37,6 +35,10 @@ const CertificateManager = () => {
         try {
             setLoading(true);
             setError(null);
+            const { getFirestoreDb } = await import('../../lib/firebase');
+            const { collection, getDocs } = await import('firebase/firestore');
+            const db = await getFirestoreDb();
+
             const querySnapshot = await getDocs(collection(db, 'certificates'));
             const data = querySnapshot.docs.map(doc => ({
                 id: doc.id,
@@ -65,6 +67,10 @@ const CertificateManager = () => {
         setDeleteModal({ show: false, id: '', certId: '' });
 
         try {
+            const { getFirestoreDb } = await import('../../lib/firebase');
+            const { doc, deleteDoc } = await import('firebase/firestore');
+            const db = await getFirestoreDb();
+
             await deleteDoc(doc(db, 'certificates', id));
             setCertificates(certificates.filter(cert => cert.id !== id));
             alert('Certificate deleted successfully!');

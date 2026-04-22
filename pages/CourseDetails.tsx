@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
+import { m, AnimatePresence } from 'framer-motion';
 import {
     Check, Building2, Phone, ArrowRight, ArrowLeft, BookOpen,
     X, Wrench, Star, Users, Brain, GraduationCap,
@@ -8,27 +8,31 @@ import {
     Download, Award, Rocket, Clock, PlayCircle
 } from 'lucide-react';
 import { Course } from '../types';
-import { COMPANY_LOGOS, getCompaniesForCourse, COURSES } from '../constants';
-import { auth, db } from '../lib/firebase';
-import { onAuthStateChanged } from 'firebase/auth';
-import { collection, doc, getDoc, getDocs, query, where, limit, addDoc } from 'firebase/firestore';
+import { COMPANY_LOGOS, getCompaniesForCourse } from '../constants/ui';
+import { COURSES } from '../constants/courseDetails';
 import { fetchWithCache } from '../lib/cacheUtils';
+import { normalizeImagePath } from '../lib/imageUtils';
 import SEO from '../components/SEO';
 import ScholarshipCalculator from '../components/ScholarshipCalculator';
-import InquiryModal from '../components/InquiryModal';
-import RazorpayButton from '../components/RazorpayButton';
+const InquiryModal = React.lazy(() => import('../components/InquiryModal'));
+const RazorpayButton = React.lazy(() => import('../components/RazorpayButton'));
+import { YouTubeFacade } from '../components/YouTubeFacade';
 
-const cleanPath = (url: string) => {
-    if (!url) return url;
-    if (url.startsWith('https://') || url.startsWith('http://')) return url;
-    return url.replace(/^\/?public\//, '/');
+// Extract YouTube video ID from any YouTube or Shorts URL
+const getYouTubeId = (url: string): string | null => {
+    if (!url) return null;
+    const match = url.match(
+        /(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|shorts\/|watch\?.+&v=))([a-zA-Z0-9_-]{11})/
+    );
+    return match ? match[1] : null;
 };
 
 const CourseDetails = () => {
     const { id, slug } = useParams();
     const navigate = useNavigate();
-    const [course, setCourse] = useState<Course | null>(COURSES.find(c => (id && c.id === id) || (slug && c.slug === slug)) || null);
-    const [loading, setLoading] = useState(!COURSES.find(c => (id && c.id === id) || (slug && c.slug === slug)));
+    const staticCourse = COURSES.find(c => (id && c.id === id) || (slug && c.slug === slug));
+    const [course, setCourse] = useState<Course | null>(staticCourse || null);
+    const [loading, setLoading] = useState(!staticCourse);
     const [showScholarshipModal, setShowScholarshipModal] = useState(false);
     const [activeAccordion, setActiveAccordion] = useState<number | null>(null);
     const scrollRef = React.useRef<HTMLDivElement>(null);
@@ -111,81 +115,189 @@ const CourseDetails = () => {
     const heroPaymentRef = React.useRef<any>(null);
     const pricingPaymentRef = React.useRef<any>(null);
 
-    useEffect(() => {
-        const fetchCourseAndPassport = async () => {
-            if (!id) return;
-            try {
-                const docRef = doc(db, 'courses', id);
-                const docSnap = await getDoc(docRef);
-
-                if (docSnap.exists()) {
-                    const courseData = { id: docSnap.id, ...docSnap.data() } as Course;
-                    setCourse(courseData);
-
-                    // Fetch passport settings for this course's category
-                    try {
-                        const passportRef = doc(db, 'passport_settings', courseData.category);
-                        const passportSnap = await getDoc(passportRef);
-
-                        if (passportSnap.exists()) {
-                            setPassportSettings(passportSnap.data() as PassportSettings);
-                        } else {
-                            // Try fetching default if specific category settings don't exist
-                            const defaultRef = doc(db, 'passport_settings', 'default');
-                            const defaultSnap = await getDoc(defaultRef);
-                            if (defaultSnap.exists()) {
-                                setPassportSettings(defaultSnap.data() as PassportSettings);
-                            }
-                        }
-                    } catch (passportError) {
-                        console.error('Error fetching passport settings:', passportError);
-                    }
-                } else {
-                    console.log('No such document!');
+    const fetchCourseData = async () => {
+        if (!id && !slug) return;
+        setLoading(true);
+        try {
+            const { getFirestoreDb } = await import('../lib/firebase');
+            const { doc, getDoc } = await import('firebase/firestore');
+            const db = await getFirestoreDb();
+            let courseData: any = null;
+            if (id) {
+                const courseDoc = await getDoc(doc(db, 'courses', id));
+                if (courseDoc.exists()) {
+                    courseData = { id: courseDoc.id, ...courseDoc.data() };
                 }
-            } catch (error) {
-                console.error('Error fetching course:', error);
-            } finally {
-                setLoading(false);
             }
-        };
-        fetchCourseAndPassport();
 
-        // Listen for auth changes
-        const unsubscribe = onAuthStateChanged(auth, (user) => {
-            setUser(user);
-            if (user) {
-                checkInquiryStatus(user.email || undefined);
+            if (!courseData) {
+                const staticData = COURSES.find(c => (id && c.id === id) || (slug && c.slug === slug));
+                if (staticData) courseData = staticData;
+            }
+
+            if (courseData) {
+                const staticCourseMatch = COURSES.find(c => c.id === courseData.id || c.title === courseData.title);
+                const mappedCourse: Course = {
+                    ...staticCourseMatch,
+                    ...courseData,
+                    image: normalizeImagePath(courseData.image || staticCourseMatch?.image || ''),
+                    features: courseData.features || staticCourseMatch?.features || getFallbackFeatures(),
+                    eligibility: courseData.eligibility || staticCourseMatch?.eligibility || getFallbackEligibility(),
+                    modules: courseData.modules || staticCourseMatch?.modules || [],
+                    faqs: courseData.faqs || staticCourseMatch?.faqs || getFallbackFAQs(courseData.title),
+                    // Ensure other fields are mapped correctly, prioritizing dynamic over static
+                    id: courseData.id,
+                    title: courseData.title,
+                    category: courseData.category,
+                    price: courseData.price || staticCourseMatch?.price,
+                    oldPrice: courseData.old_price || courseData.oldPrice || staticCourseMatch?.oldPrice,
+                    duration: courseData.duration || staticCourseMatch?.duration,
+                    description: courseData.description || staticCourseMatch?.description,
+                    slug: courseData.slug || staticCourseMatch?.slug,
+                    companies: courseData.companies || staticCourseMatch?.companies || getCompaniesForCourse(courseData.title, courseData.category),
+                    testimonials: courseData.testimonials || staticCourseMatch?.testimonials || [],
+                    syllabus: courseData.syllabus || staticCourseMatch?.syllabus || [],
+                    placement_stats: courseData.placement_stats || staticCourseMatch?.placement_stats || [],
+                    seo: courseData.seo || staticCourseMatch?.seo || {},
+                    is_active: courseData.is_active !== undefined ? courseData.is_active : (staticCourseMatch?.is_active !== undefined ? staticCourseMatch.is_active : true),
+                    is_upcoming: courseData.is_upcoming !== undefined ? courseData.is_upcoming : (staticCourseMatch?.is_upcoming !== undefined ? staticCourseMatch.is_upcoming : false),
+                    is_popular: courseData.is_popular !== undefined ? courseData.is_popular : (staticCourseMatch?.is_popular !== undefined ? staticCourseMatch.is_popular : false),
+                    is_recommended: courseData.is_recommended !== undefined ? courseData.is_recommended : (staticCourseMatch?.is_recommended !== undefined ? staticCourseMatch.is_recommended : false),
+                    is_free: courseData.is_free !== undefined ? courseData.is_free : (staticCourseMatch?.is_free !== undefined ? staticCourseMatch.is_free : false),
+                    is_live: courseData.is_live !== undefined ? courseData.is_live : (staticCourseMatch?.is_live !== undefined ? staticCourseMatch.is_live : false),
+                    is_online: courseData.is_online !== undefined ? courseData.is_online : (staticCourseMatch?.is_online !== undefined ? staticCourseMatch.is_online : false),
+                    is_offline: courseData.is_offline !== undefined ? courseData.is_offline : (staticCourseMatch?.is_offline !== undefined ? staticCourseMatch.is_offline : false),
+                    is_hybrid: courseData.is_hybrid !== undefined ? courseData.is_hybrid : (staticCourseMatch?.is_hybrid !== undefined ? staticCourseMatch.is_hybrid : false),
+                    start_date: courseData.start_date || staticCourseMatch?.start_date,
+                    end_date: courseData.end_date || staticCourseMatch?.end_date,
+                    schedule: courseData.schedule || staticCourseMatch?.schedule,
+                    language: courseData.language || staticCourseMatch?.language,
+                    level: courseData.level || staticCourseMatch?.level,
+                    prerequisites: courseData.prerequisites || staticCourseMatch?.prerequisites,
+                    tools: courseData.tools || staticCourseMatch?.tools,
+                    projects: courseData.projects || staticCourseMatch?.projects,
+                    instructors: courseData.instructors || staticCourseMatch?.instructors,
+                    rating: courseData.rating || staticCourseMatch?.rating,
+                    reviews_count: courseData.reviews_count || staticCourseMatch?.reviews_count,
+                    enrollment_count: courseData.enrollment_count || staticCourseMatch?.enrollment_count,
+                    last_updated: courseData.last_updated || staticCourseMatch?.last_updated,
+                    meta_description: courseData.meta_description || staticCourseMatch?.meta_description,
+                    keywords: courseData.keywords || staticCourseMatch?.keywords,
+                    og_image: courseData.og_image || staticCourseMatch?.og_image,
+                    schema_markup: courseData.schema_markup || staticCourseMatch?.schema_markup,
+                    enrollLink: courseData.enroll_link || courseData.enrollLink || staticCourseMatch?.enrollLink,
+                    phone: courseData.phone || staticCourseMatch?.phone,
+                    supportLink: courseData.support_link || courseData.supportLink || staticCourseMatch?.supportLink,
+                    tagline: courseData.tagline || staticCourseMatch?.tagline || `Master ${courseData.title} and accelerate your career growth with expert-led training.`,
+                    introduction: courseData.introduction || staticCourseMatch?.introduction || courseData.description,
+                    skills_gained: courseData.skills_gained || staticCourseMatch?.skills_gained || [],
+                    live_projects: (courseData.live_projects && courseData.live_projects.length > 0) ? courseData.live_projects : (staticCourseMatch?.live_projects || [
+                        { title: "Industry Standard Project 1", description: "Real-world application of core concepts in a production environment." },
+                        { title: "Advanced Capstone Project", description: "Complex problem-solving using industry-standard tools and methodologies." }
+                    ]),
+                    career_opportunities: (courseData.career_opportunities && courseData.career_opportunities.length > 0) ? courseData.career_opportunities : (staticCourseMatch?.career_opportunities || [
+                        { role: `${courseData.category} Specialist`, description: "Oversee technical implementations and system designs." },
+                        { role: "Junior Developer/Designer", description: "Support team projects and contribute to core deliverables." }
+                    ]),
+                    long_description: courseData.long_description || staticCourseMatch?.long_description || courseData.description,
+                    promo_video: courseData.promo_video || staticCourseMatch?.promo_video || '',
+                    shorts_url: courseData.shorts_url || staticCourseMatch?.shorts_url || '',
+                    skills_passport_price: courseData.skills_passport_price || staticCourseMatch?.skills_passport_price || '₹0',
+                    interview_passport_price: courseData.interview_passport_price || staticCourseMatch?.interview_passport_price || '₹4,000',
+                    job_passport_price: courseData.job_passport_price || staticCourseMatch?.job_passport_price || '₹9,000',
+                };
+                setCourse(mappedCourse);
             } else {
-                setHasSubmittedInquiry(false);
+                navigate('/courses');
             }
-        });
+        } catch (error) {
+            console.error('Error fetching course:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
 
-        // Fetch active coupons from Firestore using cache
-        fetchWithCache('cache_coupons', query(collection(db, 'coupons'))).then(data => {
-            if (data) {
-                const active = data.filter((c: any) => c.active !== false);
-                setFirestoreCoupons(active);
+    const fetchPassportSettings = async () => {
+        try {
+            const { getFirestoreDb } = await import('../lib/firebase');
+            const { collection, query, where, getDocs, limit, doc, getDoc } = await import('firebase/firestore');
+            const db = await getFirestoreDb();
+            const category = course?.category || staticCourse?.category || 'default';
+            const settingsRef = collection(db, 'passport_settings');
+            const q = query(settingsRef, where('category', '==', category), limit(1));
+            const querySnapshot = await getDocs(q);
+
+            if (!querySnapshot.empty) {
+                setPassportSettings(querySnapshot.docs[0].data() as PassportSettings);
+            } else {
+                const defaultSnap = await getDoc(doc(db, 'passport_settings', 'default'));
+                if (defaultSnap.exists()) setPassportSettings(defaultSnap.data() as PassportSettings);
             }
-        }).catch(() => { /* silent fail — fallback coupons still work */ });
+        } catch (error) {
+            console.error('Error fetching passport settings:', error);
+        }
+    };
 
-        return () => unsubscribe();
-    }, []);
+    const fetchFormSettings = async () => {
+        try {
+            const { getFirestoreDb } = await import('../lib/firebase');
+            const { doc, getDoc } = await import('firebase/firestore');
+            const db = await getFirestoreDb();
+            const settingsDoc = await getDoc(doc(db, 'site_settings', 'contact_form_settings'));
+            if (settingsDoc.exists() && settingsDoc.data().value) {
+                setFormSettings(settingsDoc.data().value);
+            }
+        } catch (err) { console.error("Error fetching settings:", err); }
+    };
+
+    const fetchCoupons = async () => {
+        try {
+            const { getFirestoreDb } = await import('../lib/firebase');
+            const { collection, query } = await import('firebase/firestore');
+            const db = await getFirestoreDb();
+            const data = await fetchWithCache('cache_coupons', query(collection(db, 'coupons')));
+            if (data) setFirestoreCoupons(data.filter((c: any) => c.active !== false));
+        } catch (error) { console.error('Error fetching coupons:', error); }
+    };
 
     const checkInquiryStatus = async (email: string | undefined) => {
         if (!email) return;
         try {
-            const enquiriesRef = collection(db, 'enquiries');
-            const q = query(enquiriesRef, where('email', '==', email), limit(1));
+            const { getFirestoreDb } = await import('../lib/firebase');
+            const { collection, query, where, limit, getDocs } = await import('firebase/firestore');
+            const db = await getFirestoreDb();
+            const q = query(collection(db, 'enquiries'), where('email', '==', email), limit(1));
             const querySnapshot = await getDocs(q);
-
-            if (!querySnapshot.empty) {
-                setHasSubmittedInquiry(true);
-            }
-        } catch (error) {
-            console.error('Error checking inquiry status:', error);
-        }
+            if (!querySnapshot.empty) setHasSubmittedInquiry(true);
+        } catch (error) { console.error('Error checking inquiry status:', error); }
     };
+
+    useEffect(() => {
+        fetchCourseData();
+        fetchPassportSettings();
+        fetchFormSettings();
+        fetchCoupons();
+
+        const params = new URLSearchParams(window.location.search);
+        if (params.get('showScholarship') === 'true') {
+            setShowScholarshipModal(true);
+            window.history.replaceState({}, '', window.location.pathname);
+        }
+
+        let unsubscribe: any;
+        const initAuth = async () => {
+            const { getFirebaseAuth } = await import('../lib/firebase');
+            const { onAuthStateChanged } = await import('firebase/auth');
+            const auth = await getFirebaseAuth();
+            unsubscribe = onAuthStateChanged(auth, (u) => {
+                setUser(u);
+                if (u) checkInquiryStatus(u.email || undefined);
+                else setHasSubmittedInquiry(false);
+            });
+        };
+        initAuth();
+        return () => { if (unsubscribe) unsubscribe(); };
+    }, [id, slug]);
 
     const handlePaymentClick = (type: 'hero' | 'pricing') => {
         // Check if basic information is present
@@ -241,6 +353,9 @@ const CourseDetails = () => {
         e.preventDefault();
 
         try {
+            const { getFirestoreDb } = await import('../lib/firebase');
+            const { collection, addDoc } = await import('firebase/firestore');
+            const db = await getFirestoreDb();
             // 1. Store lead in Firestore
             const submission = {
                 full_name: enquiryFormData.name,
@@ -256,7 +371,7 @@ const CourseDetails = () => {
             await addDoc(collection(db, 'enquiries'), submission);
 
             // 2. Automated Notification via Google Script (No mailto required)
-            const scriptUrl = formSettings.url || "https://script.google.com/macros/s/AKfycbwA4ov727SfKJtwf851GvUQEATLRpUUV_JzWzAhgjIWuETQmKPHH9e7N35T5wWnE7PF4w/exec";
+            const scriptUrl = "https://script.google.com/macros/s/AKfycbyCXeBcecLMxEqsI895ypcAgNwa0v4obpE6lXMczvDolz3kaMRPf6aDxmTH9vEL5FzKsw/exec";
 
             const sheetsData = {
                 fullName: enquiryFormData.name,
@@ -264,7 +379,7 @@ const CourseDetails = () => {
                 email: enquiryFormData.email,
                 preferredBranch: enquiryFormData.branch,
                 department: course?.category || 'General',
-                status: 'New', // Default status
+                status: 'New',
                 course: course?.title || 'Unknown Course'
             };
 
@@ -273,7 +388,7 @@ const CourseDetails = () => {
                 method: "POST",
                 mode: 'no-cors',
                 body: JSON.stringify(sheetsData)
-            });
+            }).catch(err => console.error("Google Sheets Error:", err));
 
             alert("Inquiry Sent! We have received your details and will contact you shortly.");
             setEnquiryFormData({ name: '', phone: '', email: '', branch: '' });
@@ -344,103 +459,6 @@ const CourseDetails = () => {
         return `₹${price.toLocaleString('en-IN')}`;
     };
 
-    useEffect(() => {
-        const fetchSettings = async () => {
-            try {
-                const settingsDoc = await getDoc(doc(db, 'site_settings', 'contact_form_settings'));
-                if (settingsDoc.exists()) {
-                    const val = settingsDoc.data().value;
-                    if (val) setFormSettings(val);
-                }
-            } catch (err) { console.error("Error fetching settings:", err); }
-        };
-
-        fetchSettings();
-
-        const fetchCourse = async () => {
-            if (!id && !slug) return;
-            try {
-                // If we have an ID, try Firestore first
-                let courseData = null;
-                if (id) {
-                    const courseDoc = await getDoc(doc(db, 'courses', id));
-                    courseData = courseDoc.exists() ? courseDoc.data() : null;
-                    if (courseData) courseData.id = courseDoc.id;
-                }
-
-                // If not found by ID or we only have a slug, try searching by slug in Firestore or constants
-                if (!courseData) {
-                    const staticData = COURSES.find(c => (id && c.id === id) || (slug && c.slug === slug));
-                    if (staticData) courseData = staticData;
-                }
-
-                if (courseData) {
-                    const staticCourse = COURSES.find(c => c.id === courseData.id || c.title === courseData.title);
-
-                    const mappedCourse: Course = {
-                        id: courseData.id,
-                        title: courseData.title,
-                        category: courseData.category,
-                        // Prioritize database price, fallback to static price
-                        price: courseData.price || staticCourse?.price,
-                        // Handle old price for display if needed
-                        oldPrice: courseData.old_price || courseData.oldPrice || staticCourse?.oldPrice,
-                        duration: courseData.duration || staticCourse?.duration,
-                        image: courseData.image || staticCourse?.image,
-                        description: courseData.description || staticCourse?.description,
-                        modules: (courseData.modules && courseData.modules.length > 0) ? courseData.modules : (staticCourse?.modules || []),
-                        isFree: courseData.isFree,
-                        tools: (courseData.tools && courseData.tools.length > 0) ? courseData.tools : (staticCourse?.tools || []),
-                        companies: (courseData.companies && courseData.companies.length > 0) ? courseData.companies : (staticCourse?.companies || []),
-                        enrollLink: courseData.enroll_link || courseData.enrollLink || staticCourse?.enrollLink,
-                        phone: courseData.phone || staticCourse?.phone,
-                        supportLink: courseData.support_link || courseData.supportLink || staticCourse?.supportLink,
-                        // New fields - Prioritize database if available, then static
-                        tagline: courseData.tagline || staticCourse?.tagline || `Master ${courseData.title} and accelerate your career growth with expert-led training.`,
-                        introduction: courseData.introduction || staticCourse?.introduction || courseData.description,
-                        skills_gained: courseData.skills_gained || staticCourse?.skills_gained || [],
-                        eligibility: courseData.eligibility || staticCourse?.eligibility || getFallbackEligibility(),
-                        live_projects: (courseData.live_projects && courseData.live_projects.length > 0) ? courseData.live_projects : (staticCourse?.live_projects || [
-                            { title: "Industry Standard Project 1", description: "Real-world application of core concepts in a production environment." },
-                            { title: "Advanced Capstone Project", description: "Complex problem-solving using industry-standard tools and methodologies." }
-                        ]),
-                        career_opportunities: (courseData.career_opportunities && courseData.career_opportunities.length > 0) ? courseData.career_opportunities : (staticCourse?.career_opportunities || [
-                            { role: `${courseData.category} Specialist`, description: "Oversee technical implementations and system designs." },
-                            { role: "Junior Developer/Designer", description: "Support team projects and contribute to core deliverables." }
-                        ]),
-                        faqs: (courseData.faqs && courseData.faqs.length > 0) ? courseData.faqs : (staticCourse?.faqs || getFallbackFAQs(courseData.title)),
-                        features: (courseData.features && courseData.features.length > 0) ? courseData.features : (staticCourse?.features || getFallbackFeatures()),
-                        long_description: courseData.long_description || staticCourse?.long_description || courseData.description,
-                        skills_passport_price: courseData.skills_passport_price || staticCourse?.skills_passport_price || '₹0',
-                        interview_passport_price: courseData.interview_passport_price || staticCourse?.interview_passport_price || '₹4,000',
-                        job_passport_price: courseData.job_passport_price || staticCourse?.job_passport_price || '₹9,000',
-                        seo: courseData.seo || staticCourse?.seo || {
-                            title: `${courseData.title} Course in Coimbatore | Lasak Edu`,
-                            description: `Best ${courseData.title} training in Coimbatore with placement support. Learn from experts at Lasak Edu.`,
-                            keywords: `${courseData.title}, Course in Coimbatore, Lasak Edu, Placement`
-                        }
-                    };
-                    setCourse(mappedCourse);
-                }
-            } catch (error) {
-                console.error('Error fetching course:', error);
-                const staticData = COURSES.find(c => c.id === id);
-                if (staticData) {
-                    setCourse(staticData);
-                }
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchCourse();
-
-        const params = new URLSearchParams(window.location.search);
-        if (params.get('showScholarship') === 'true') {
-            setShowScholarshipModal(true);
-            window.history.replaceState({}, '', window.location.pathname);
-        }
-    }, [id]);
 
     const handleApplyScholarship = async () => {
         setShowScholarshipModal(true);
@@ -525,7 +543,7 @@ const CourseDetails = () => {
         setPromoCode('');
     };
 
-    if (loading) {
+    if (loading && !course) {
         return (
             <div className="min-h-screen flex items-center justify-center bg-white">
                 <div className="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
@@ -551,7 +569,7 @@ const CourseDetails = () => {
                 title={course.seo?.title || course.title}
                 description={course.seo?.description || course.description}
                 keywords={course.seo?.keywords}
-                image={cleanPath(course.image)}
+                image={normalizeImagePath(course.image)}
                 url={window.location.href}
             />
 
@@ -618,7 +636,7 @@ const CourseDetails = () => {
                     </div>
 
                     <div className="grid lg:grid-cols-2 gap-12 items-center">
-                        <motion.div initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.8 }}>
+                        <m.div initial={false} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.5 }}>
                             <span className="inline-block px-4 py-1.5 bg-blue-600/10 text-blue-600 rounded-full text-sm font-bold mb-6 tracking-wide uppercase">
                                 {course.category} • {course.duration}
                             </span>
@@ -634,21 +652,21 @@ const CourseDetails = () => {
                                 <div className="flex items-center gap-3">
                                     <Clock className="text-blue-600" size={24} />
                                     <div>
-                                        <p className="text-xs text-slate-400 font-bold uppercase tracking-wider">Duration</p>
+                                        <p className="text-xs text-slate-600 font-bold uppercase tracking-wider">Duration</p>
                                         <p className="font-bold text-slate-900">{course.duration}</p>
                                     </div>
                                 </div>
                                 <div className="flex items-center gap-3">
                                     <Users className="text-blue-600" size={24} />
                                     <div>
-                                        <p className="text-xs text-slate-400 font-bold uppercase tracking-wider">Mode</p>
+                                        <p className="text-xs text-slate-600 font-bold uppercase tracking-wider">Mode</p>
                                         <p className="font-bold text-slate-900">Online + Offline</p>
                                     </div>
                                 </div>
                                 <div className="flex items-center gap-3">
                                     <GraduationCap className="text-blue-600" size={24} />
                                     <div>
-                                        <p className="text-xs text-slate-400 font-bold uppercase tracking-wider">Level</p>
+                                        <p className="text-xs text-slate-600 font-bold uppercase tracking-wider">Level</p>
                                         <p className="font-bold text-slate-900">Beginner to Advanced</p>
                                     </div>
                                 </div>
@@ -672,33 +690,67 @@ const CourseDetails = () => {
                                     Enquiry now <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
                                 </button>
                                 <div onClick={() => handlePaymentClick('hero')} className="w-full sm:w-auto">
-                                    <RazorpayButton
-                                        ref={heroPaymentRef}
-                                        amount={isCustomPayment && customAmount ? parseInt(customAmount) : Math.max(0, (parsePrice(course.price) || 0) - scholarshipDiscount)}
-                                        courseId={course.id}
-                                        courseTitle={course.title}
-                                        courseCategory={course.category}
-                                        promoCode={promoCode}
-                                        discountAmount={scholarshipDiscount}
-                                        studentInfo={{
-                                            full_name: enquiryFormData.name,
-                                            email: enquiryFormData.email,
-                                            phone: enquiryFormData.phone,
-                                            branch: enquiryFormData.branch
-                                        }}
-                                        className="px-8 py-4 bg-green-600 text-white font-bold rounded-xl shadow-xl shadow-green-200 hover:bg-green-700 transition-all w-full sm:w-auto"
-                                    />
+                                    <React.Suspense fallback={<div className="h-12 w-full bg-slate-100 animate-pulse rounded-xl"></div>}>
+                                        <RazorpayButton
+                                            ref={heroPaymentRef}
+                                            amount={isCustomPayment && customAmount ? parseInt(customAmount) : Math.max(0, (parsePrice(course.price) || 0) - scholarshipDiscount)}
+                                            courseId={course.id}
+                                            courseTitle={course.title}
+                                            courseCategory={course.category}
+                                            promoCode={promoCode}
+                                            discountAmount={scholarshipDiscount}
+                                            studentInfo={{
+                                                full_name: enquiryFormData.name,
+                                                email: enquiryFormData.email,
+                                                phone: enquiryFormData.phone,
+                                                branch: enquiryFormData.branch
+                                            }}
+                                            className="px-8 py-4 bg-green-600 text-white font-bold rounded-xl shadow-xl shadow-green-200 hover:bg-green-700 transition-all w-full sm:w-auto"
+                                        />
+                                    </React.Suspense>
                                 </div>
                                 <button onClick={handleApplyScholarship} className="px-8 py-4 bg-white text-blue-600 border-2 border-blue-600 font-bold rounded-xl hover:bg-blue-50 transition-all flex items-center justify-center gap-2 w-full sm:w-auto">
                                     Apply Scholarship
                                 </button>
                             </div>
-                        </motion.div>
+                        </m.div>
 
-                        <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.8, delay: 0.2 }} className="relative">
-                            <div className="aspect-[4/3] rounded-3xl overflow-hidden shadow-2xl border-8 border-white">
-                                <img src={cleanPath(course.image)} alt={course.title} className="w-full h-full object-cover" />
-                            </div>
+                        {/* Right Column: Promo Video or Image */}
+                        <m.div initial={false} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.5 }} className="relative">
+                            {course.promo_video ? (
+                                // Show promo video (YouTube embed or raw video)
+                                <div className="rounded-3xl overflow-hidden shadow-2xl border-8 border-white bg-black">
+                                    {getYouTubeId(course.promo_video) ? (
+                                        <div className="aspect-[4/3]">
+                                            <YouTubeFacade 
+                                                videoId={getYouTubeId(course.promo_video)!} 
+                                                title={`${course.title} - Promo Video`} 
+                                            />
+                                        </div>
+                                    ) : (
+                                        <div className="aspect-[4/3]">
+                                            <video
+                                                src={normalizeImagePath(course.promo_video)}
+                                                controls
+                                                poster={normalizeImagePath(course.image)}
+                                                className="w-full h-full object-cover"
+                                            />
+                                        </div>
+                                    )}
+                                </div>
+                            ) : (
+                                // Fallback to static image
+                                <div className="aspect-[4/3] rounded-3xl overflow-hidden shadow-2xl border-8 border-white">
+                                    <img
+                                        src={normalizeImagePath(course.image)}
+                                        alt={course.title}
+                                        width="800"
+                                        height="600"
+                                        fetchPriority="high"
+                                        className="w-full h-full object-cover"
+                                    />
+                                </div>
+                            )}
                             <div className="absolute -bottom-10 -left-10 bg-white p-6 rounded-2xl shadow-xl border border-slate-100 hidden md:block">
                                 <div className="flex items-center gap-4">
                                     <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
@@ -710,13 +762,37 @@ const CourseDetails = () => {
                                     </div>
                                 </div>
                             </div>
-                        </motion.div>
+                        </m.div>
                     </div>
                 </div>
             </section>
 
+            {/* YouTube Shorts — only shown if set */}
+            {course.shorts_url && getYouTubeId(course.shorts_url) && (
+                <section className="py-16 bg-white">
+                    <div className="container mx-auto px-4">
+                        <div className="text-center mb-10">
+                            <span className="inline-flex items-center gap-2 px-4 py-1.5 bg-red-50 text-red-600 rounded-full text-sm font-bold mb-4">
+                                <PlayCircle size={16} /> Quick Preview
+                            </span>
+                            <h2 className="text-2xl md:text-3xl font-black text-slate-900">See What You'll Learn</h2>
+                        </div>
+                        <div className="flex justify-center">
+                            <div className="w-full max-w-xs rounded-3xl overflow-hidden shadow-2xl border-4 border-white ring-1 ring-slate-200">
+                                <div className="aspect-[9/16]">
+                                    <YouTubeFacade 
+                                        videoId={getYouTubeId(course.shorts_url)!} 
+                                        title={`${course.title} - Short`} 
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            )}
+
             {/* 2. ABOUT THE COURSE */}
-            < section className="py-20 bg-slate-50" >
+            <section className="py-20 bg-slate-50">
                 <div className="container mx-auto px-4">
                     <div className="max-w-4xl mx-auto">
                         <div className="text-center mb-12">
@@ -820,7 +896,7 @@ const CourseDetails = () => {
                     <div className="grid lg:grid-cols-2 gap-16 items-center">
                         <div>
                             <h2 className="text-3xl md:text-4xl font-black mb-6">Who Can Join This Course?</h2>
-                            <p className="text-slate-400 text-lg mb-8 leading-relaxed">
+                            <p className="text-slate-600 text-lg mb-8 leading-relaxed">
                                 Our curriculum is designed to accommodate learners at any stage of their journey. No prior experience is required for most modules.
                             </p>
                             <div className="grid sm:grid-cols-2 gap-4">
@@ -841,7 +917,7 @@ const CourseDetails = () => {
                                 </div>
                                 <div>
                                     <h4 className="text-xl font-bold">Industry Readiness</h4>
-                                    <p className="text-slate-400">Bridging the gap between academia and corporate requirements.</p>
+                                    <p className="text-slate-600">Bridging the gap between academia and corporate requirements.</p>
                                 </div>
                             </div>
                             <div className="space-y-6">
@@ -953,7 +1029,7 @@ const CourseDetails = () => {
                                     text: "Best place to learn advanced software. The trainers are highly experienced and provide personal attention to every student.",
                                 }
                             ].map((review, idx) => (
-                                <motion.div
+                                <m.div
                                     key={idx}
                                     initial={{ opacity: 0, y: 20 }}
                                     whileInView={{ opacity: 1, y: 0 }}
@@ -984,7 +1060,7 @@ const CourseDetails = () => {
                                             Read Full Review
                                         </a>
                                     </div>
-                                </motion.div>
+                                </m.div>
                             ))}
                         </div>
 
@@ -1038,15 +1114,15 @@ const CourseDetails = () => {
                                     className="w-full p-6 flex items-center justify-between text-left"
                                 >
                                     <span className="font-bold text-slate-800">{faq.question}</span>
-                                    <ChevronDown className={`text-slate-400 transition-transform ${activeAccordion === idx ? 'rotate-180' : ''}`} />
+                                    <ChevronDown className={`text-slate-600 transition-transform ${activeAccordion === idx ? 'rotate-180' : ''}`} />
                                 </button>
                                 <AnimatePresence>
                                     {activeAccordion === idx && (
-                                        <motion.div initial={{ height: 0 }} animate={{ height: 'auto' }} exit={{ height: 0 }} className="overflow-hidden">
+                                        <m.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="overflow-hidden">
                                             <div className="p-6 pt-0 text-slate-600 leading-relaxed border-t border-slate-50">
                                                 {faq.answer}
                                             </div>
-                                        </motion.div>
+                                        </m.div>
                                     )}
                                 </AnimatePresence>
                             </div>
@@ -1079,7 +1155,7 @@ const CourseDetails = () => {
                                         <span className="text-3xl font-black text-blue-600">
                                             {parsePrice(passportSettings.skills.price) === 0 ? "INCLUDED" : `+ ${passportSettings.skills.price}`}
                                         </span>
-                                        <span className="text-slate-400 text-sm font-bold">/ Upgrade</span>
+                                        <span className="text-slate-600 text-sm font-bold">/ Upgrade</span>
                                     </div>
                                 </div>
                                 <ul className="space-y-4 mb-20 flex-1">
@@ -1090,7 +1166,7 @@ const CourseDetails = () => {
                                         </li>
                                     ))}
                                 </ul>
-                                <div className={`mt-auto text-center font-black uppercase tracking-widest text-xs py-3 rounded-xl transition-colors ${selectedPassport === 'skills' ? 'bg-blue-600 text-white' : 'bg-slate-100 text-slate-400'}`}>
+                                <div className={`mt-auto text-center font-black uppercase tracking-widest text-xs py-3 rounded-xl transition-colors ${selectedPassport === 'skills' ? 'bg-blue-600 text-white' : 'bg-slate-100 text-slate-600'}`}>
                                     {selectedPassport === 'skills' ? 'Selected' : 'Select Package'}
                                 </div>
                             </div>
@@ -1108,7 +1184,7 @@ const CourseDetails = () => {
                                     <h3 className="text-2xl font-black text-slate-900 mb-2 uppercase tracking-tight">Interview Success Track</h3>
                                     <div className="flex items-baseline gap-1">
                                         <span className="text-3xl font-black text-cyan-600">+ {passportSettings.interview.price}</span>
-                                        <span className="text-slate-400 text-sm font-bold">/ Upgrade</span>
+                                        <span className="text-slate-600 text-sm font-bold">/ Upgrade</span>
                                     </div>
                                 </div>
                                 <div className="mb-4 text-xs font-black text-cyan-600 uppercase">ALL CAREER SKILL BUILDER BENEFITS +</div>
@@ -1120,7 +1196,7 @@ const CourseDetails = () => {
                                         </li>
                                     ))}
                                 </ul>
-                                <div className={`mt-auto text-center font-black uppercase tracking-widest text-xs py-3 rounded-xl transition-colors ${selectedPassport === 'interview' ? 'bg-cyan-600 text-white' : 'bg-slate-100 text-slate-400'}`}>
+                                <div className={`mt-auto text-center font-black uppercase tracking-widest text-xs py-3 rounded-xl transition-colors ${selectedPassport === 'interview' ? 'bg-cyan-600 text-white' : 'bg-slate-100 text-slate-600'}`}>
                                     {selectedPassport === 'interview' ? 'Selected' : 'Select Package'}
                                 </div>
                             </div>
@@ -1137,7 +1213,7 @@ const CourseDetails = () => {
                                     <h3 className="text-2xl font-black text-slate-900 mb-2 uppercase tracking-tight">Job Secure Track</h3>
                                     <div className="flex items-baseline gap-1">
                                         <span className="text-3xl font-black text-rose-600">+ {passportSettings.job.price}</span>
-                                        <span className="text-slate-400 text-sm font-bold">/ Upgrade</span>
+                                        <span className="text-slate-600 text-sm font-bold">/ Upgrade</span>
                                     </div>
                                 </div>
                                 <div className="mb-4 text-xs font-black text-rose-600 uppercase">ALL INTERVIEW SUCCESS TRACK BENEFITS +</div>
@@ -1149,7 +1225,7 @@ const CourseDetails = () => {
                                         </li>
                                     ))}
                                 </ul>
-                                <div className={`mt-auto text-center font-black uppercase tracking-widest text-xs py-3 rounded-xl transition-colors ${selectedPassport === 'job' ? 'bg-rose-600 text-white' : 'bg-slate-100 text-slate-400'}`}>
+                                <div className={`mt-auto text-center font-black uppercase tracking-widest text-xs py-3 rounded-xl transition-colors ${selectedPassport === 'job' ? 'bg-rose-600 text-white' : 'bg-slate-100 text-slate-600'}`}>
                                     {selectedPassport === 'job' ? 'Selected' : 'Select Package'}
                                 </div>
                             </div>
@@ -1288,23 +1364,19 @@ const CourseDetails = () => {
 
                             <div className="flex flex-col md:flex-row gap-6 justify-center items-center">
                                 <div onClick={() => handlePaymentClick('pricing')} className="w-full md:w-auto">
-                                    <RazorpayButton
-                                        ref={pricingPaymentRef}
-                                        amount={isCustomPayment ? (parseInt(customAmount) || 0) : Math.max(0, parsePrice(course.price) +
-                                            (selectedPassport === 'skills' ? parsePrice(passportSettings.skills.price) :
-                                                selectedPassport === 'interview' ? parsePrice(passportSettings.interview.price) :
-                                                    parsePrice(passportSettings.job.price)) - scholarshipDiscount)}
-                                        courseId={course.id}
-                                        courseTitle={course.title}
-                                        courseCategory={course.category}
-                                        studentInfo={{
-                                            full_name: enquiryFormData.name,
-                                            email: enquiryFormData.email,
-                                            phone: enquiryFormData.phone,
-                                            branch: enquiryFormData.branch
-                                        }}
-                                        className="px-12 py-5 bg-white text-blue-900 text-xl font-black rounded-2xl hover:bg-blue-50 transition-all shadow-xl hover:scale-105 w-full md:w-auto"
-                                    />
+                                    <React.Suspense fallback={<div className="h-14 w-full md:w-auto bg-slate-100 animate-pulse rounded-2xl"></div>}>
+                                        <RazorpayButton
+                                            ref={pricingPaymentRef}
+                                            amount={isCustomPayment ? (parseInt(customAmount) || 0) : Math.max(0, parsePrice(course.price) +
+                                                (selectedPassport === 'skills' ? parsePrice(passportSettings.skills.price) :
+                                                    selectedPassport === 'interview' ? parsePrice(passportSettings.interview.price) :
+                                                        parsePrice(passportSettings.job.price)) - scholarshipDiscount)}
+                                            courseId={course.id}
+                                            courseTitle={course.title}
+                                            courseCategory={course.category}
+                                            className="px-12 py-5 bg-white text-blue-900 text-xl font-black rounded-2xl hover:bg-blue-50 transition-all shadow-xl hover:scale-105 w-full md:w-auto"
+                                        />
+                                    </React.Suspense>
                                 </div>
                                 <button
                                     onClick={() => setInquiryModal({
@@ -1353,7 +1425,14 @@ const CourseDetails = () => {
                                             className="flex items-center gap-4 p-4 bg-slate-50 rounded-2xl border border-slate-100 hover:border-blue-200 hover:bg-blue-50 transition-all group"
                                         >
                                             <div className="w-16 h-16 rounded-xl overflow-hidden shrink-0">
-                                                <img src={relCourse.image} alt={relCourse.title} className="w-full h-full object-cover" />
+                                                <img
+                                                    src={relCourse.image}
+                                                    alt={relCourse.title}
+                                                    width="64"
+                                                    height="64"
+                                                    loading="lazy"
+                                                    className="w-full h-full object-cover"
+                                                />
                                             </div>
                                             <div className="flex-1">
                                                 <h4 className="font-bold text-slate-800 group-hover:text-blue-600 transition-colors">{relCourse.title}</h4>
@@ -1406,7 +1485,7 @@ const CourseDetails = () => {
                                         <Phone className="text-white" size={28} />
                                     </div>
                                     <div>
-                                        <p className="text-xs text-slate-400 font-black uppercase mb-1">Call Us Anywhere</p>
+                                        <p className="text-xs text-slate-600 font-black uppercase mb-1">Call Us Anywhere</p>
                                         <a href={`tel:${course.phone || "+917418732525"}`} className="text-xl font-bold text-slate-800 hover:text-blue-600">{course.phone || "+91 74187 32525"}</a>
                                     </div>
                                 </div>
@@ -1486,7 +1565,7 @@ const CourseDetails = () => {
                 {showScholarshipModal && (
                     <div className="fixed inset-0 z-[100000] overflow-y-auto bg-black/60 backdrop-blur-sm" onClick={() => setShowScholarshipModal(false)}>
                         <div className="flex min-h-full items-start justify-center p-4 pt-24 md:pt-36 text-center">
-                            <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="relative w-full max-w-3xl transform shadow-xl transition-all" onClick={(e) => e.stopPropagation()}>
+                            <m.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="relative w-full max-w-3xl transform shadow-xl transition-all" onClick={(e) => e.stopPropagation()}>
                                 <ScholarshipCalculator
                                     coursePrice={parsePrice(course.price)}
                                     courseName={course.title}
@@ -1495,47 +1574,49 @@ const CourseDetails = () => {
                                     onCalculate={handleScholarshipCalculation}
                                     onClose={() => setShowScholarshipModal(false)}
                                 />
-                            </motion.div>
+                            </m.div>
                         </div>
                     </div>
                 )}
             </AnimatePresence>
 
-            <InquiryModal
-                isOpen={inquiryModal.isOpen}
-                onClose={() => setInquiryModal(prev => ({ ...prev, isOpen: false }))}
-                courseId={course.id}
-                courseTitle={course.title}
-                category={course.category}
-                actionType={inquiryModal.actionType}
-                basePrice={parsePrice(course.price)}
-                upgradePrice={
-                    selectedPassport === 'skills' ? parsePrice(passportSettings.skills.price) :
-                        selectedPassport === 'interview' ? parsePrice(passportSettings.interview.price) :
-                            parsePrice(passportSettings.job.price)
-                }
-                upgradeName={
-                    selectedPassport === 'skills' ? 'Career Skill Builder' :
-                        selectedPassport === 'interview' ? 'Interview Success Track' :
-                            'Job Secure Track'
-                }
-                initialPromoCode={promoCode}
-                initialDiscount={scholarshipDiscount}
-                onSuccess={(data) => {
-                    if (data) {
-                        setEnquiryFormData(prev => ({
-                            ...prev,
-                            name: data.name,
-                            email: data.email,
-                            phone: data.phone,
-                            branch: data.branch
-                        }));
-                        setPromoCode(data.promoCode || '');
-                        setScholarshipDiscount(data.discountAmount || 0);
+            <React.Suspense fallback={null}>
+                <InquiryModal
+                    isOpen={inquiryModal.isOpen}
+                    onClose={() => setInquiryModal(prev => ({ ...prev, isOpen: false }))}
+                    courseId={course.id}
+                    courseTitle={course.title}
+                    category={course.category}
+                    actionType={inquiryModal.actionType}
+                    basePrice={parsePrice(course.price)}
+                    upgradePrice={
+                        selectedPassport === 'skills' ? parsePrice(passportSettings.skills.price) :
+                            selectedPassport === 'interview' ? parsePrice(passportSettings.interview.price) :
+                                parsePrice(passportSettings.job.price)
                     }
-                    if (inquiryModal.onSuccess) inquiryModal.onSuccess(data);
-                }}
-            />
+                    upgradeName={
+                        selectedPassport === 'skills' ? 'Career Skill Builder' :
+                            selectedPassport === 'interview' ? 'Interview Success Track' :
+                                'Job Secure Track'
+                    }
+                    initialPromoCode={promoCode}
+                    initialDiscount={scholarshipDiscount}
+                    onSuccess={(data) => {
+                        if (data) {
+                            setEnquiryFormData(prev => ({
+                                ...prev,
+                                name: data.name,
+                                email: data.email,
+                                phone: data.phone,
+                                branch: data.branch
+                            }));
+                            setPromoCode(data.promoCode || '');
+                            setScholarshipDiscount(data.discountAmount || 0);
+                        }
+                        if (inquiryModal.onSuccess) inquiryModal.onSuccess(data);
+                    }}
+                />
+            </React.Suspense>
         </div>
     );
 };

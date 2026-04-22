@@ -3,8 +3,6 @@ import { motion } from 'framer-motion';
 import { Search, Plus, Edit2, Trash2, BookOpen, Filter } from 'lucide-react';
 import { useUserRole } from '../../hooks/useUserRole';
 import { useNavigate, Link } from 'react-router-dom';
-import { db } from '../../lib/firebase';
-import { collection, getDocs, doc, deleteDoc, updateDoc } from 'firebase/firestore';
 import { Course } from '../../types';
 
 const CourseManager = () => {
@@ -21,11 +19,21 @@ const CourseManager = () => {
 
     const fetchCourses = async () => {
         try {
+            const { getFirestoreDb } = await import('../../lib/firebase');
+            const { collection, getDocs } = await import('firebase/firestore');
+            const db = await getFirestoreDb();
+
             const querySnapshot = await getDocs(collection(db, 'courses'));
             const fetchedCourses: Course[] = querySnapshot.docs.map(doc => ({
                 id: doc.id,
                 ...doc.data()
             } as Course));
+
+            fetchedCourses.sort((a, b) => {
+                const orderA = a.order !== undefined ? a.order : 999;
+                const orderB = b.order !== undefined ? b.order : 999;
+                return orderA - orderB;
+            });
             setCourses(fetchedCourses);
         } catch (error: any) {
             console.error('Error fetching courses:', error.message);
@@ -38,6 +46,10 @@ const CourseManager = () => {
         if (!window.confirm('Are you sure you want to delete this course?')) return;
 
         try {
+            const { getFirestoreDb } = await import('../../lib/firebase');
+            const { doc, deleteDoc } = await import('firebase/firestore');
+            const db = await getFirestoreDb();
+
             await deleteDoc(doc(db, 'courses', id));
             setCourses(courses.filter(c => c.id !== id));
         } catch (error: any) {
@@ -45,8 +57,41 @@ const CourseManager = () => {
         }
     };
 
+    const handleOrderChange = async (id: string, newOrder: string) => {
+        const orderValue = parseInt(newOrder, 10);
+        if (isNaN(orderValue)) return;
+        
+        try {
+            const { getFirestoreDb } = await import('../../lib/firebase');
+            const { doc, updateDoc } = await import('firebase/firestore');
+            const db = await getFirestoreDb();
+
+            const courseRef = doc(db, 'courses', id);
+            await updateDoc(courseRef, { order: orderValue });
+
+            // Update local state and sort
+            const updatedCourses = courses.map(c =>
+                c.id === id ? { ...c, order: orderValue } : c
+            );
+            
+            updatedCourses.sort((a, b) => {
+                const orderA = a.order !== undefined ? a.order : 999;
+                const orderB = b.order !== undefined ? b.order : 999;
+                return orderA - orderB;
+            });
+            
+            setCourses(updatedCourses);
+        } catch (error: any) {
+            alert('Error updating order: ' + error.message);
+        }
+    };
+
     const toggleHomeVisibility = async (id: string, currentValue: boolean) => {
         try {
+            const { getFirestoreDb } = await import('../../lib/firebase');
+            const { doc, updateDoc } = await import('firebase/firestore');
+            const db = await getFirestoreDb();
+
             const courseRef = doc(db, 'courses', id);
             await updateDoc(courseRef, { show_on_home: !currentValue });
 
@@ -122,6 +167,7 @@ const CourseManager = () => {
                             <tr className="bg-gray-50 border-b border-gray-100">
                                 <th className="p-4 font-semibold text-gray-600">Course Name</th>
                                 <th className="p-4 font-semibold text-gray-600">Category</th>
+                                <th className="p-4 font-semibold text-gray-600">Order</th>
                                 <th className="p-4 font-semibold text-gray-600">Price</th>
                                 <th className="p-4 font-semibold text-gray-600">Duration</th>
                                 <th className="p-4 font-semibold text-gray-600">Show on Home</th>
@@ -141,6 +187,16 @@ const CourseManager = () => {
                                         <span className="px-3 py-1 bg-blue-50 text-blue-600 rounded-full text-xs font-semibold">
                                             {course.category}
                                         </span>
+                                    </td>
+                                    <td className="p-4">
+                                        <input 
+                                            type="number" 
+                                            min="0"
+                                            defaultValue={course.order !== undefined ? course.order : 999}
+                                            onBlur={(e) => handleOrderChange(course.id, e.target.value)}
+                                            className="w-16 px-2 py-1 border border-gray-200 rounded text-center focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+                                            disabled={!canEdit}
+                                        />
                                     </td>
                                     <td className="p-4 font-medium text-gray-700">{course.price}</td>
                                     <td className="p-4 text-gray-500">{course.duration}</td>

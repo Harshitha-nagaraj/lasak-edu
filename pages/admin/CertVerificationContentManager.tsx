@@ -1,8 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { Save, Plus, Trash2, ChevronUp, ChevronDown, Eye, EyeOff, Search, FileText, ShieldCheck, Award, CheckCircle, AlertCircle, Upload } from 'lucide-react';
-import { db, storage } from '../../lib/firebase';
-import { collection, query, getDocs, orderBy, doc, getDoc, updateDoc, setDoc, serverTimestamp, deleteDoc, addDoc } from 'firebase/firestore';
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { normalizeImagePath } from '../../lib/imageUtils';
 
 // Icon mapping for How it Works steps
@@ -90,6 +87,10 @@ const CertVerificationContentManager = () => {
     const fetchAllContent = async () => {
         setLoading(true);
         try {
+            const { getFirestoreDb } = await import('../../lib/firebase');
+            const { collection, query, getDocs, orderBy, doc, getDoc } = await import('firebase/firestore');
+            const db = await getFirestoreDb();
+
             // Fetch How it Works
             const stepsSnapshot = await getDocs(query(collection(db, 'cert_how_it_works'), orderBy('order_num', 'asc')));
             const stepsData = stepsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
@@ -129,6 +130,10 @@ const CertVerificationContentManager = () => {
         try {
             const { id, ...dataToSave } = lasakStandardSection;
 
+            const { getFirestoreDb } = await import('../../lib/firebase');
+            const { doc, setDoc, serverTimestamp } = await import('firebase/firestore');
+            const db = await getFirestoreDb();
+
             const docRef = doc(db, 'cert_lasak_standard_section', 'default');
             await setDoc(docRef, { ...dataToSave, updated_at: serverTimestamp() }, { merge: true });
 
@@ -143,6 +148,10 @@ const CertVerificationContentManager = () => {
     // How it Works handlers
     const updateHowItWorksStep = async (step) => {
         try {
+            const { getFirestoreDb } = await import('../../lib/firebase');
+            const { doc, setDoc, serverTimestamp } = await import('firebase/firestore');
+            const db = await getFirestoreDb();
+
             const stepRef = doc(db, 'cert_how_it_works', step.id);
             await setDoc(stepRef, {
                 step_number: step.step_number,
@@ -169,6 +178,10 @@ const CertVerificationContentManager = () => {
 
         setUploading(true);
         try {
+            const { getFirebaseStorage } = await import('../../lib/firebase');
+            const { ref, uploadBytes, getDownloadURL } = await import('firebase/storage');
+            const storage = await getFirebaseStorage();
+
             const fileExt = file.name.split('.').pop();
             const fileName = `${Math.random()}.${fileExt}`;
             const filePath = `verification/${fileName}`;
@@ -191,6 +204,10 @@ const CertVerificationContentManager = () => {
         try {
             const { id, ...dataToSave } = credentialsSection;
 
+            const { getFirestoreDb } = await import('../../lib/firebase');
+            const { doc, setDoc, serverTimestamp } = await import('firebase/firestore');
+            const db = await getFirestoreDb();
+
             const docRef = doc(db, 'cert_credentials_section', 'default');
             await setDoc(docRef, { ...dataToSave, updated_at: serverTimestamp() }, { merge: true });
 
@@ -210,6 +227,10 @@ const CertVerificationContentManager = () => {
         }
 
         try {
+            const { getFirestoreDb } = await import('../../lib/firebase');
+            const { collection, addDoc, serverTimestamp } = await import('firebase/firestore');
+            const db = await getFirestoreDb();
+
             const maxOrder = faqs.length > 0 ? Math.max(...faqs.map(f => f.order_num)) : 0;
             await addDoc(collection(db, 'cert_faqs'), {
                 question: newFaq.question,
@@ -230,6 +251,10 @@ const CertVerificationContentManager = () => {
 
     const updateFaq = async (faq) => {
         try {
+            const { getFirestoreDb } = await import('../../lib/firebase');
+            const { doc, updateDoc, serverTimestamp } = await import('firebase/firestore');
+            const db = await getFirestoreDb();
+
             await updateDoc(doc(db, 'cert_faqs', faq.id), {
                 question: faq.question,
                 answer: faq.answer,
@@ -250,6 +275,10 @@ const CertVerificationContentManager = () => {
         if (!confirm('Are you sure you want to delete this FAQ?')) return;
 
         try {
+            const { getFirestoreDb } = await import('../../lib/firebase');
+            const { doc, deleteDoc } = await import('firebase/firestore');
+            const db = await getFirestoreDb();
+
             await deleteDoc(doc(db, 'cert_faqs', id));
             showMessage('success', 'FAQ deleted successfully');
             fetchAllContent();
@@ -268,6 +297,10 @@ const CertVerificationContentManager = () => {
         [newFaqs[index], newFaqs[targetIndex]] = [newFaqs[targetIndex], newFaqs[index]];
 
         try {
+            const { getFirestoreDb } = await import('../../lib/firebase');
+            const { doc, updateDoc, serverTimestamp } = await import('firebase/firestore');
+            const db = await getFirestoreDb();
+
             const updates = newFaqs.map((faq, idx) =>
                 updateDoc(doc(db, 'cert_faqs', faq.id), { order_num: idx + 1, updated_at: serverTimestamp() })
             );
@@ -282,6 +315,10 @@ const CertVerificationContentManager = () => {
     // Support Section handlers
     const saveSupportSection = async () => {
         try {
+            const { getFirestoreDb } = await import('../../lib/firebase');
+            const { doc, setDoc, serverTimestamp } = await import('firebase/firestore');
+            const db = await getFirestoreDb();
+
             const docRef = doc(db, 'cert_support_section', 'default');
             await setDoc(docRef, { ...supportSection, updated_at: serverTimestamp() }, { merge: true });
 
@@ -303,6 +340,10 @@ const CertVerificationContentManager = () => {
 
         setLoading(true);
         try {
+            const { getFirestoreDb } = await import('../../lib/firebase');
+            const { doc, setDoc, serverTimestamp } = await import('firebase/firestore');
+            const db = await getFirestoreDb();
+
             // How it Works
             for (const step of DEFAULT_HOW_IT_WORKS) {
                 await setDoc(doc(db, 'cert_how_it_works', `step - ${step.step_number} `), {
@@ -762,7 +803,7 @@ const CertVerificationContentManager = () => {
                                                             setFaqs(newFaqs);
                                                             updateFaq(newFaqs[index]);
                                                         }}
-                                                        className={`p - 2 rounded ${faq.active ? 'bg-green-100 text-green-600' : 'bg-slate-100 text-slate-400'} `}
+                                                        className={`p - 2 rounded ${faq.active ? 'bg-green-100 text-green-600' : 'bg-slate-100 text-slate-600'} `}
                                                         title={faq.active ? 'Active' : 'Inactive'}
                                                     >
                                                         {faq.active ? <Eye size={16} /> : <EyeOff size={16} />}

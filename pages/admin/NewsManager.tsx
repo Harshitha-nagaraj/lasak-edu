@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Plus, Edit2, Trash2, Search, Newspaper } from 'lucide-react';
-import { db } from '../../lib/firebase';
-import { collection, query, orderBy, getDocs, doc, deleteDoc } from 'firebase/firestore';
 import { useUserRole } from '../../hooks/useUserRole';
 
 interface NewsItem {
@@ -28,6 +26,10 @@ const NewsManager = () => {
 
     const fetchNews = async () => {
         try {
+            const { getFirestoreDb } = await import('../../lib/firebase');
+            const { collection, query, orderBy, getDocs } = await import('firebase/firestore');
+            const db = await getFirestoreDb();
+
             const newsRef = collection(db, 'news');
             const q = query(newsRef, orderBy('created_at', 'desc'));
             const querySnapshot = await getDocs(q);
@@ -49,6 +51,10 @@ const NewsManager = () => {
         if (!window.confirm('Are you sure you want to delete this news item?')) return;
 
         try {
+            const { getFirestoreDb } = await import('../../lib/firebase');
+            const { doc, deleteDoc } = await import('firebase/firestore');
+            const db = await getFirestoreDb();
+
             await deleteDoc(doc(db, 'news', id));
             setNews(news.filter(n => n.id !== id));
         } catch (error) {

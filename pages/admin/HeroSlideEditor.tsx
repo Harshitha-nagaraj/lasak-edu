@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { db } from '../../lib/firebase';
-import { doc, getDoc, setDoc, updateDoc, collection, query, orderBy, limit, getDocs, serverTimestamp } from 'firebase/firestore';
 import ImageUploader from '../../components/admin/ImageUploader';
 import { ArrowLeft, Save } from 'lucide-react';
 
@@ -39,6 +37,10 @@ const HeroSlideEditor = () => {
 
     const fetchSlide = async () => {
         try {
+            const { getFirestoreDb } = await import('../../lib/firebase');
+            const { doc, getDoc } = await import('firebase/firestore');
+            const db = await getFirestoreDb();
+
             const slideDoc = await getDoc(doc(db, 'hero_slides', id!));
             if (!slideDoc.exists()) {
                 alert('Slide not found!');
@@ -68,6 +70,10 @@ const HeroSlideEditor = () => {
         setLoading(true);
 
         try {
+            const { getFirestoreDb } = await import('../../lib/firebase');
+            const { doc, setDoc, updateDoc, collection, query, orderBy, limit, getDocs, serverTimestamp } = await import('firebase/firestore');
+            const db = await getFirestoreDb();
+
             if (isNew) {
                 // Get the max order_num and add 1
                 const maxOrderQuery = query(collection(db, 'hero_slides'), orderBy('order_num', 'desc'), limit(1));

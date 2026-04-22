@@ -1,9 +1,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Plus, Edit2, Trash2, Youtube, ExternalLink } from 'lucide-react';
-import { db } from '../../lib/firebase';
-import { collection, query, orderBy, getDocs, doc, deleteDoc, updateDoc } from 'firebase/firestore';
+import { Plus, Edit2, Trash2, Youtube, ExternalLink, ChevronUp, ChevronDown } from 'lucide-react';
 import { useUserRole } from '../../hooks/useUserRole';
 
 interface YoutubeVideo {
@@ -18,6 +16,7 @@ const YoutubeManager = () => {
     const { canEdit } = useUserRole();
     const [videos, setVideos] = useState<YoutubeVideo[]>([]);
     const [loading, setLoading] = useState(true);
+    const [reordering, setReordering] = useState(false);
 
     useEffect(() => {
         fetchVideos();
@@ -25,12 +24,27 @@ const YoutubeManager = () => {
 
     const fetchVideos = async () => {
         try {
-            const snapshot = await getDocs(query(collection(db, 'youtube_videos'), orderBy('created_at', 'desc')));
+            const { getFirestoreDb } = await import('../../lib/firebase');
+            const { collection, query, orderBy, getDocs } = await import('firebase/firestore');
+            const db = await getFirestoreDb();
+
+            const snapshot = await getDocs(query(collection(db, 'youtube_videos'), orderBy('order_num', 'asc')));
             const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as YoutubeVideo));
-            setVideos(data || []);
+            // Normalise missing order_num values
+            const normalized = data.map((v, i) => ({ ...v, order_num: v.order_num ?? i + 1 }));
+            setVideos(normalized);
         } catch (error: any) {
-            console.error('Error fetching videos:', error);
-            alert('Error loading videos: ' + error.message);
+            // Fallback: try without orderBy if index missing
+            try {
+                const { getFirestoreDb } = await import('../../lib/firebase');
+                const { collection, getDocs } = await import('firebase/firestore');
+                const db = await getFirestoreDb();
+                const snapshot = await getDocs(collection(db, 'youtube_videos'));
+                const data = snapshot.docs.map((doc, i) => ({ id: doc.id, order_num: i + 1, ...doc.data() } as YoutubeVideo));
+                setVideos(data);
+            } catch (e) {
+                console.error('Error fetching videos:', e);
+            }
         } finally {
             setLoading(false);
         }
@@ -40,12 +54,46 @@ const YoutubeManager = () => {
         if (!confirm('Are you sure you want to delete this video?')) return;
 
         try {
+            const { getFirestoreDb } = await import('../../lib/firebase');
+            const { doc, deleteDoc } = await import('firebase/firestore');
+            const db = await getFirestoreDb();
+
             await deleteDoc(doc(db, 'youtube_videos', id));
-            alert('Video deleted successfully!');
-            fetchVideos();
+            setVideos(prev => prev.filter(v => v.id !== id));
         } catch (error: any) {
             console.error('Error deleting video:', error);
             alert('Error deleting video: ' + error.message);
+        }
+    };
+
+    const moveItem = async (index: number, direction: 'up' | 'down') => {
+        const swapIndex = direction === 'up' ? index - 1 : index + 1;
+        if (swapIndex < 0 || swapIndex >= videos.length) return;
+
+        setReordering(true);
+        try {
+            const newVideos = [...videos];
+            const aOrder = newVideos[index].order_num;
+            const bOrder = newVideos[swapIndex].order_num;
+            newVideos[index] = { ...newVideos[index], order_num: bOrder };
+            newVideos[swapIndex] = { ...newVideos[swapIndex], order_num: aOrder };
+            [newVideos[index], newVideos[swapIndex]] = [newVideos[swapIndex], newVideos[index]];
+
+            setVideos(newVideos);
+
+            const { getFirestoreDb } = await import('../../lib/firebase');
+            const { doc, updateDoc } = await import('firebase/firestore');
+            const db = await getFirestoreDb();
+            await Promise.all([
+                updateDoc(doc(db, 'youtube_videos', newVideos[index].id), { order_num: newVideos[index].order_num }),
+                updateDoc(doc(db, 'youtube_videos', newVideos[swapIndex].id), { order_num: newVideos[swapIndex].order_num }),
+            ]);
+        } catch (error) {
+            console.error('Error reordering:', error);
+            alert('Failed to save order. Please try again.');
+            fetchVideos();
+        } finally {
+            setReordering(false);
         }
     };
 
@@ -54,7 +102,7 @@ const YoutubeManager = () => {
             <div className="flex flex-col md:flex-row justify-between items-center gap-4">
                 <div>
                     <h1 className="text-2xl font-bold text-gray-800">YouTube Video Feed</h1>
-                    <p className="text-gray-500">Manage the YouTube channel videos shown on the home page</p>
+                    <p className="text-gray-500">Manage YouTube videos shown on the home page · Use ↑↓ to reorder</p>
                 </div>
                 {canEdit && (
                     <button
@@ -72,8 +120,35 @@ const YoutubeManager = () => {
                 </div>
             ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {videos.map((video) => (
+                    {videos.map((video, index) => (
                         <div key={video.id} className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 flex flex-col h-full">
+                            {/* Order badge + arrow controls */}
+                            <div className="flex items-center justify-between mb-3">
+                                <span className="inline-flex items-center gap-1.5 text-xs font-bold text-red-700 bg-red-50 border border-red-100 px-2.5 py-1 rounded-full">
+                                    # {index + 1}
+                                </span>
+                                {canEdit && (
+                                    <div className="flex gap-1">
+                                        <button
+                                            onClick={() => moveItem(index, 'up')}
+                                            disabled={index === 0 || reordering}
+                                            className="p-1.5 rounded-lg text-gray-400 hover:text-red-600 hover:bg-red-50 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                                            title="Move Up"
+                                        >
+                                            <ChevronUp size={16} />
+                                        </button>
+                                        <button
+                                            onClick={() => moveItem(index, 'down')}
+                                            disabled={index === videos.length - 1 || reordering}
+                                            className="p-1.5 rounded-lg text-gray-400 hover:text-red-600 hover:bg-red-50 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                                            title="Move Down"
+                                        >
+                                            <ChevronDown size={16} />
+                                        </button>
+                                    </div>
+                                )}
+                            </div>
+
                             <div className="aspect-video bg-black rounded-xl mb-4 overflow-hidden relative group">
                                 <img
                                     src={`https://img.youtube.com/vi/${video.video_id}/mqdefault.jpg`}
@@ -109,12 +184,14 @@ const YoutubeManager = () => {
                                             <button
                                                 onClick={() => navigate(`/admin/youtube/${video.id}`)}
                                                 className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                                                title="Edit"
                                             >
                                                 <Edit2 size={18} />
                                             </button>
                                             <button
                                                 onClick={() => handleDelete(video.id)}
                                                 className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                                                title="Delete"
                                             >
                                                 <Trash2 size={18} />
                                             </button>

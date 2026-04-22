@@ -1,8 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
 import { Save } from 'lucide-react';
-import { db } from '../../lib/firebase';
-import { doc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore';
 import { useUserRole } from '../../hooks/useUserRole';
 
 const PolicyContentManager = () => {
@@ -24,6 +22,10 @@ const PolicyContentManager = () => {
 
     const fetchContent = async () => {
         try {
+            const { getFirestoreDb } = await import('../../lib/firebase');
+            const { doc, getDoc } = await import('firebase/firestore');
+            const db = await getFirestoreDb();
+
             const keys = ['terms_conditions_content', 'refund_policy_content', 'privacy_policy_content', 'cancellation_policy_content'];
 
             const results: any = {};
@@ -50,6 +52,10 @@ const PolicyContentManager = () => {
     const handleSave = async () => {
         setSaving(true);
         try {
+            const { getFirestoreDb } = await import('../../lib/firebase');
+            const { doc, setDoc, serverTimestamp } = await import('firebase/firestore');
+            const db = await getFirestoreDb();
+
             let key = '';
             let textContent = '';
             let label = '';

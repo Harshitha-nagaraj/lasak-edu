@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Save, Image as ImageIcon } from 'lucide-react';
-import { db } from '../../lib/firebase';
-import { doc, getDoc, setDoc, updateDoc, serverTimestamp } from 'firebase/firestore';
 import { normalizeImagePath } from '../../lib/imageUtils';
 
 const NewsEditor = () => {
@@ -27,6 +25,10 @@ const NewsEditor = () => {
 
     const fetchNewsItem = async (newsId: string) => {
         try {
+            const { getFirestoreDb } = await import('../../lib/firebase');
+            const { doc, getDoc } = await import('firebase/firestore');
+            const db = await getFirestoreDb();
+
             const newsDoc = await getDoc(doc(db, 'news', newsId));
             if (!newsDoc.exists()) {
                 alert('News update not found!');
@@ -60,6 +62,10 @@ const NewsEditor = () => {
         setLoading(true);
 
         try {
+            const { getFirestoreDb } = await import('../../lib/firebase');
+            const { doc, setDoc, updateDoc, serverTimestamp } = await import('firebase/firestore');
+            const db = await getFirestoreDb();
+
             const now = serverTimestamp();
             const newsData: any = {
                 ...formData,

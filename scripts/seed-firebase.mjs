@@ -1024,7 +1024,7 @@ const COURSES = [
 ];
 
 const SITE_SETTINGS = {
-    contact_form_settings: { url: 'https://script.google.com/macros/s/AKfycbwA4ov727SfKJtwf851GvUQEATLRpUUV_JzWzAhgjIWuETQmKPHH9e7N35T5wWnE7PF4w/exec', title: 'Submit Your Details', departments: ['Mechanical', 'Civil', 'CSE', 'IT', 'ECE', 'Others'] },
+    contact_form_settings: { url: 'https://script.google.com/macros/s/AKfycbyCXeBcecLMxEqsI895ypcAgNwa0v4obpE6lXMczvDolz3kaMRPf6aDxmTH9vEL5FzKsw/exec', title: 'Submit Your Details', departments: ['Mechanical', 'Civil', 'CSE', 'IT', 'ECE', 'Others'] },
     social_links: { instagram: 'https://www.instagram.com/lasak_techno_institute/', youtube: 'https://www.youtube.com/@lasakedutechno', facebook: 'https://www.facebook.com/lasak.techno.institute', whatsapp: 'https://wa.me/917418734466' },
     popup_settings: { enabled: true, title: 'Special Offer!', subtitle: 'Apply for Scholarship', delay_ms: 5000, features: ['Free Demo Classes', 'Internship Included', 'Scholarship Available'], button_text: 'Apply Now' },
 };

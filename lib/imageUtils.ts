@@ -5,7 +5,8 @@
 export const normalizeImagePath = (src: string | undefined | null): string => {
     if (!src || typeof src !== 'string') return '';
 
-    const trimmedSrc = src.trim();
+    // Replace Windows backslashes with forward slashes immediately
+    let trimmedSrc = src.trim().replace(/\\/g, '/');
     if (!trimmedSrc) return '';
 
     // 1. If it's an absolute URL (http/https) or data URI, return as is
@@ -25,7 +26,8 @@ export const normalizeImagePath = (src: string | undefined | null): string => {
     if (path.startsWith('/img/')) {
         const parts = path.split('/');
         const filename = parts.pop() || '';
-        const directory = parts.join('/');
+        // Lowercase all directory segments under /img/
+        const directory = parts.map(p => p.toLowerCase()).join('/');
 
         const dotIndex = filename.lastIndexOf('.');
         if (dotIndex > 0) {
@@ -44,3 +46,4 @@ export const normalizeImagePath = (src: string | undefined | null): string => {
 
     return encodeURI(path);
 };
+

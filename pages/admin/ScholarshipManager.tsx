@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { GraduationCap, Plus, Edit2, Trash2, Save, X, ToggleLeft, ToggleRight, ArrowUp, ArrowDown, Filter, Tag, Copy } from 'lucide-react';
-import { db } from '../../lib/firebase';
-import { collection, query, orderBy, getDocs, doc, getDoc, setDoc, updateDoc, deleteDoc, addDoc, limit } from 'firebase/firestore';
+
 
 // Available categories
 const CATEGORIES = ['All', 'IT', 'Mechanical', 'Civil', 'Arts', 'Kids'];
@@ -104,6 +103,10 @@ const ScholarshipManager: React.FC = () => {
     const fetchCoupons = async () => {
         setCouponsLoading(true);
         try {
+            const { getFirestoreDb } = await import('../../lib/firebase');
+            const { collection, getDocs } = await import('firebase/firestore');
+            const db = await getFirestoreDb();
+
             const couponsSnapshot = await getDocs(collection(db, 'coupon_codes'));
             const data = couponsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as CouponCode));
             data.sort((a, b) => new Date(b.created_at || 0).getTime() - new Date(a.created_at || 0).getTime());
@@ -120,6 +123,10 @@ const ScholarshipManager: React.FC = () => {
         if (newCoupon.discount_value <= 0) { showMessage('error', 'Discount value must be greater than 0'); return; }
         setSaving(true);
         try {
+            const { getFirestoreDb } = await import('../../lib/firebase');
+            const { collection, addDoc } = await import('firebase/firestore');
+            const db = await getFirestoreDb();
+
             const couponData = {
                 ...newCoupon,
                 code: newCoupon.code.trim().toUpperCase(),
@@ -142,6 +149,10 @@ const ScholarshipManager: React.FC = () => {
         if (!editingCoupon) return;
         setSaving(true);
         try {
+            const { getFirestoreDb } = await import('../../lib/firebase');
+            const { doc, updateDoc } = await import('firebase/firestore');
+            const db = await getFirestoreDb();
+
             await updateDoc(doc(db, 'coupon_codes', editingCoupon.id), {
                 code: editingCoupon.code.trim().toUpperCase(),
                 description: editingCoupon.description,
@@ -163,6 +174,10 @@ const ScholarshipManager: React.FC = () => {
 
     const handleToggleCoupon = async (coupon: CouponCode) => {
         try {
+            const { getFirestoreDb } = await import('../../lib/firebase');
+            const { doc, updateDoc } = await import('firebase/firestore');
+            const db = await getFirestoreDb();
+
             await updateDoc(doc(db, 'coupon_codes', coupon.id), { is_active: !coupon.is_active });
             fetchCoupons();
         } catch (err) {
@@ -173,6 +188,10 @@ const ScholarshipManager: React.FC = () => {
     const handleDeleteCoupon = async (id: string) => {
         if (!window.confirm('Delete this coupon code permanently?')) return;
         try {
+            const { getFirestoreDb } = await import('../../lib/firebase');
+            const { doc, deleteDoc } = await import('firebase/firestore');
+            const db = await getFirestoreDb();
+
             await deleteDoc(doc(db, 'coupon_codes', id));
             showMessage('success', 'Coupon deleted.');
             fetchCoupons();
@@ -184,6 +203,10 @@ const ScholarshipManager: React.FC = () => {
     const fetchSettings = async () => {
         setSettingsLoading(true);
         try {
+            const { getFirestoreDb } = await import('../../lib/firebase');
+            const { collection, query, limit, getDocs, doc, setDoc } = await import('firebase/firestore');
+            const db = await getFirestoreDb();
+
             const settingsSnapshot = await getDocs(query(collection(db, 'scholarship_settings'), limit(1)));
             if (!settingsSnapshot.empty) {
                 const docSnap = settingsSnapshot.docs[0];
@@ -224,6 +247,10 @@ const ScholarshipManager: React.FC = () => {
         if (!settings) return;
         setSaving(true);
         try {
+            const { getFirestoreDb } = await import('../../lib/firebase');
+            const { doc, updateDoc } = await import('firebase/firestore');
+            const db = await getFirestoreDb();
+
             await updateDoc(doc(db, 'scholarship_settings', settings.id), settings as any);
             showMessage('success', 'Popup settings saved successfully');
         } catch (err) {
@@ -237,6 +264,10 @@ const ScholarshipManager: React.FC = () => {
     const fetchRules = async () => {
         setLoading(true);
         try {
+            const { getFirestoreDb } = await import('../../lib/firebase');
+            const { collection, getDocs } = await import('firebase/firestore');
+            const db = await getFirestoreDb();
+
             const rulesRef = collection(db, 'scholarship_rules');
             const querySnapshot = await getDocs(rulesRef);
             const data = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as ScholarshipRule));
@@ -268,6 +299,10 @@ const ScholarshipManager: React.FC = () => {
 
         setSaving(true);
         try {
+            const { getFirestoreDb } = await import('../../lib/firebase');
+            const { collection, addDoc } = await import('firebase/firestore');
+            const db = await getFirestoreDb();
+
             // Get max priority for this category
             const categoryRules = rules.filter(r => r.category === newRule.category);
             const maxPriority = categoryRules.length > 0
@@ -293,6 +328,10 @@ const ScholarshipManager: React.FC = () => {
 
         setSaving(true);
         try {
+            const { getFirestoreDb } = await import('../../lib/firebase');
+            const { doc, updateDoc } = await import('firebase/firestore');
+            const db = await getFirestoreDb();
+
             await updateDoc(doc(db, 'scholarship_rules', editingRule.id), {
                 name: editingRule.name,
                 min_percentage: editingRule.min_percentage,
@@ -319,6 +358,10 @@ const ScholarshipManager: React.FC = () => {
         if (!window.confirm('Are you sure you want to delete this scholarship rule?')) return;
 
         try {
+            const { getFirestoreDb } = await import('../../lib/firebase');
+            const { doc, deleteDoc } = await import('firebase/firestore');
+            const db = await getFirestoreDb();
+
             await deleteDoc(doc(db, 'scholarship_rules', id));
             showMessage('success', 'Rule deleted successfully');
             fetchRules();
@@ -330,6 +373,10 @@ const ScholarshipManager: React.FC = () => {
 
     const handleToggleActive = async (rule: ScholarshipRule) => {
         try {
+            const { getFirestoreDb } = await import('../../lib/firebase');
+            const { doc, updateDoc } = await import('firebase/firestore');
+            const db = await getFirestoreDb();
+
             await updateDoc(doc(db, 'scholarship_rules', rule.id), { is_active: !rule.is_active });
             fetchRules();
         } catch (err) {
@@ -348,6 +395,10 @@ const ScholarshipManager: React.FC = () => {
         const swapRule = categoryRules[swapIndex];
 
         try {
+            const { getFirestoreDb } = await import('../../lib/firebase');
+            const { doc, updateDoc } = await import('firebase/firestore');
+            const db = await getFirestoreDb();
+
             await updateDoc(doc(db, 'scholarship_rules', rule.id), { priority: swapRule.priority });
             await updateDoc(doc(db, 'scholarship_rules', swapRule.id), { priority: rule.priority });
             fetchRules();
@@ -358,6 +409,10 @@ const ScholarshipManager: React.FC = () => {
 
     const handleSeedCategoryRules = async (category: string) => {
         try {
+            const { getFirestoreDb } = await import('../../lib/firebase');
+            const { collection, addDoc } = await import('firebase/firestore');
+            const db = await getFirestoreDb();
+
             const defaultRules = [
                 { name: `${category} - Distinction Excellence`, min_percentage: 90, max_percentage: 100, discount_type: 'percentage', discount_value: 30, is_active: true, priority: 1, category },
                 { name: `${category} - First Class Merit`, min_percentage: 75, max_percentage: 89, discount_type: 'percentage', discount_value: 20, is_active: true, priority: 2, category },
@@ -556,7 +611,7 @@ const ScholarshipManager: React.FC = () => {
                                 <div className="w-8 h-8 border-4 border-green-600 border-t-transparent rounded-full animate-spin" />
                             </div>
                         ) : coupons.length === 0 ? (
-                            <div className="text-center py-12 text-slate-400">
+                            <div className="text-center py-12 text-slate-600">
                                 <Tag size={40} className="mx-auto mb-2 opacity-30" />
                                 <p>No coupon codes yet. Click "Add Coupon" to create one.</p>
                             </div>
@@ -662,7 +717,7 @@ const ScholarshipManager: React.FC = () => {
                                                                     className="p-1.5 text-green-600 hover:bg-green-50 rounded"
                                                                 ><Save size={14} /></button>
                                                                 <button onClick={() => setEditingCoupon(null)}
-                                                                    className="p-1.5 text-slate-400 hover:bg-slate-100 rounded"
+                                                                    className="p-1.5 text-slate-600 hover:bg-slate-100 rounded"
                                                                 ><X size={14} /></button>
                                                             </>
                                                         ) : (
@@ -836,7 +891,7 @@ const ScholarshipManager: React.FC = () => {
                                         <tbody>
                                             {categoryRules.length === 0 ? (
                                                 <tr>
-                                                    <td colSpan={6} className="px-6 py-8 text-center text-slate-400">
+                                                    <td colSpan={6} className="px-6 py-8 text-center text-slate-600">
                                                         No rules for this category. Click "Add Default Rules" or create custom ones.
                                                     </td>
                                                 </tr>
@@ -848,7 +903,7 @@ const ScholarshipManager: React.FC = () => {
                                                                 <button
                                                                     onClick={() => handleMovePriority(rule, 'up')}
                                                                     disabled={index === 0}
-                                                                    className="p-1 text-slate-400 hover:text-slate-600 disabled:opacity-30"
+                                                                    className="p-1 text-slate-600 hover:text-slate-600 disabled:opacity-30"
                                                                 >
                                                                     <ArrowUp size={14} />
                                                                 </button>
@@ -856,7 +911,7 @@ const ScholarshipManager: React.FC = () => {
                                                                 <button
                                                                     onClick={() => handleMovePriority(rule, 'down')}
                                                                     disabled={index === categoryRules.length - 1}
-                                                                    className="p-1 text-slate-400 hover:text-slate-600 disabled:opacity-30"
+                                                                    className="p-1 text-slate-600 hover:text-slate-600 disabled:opacity-30"
                                                                 >
                                                                     <ArrowDown size={14} />
                                                                 </button>
@@ -942,7 +997,7 @@ const ScholarshipManager: React.FC = () => {
                                                                         </button>
                                                                         <button
                                                                             onClick={() => setEditingRule(null)}
-                                                                            className="p-1.5 text-slate-400 hover:bg-slate-100 rounded"
+                                                                            className="p-1.5 text-slate-600 hover:bg-slate-100 rounded"
                                                                         >
                                                                             <X size={14} />
                                                                         </button>

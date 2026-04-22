@@ -3,16 +3,19 @@ import { motion } from 'framer-motion';
 import { AlertCircle, CheckCircle, Award, Search, ShieldCheck, FileText, HelpCircle, PhoneCall, ChevronDown } from 'lucide-react';
 import type { CertificateData } from '../types';
 import SEO from '../components/SEO';
-import { db } from '../lib/firebase';
-import { collection, query, where, getDocs, orderBy, limit, doc, getDoc } from 'firebase/firestore';
 import { fetchWithCache } from '../lib/cacheUtils';
 import { normalizeImagePath } from '../lib/imageUtils';
-import { CERTIFICATES } from '../constants';
+import { CERTIFICATES } from '../constants/certificates';
+
+// Format: TN/CBE/069/LTIEC0119
+const CERT_ID_REGEX = /^[A-Z]{2}\/[A-Z]{3}\/\d{3}\/[A-Z]+\d{1,}$/;
+const CERT_ID_PLACEHOLDER = 'e.g. TN/CBE/069/LTIEC0119';
 
 const Verification = () => {
   const [certId, setCertId] = useState('');
   const [result, setResult] = useState<CertificateData | null>(null);
   const [error, setError] = useState(false);
+  const [formatError, setFormatError] = useState(false);
   const [loading, setLoading] = useState(false);
 
   // Content states — initialized with fallback data so sections always show
@@ -64,6 +67,9 @@ const Verification = () => {
   useEffect(() => {
     const fetchPageContent = async () => {
       try {
+        const { getFirestoreDb } = await import('../lib/firebase');
+        const { collection, query, where, orderBy, limit } = await import('firebase/firestore');
+        const db = await getFirestoreDb();
         // Fetch How it Works steps
         const stepsQ = query(
           collection(db, 'cert_how_it_works'),
@@ -157,39 +163,77 @@ const Verification = () => {
 
   const handleVerify = async (e: React.FormEvent) => {
     e.preventDefault();
-    const targetId = certId.trim();
+    const targetId = certId.trim().toUpperCase();
     if (!targetId) return;
 
+    // Validate format
+    if (!CERT_ID_REGEX.test(targetId)) {
+      setFormatError(true);
+      setError(false);
+      setResult(null);
+      return;
+    }
+
+    setFormatError(false);
     setLoading(true);
     setResult(null);
     setError(false);
 
     try {
-      // First, try to fetch from Firestore
-      const certDoc = await getDoc(doc(db, 'certificates', targetId));
+      const { getFirestoreDb } = await import('../lib/firebase');
+      const { collection, query, where, getDocs } = await import('firebase/firestore');
+      const db = await getFirestoreDb();
 
-      if (certDoc.exists()) {
-        const data = certDoc.data();
+      // Query by the cert_id FIELD (not document ID) — handles IDs with slashes and any format
+      const q = query(
+        collection(db, 'certificates'),
+        where('cert_id', '==', targetId)
+      );
+      const snapshot = await getDocs(q);
+
+      if (!snapshot.empty) {
+        const data = snapshot.docs[0].data();
         setResult({
-          certId: data.certId || data.cert_id || targetId,
-          studentName: data.studentName || data.student_name,
-          courseName: data.courseName || data.course_name,
+          certId: data.cert_id || targetId,
+          studentName: data.student_name || data.studentName,
+          courseName: data.course_name || data.courseName,
           duration: data.duration,
-          completionDate: data.completionDate || data.completion_date || '',
+          completionDate: data.completion_date || data.completionDate || '',
           status: data.status as any
         });
       } else {
-        // Fallback to static constants if not found in Firestore
-        const found = certificates.find(c => c.certId.toLowerCase() === targetId.toLowerCase());
-        if (found) {
-          setResult(found);
+        // Try case-insensitive: fetch all and compare
+        const allQ = query(collection(db, 'certificates'));
+        const allSnap = await getDocs(allQ);
+        const lowerTarget = targetId.toLowerCase();
+        const match = allSnap.docs.find(d => {
+          const cid = d.data().cert_id || '';
+          return cid.toLowerCase() === lowerTarget;
+        });
+
+        if (match) {
+          const data = match.data();
+          setResult({
+            certId: data.cert_id || targetId,
+            studentName: data.student_name || data.studentName,
+            courseName: data.course_name || data.courseName,
+            duration: data.duration,
+            completionDate: data.completion_date || data.completionDate || '',
+            status: data.status as any
+          });
         } else {
-          setError(true);
+          // Fallback to static constants
+          const found = certificates.find(c => c.certId.toLowerCase() === lowerTarget);
+          if (found) {
+            setResult(found);
+          } else {
+            setError(true);
+          }
         }
       }
     } catch (err) {
       console.error('Error verifying certificate:', err);
-      // On error, also try fallback
+      // On error, try static fallback
       const found = certificates.find(c => c.certId.toLowerCase() === targetId.toLowerCase());
       if (found) {
         setResult(found);
@@ -240,9 +284,16 @@ const Verification = () => {
               <input
                 type="text"
                 value={certId}
-                onChange={(e) => setCertId(e.target.value)}
-                placeholder="Certificate ID"
-                className="w-full bg-white border-2 border-slate-100 rounded-full py-4 md:py-6 px-6 md:px-10 text-base md:text-xl shadow-2xl focus:border-blue-500 focus:ring-0 outline-none transition-all placeholder:text-slate-300"
+                onChange={(e) => {
+                  setCertId(e.target.value.toUpperCase());
+                  setFormatError(false);
+                  setError(false);
+                  setResult(null);
+                }}
+                placeholder={CERT_ID_PLACEHOLDER}
+                className={`w-full bg-white border-2 rounded-full py-4 md:py-6 px-6 md:px-10 text-base md:text-xl shadow-2xl focus:ring-0 outline-none transition-all placeholder:text-slate-300 font-mono ${
+                  formatError ? 'border-red-400 focus:border-red-500' : 'border-slate-100 focus:border-blue-500'
+                }`}
               />
               <button
                 type="submit"
@@ -254,8 +305,27 @@ const Verification = () => {
             </div>
           </form>
 
+          {/* Format hint */}
+          <p className="text-center text-xs text-slate-400 mt-3 font-mono tracking-wide">
+            Format: <span className="text-blue-500 font-semibold">TN/CBE/069/LTIEC0119</span>
+          </p>
+
           {/* Result Area */}
-          <div className="mt-8 min-h-[100px]">
+          <div className="mt-6 min-h-[100px]">
+            {formatError && (
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="bg-orange-50 border border-orange-200 text-orange-700 p-5 rounded-2xl flex items-center gap-3 shadow"
+              >
+                <AlertCircle className="shrink-0" size={22} />
+                <div>
+                  <p className="font-bold">Invalid Certificate ID Format</p>
+                  <p className="text-sm mt-0.5">Please enter in the format: <span className="font-mono font-bold">TN/CBE/069/LTIEC0119</span></p>
+                </div>
+              </motion.div>
+            )}
+
             {error && (
               <motion.div
                 initial={{ opacity: 0, y: 10 }}
@@ -289,22 +359,22 @@ const Verification = () => {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8">
                   <div className="space-y-1">
-                    <label className="text-[10px] uppercase font-black text-slate-400 tracking-widest">Student Name</label>
+                    <label className="text-[10px] uppercase font-black text-slate-600 tracking-widest">Student Name</label>
                     <p className="text-xl font-bold text-slate-800">{result.studentName}</p>
                   </div>
 
                   <div className="space-y-1">
-                    <label className="text-[10px] uppercase font-black text-slate-400 tracking-widest">Certificate Number</label>
+                    <label className="text-[10px] uppercase font-black text-slate-600 tracking-widest">Certificate Number</label>
                     <p className="text-xl font-mono font-bold text-blue-600">{result.certId}</p>
                   </div>
 
                   <div className="space-y-1">
-                    <label className="text-[10px] uppercase font-black text-slate-400 tracking-widest">Program / Course</label>
+                    <label className="text-[10px] uppercase font-black text-slate-600 tracking-widest">Program / Course</label>
                     <p className="text-lg font-semibold text-slate-700">{result.courseName}</p>
                   </div>
 
                   <div className="space-y-1">
-                    <label className="text-[10px] uppercase font-black text-slate-400 tracking-widest">Verification Status</label>
+                    <label className="text-[10px] uppercase font-black text-slate-600 tracking-widest">Verification Status</label>
                     <div>
                       <span className="inline-flex px-3 py-1 bg-green-50 text-green-700 rounded-full text-xs font-black border border-green-100">
                         {result.status}
@@ -313,19 +383,19 @@ const Verification = () => {
                   </div>
 
                   <div className="space-y-1">
-                    <label className="text-[10px] uppercase font-black text-slate-400 tracking-widest">Duration</label>
+                    <label className="text-[10px] uppercase font-black text-slate-600 tracking-widest">Duration</label>
                     <p className="text-slate-600 font-medium">{result.duration}</p>
                   </div>
 
                   {result.completionDate && (
                     <div className="space-y-1">
-                      <label className="text-[10px] uppercase font-black text-slate-400 tracking-widest">Date of Issue</label>
+                      <label className="text-[10px] uppercase font-black text-slate-600 tracking-widest">Date of Issue</label>
                       <p className="text-slate-600 font-medium">{result.completionDate}</p>
                     </div>
                   )}
                 </div>
 
-                <div className="mt-12 flex items-center justify-between pt-8 border-t border-slate-50 text-slate-400">
+                <div className="mt-12 flex items-center justify-between pt-8 border-t border-slate-50 text-slate-600">
                   <div className="text-xs italic font-medium">Verify again at: lasakedu.in/verify</div>
                   <Award size={40} className="text-yellow-400 opacity-20" />
                 </div>
@@ -374,7 +444,7 @@ const Verification = () => {
             <div className="flex flex-col lg:flex-row items-center gap-16 relative z-10">
               <div className="lg:w-1/2">
                 <h2 className="text-4xl font-black mb-8">{credentialsSection?.heading || 'Locate Your Credentials'}</h2>
-                <p className="text-slate-400 text-lg mb-8 leading-relaxed">
+                <p className="text-slate-600 text-lg mb-8 leading-relaxed">
                   {credentialsSection?.description || 'Your official LasakEdu certificate contains a unique identification number. Use this number for verification during job applications or higher education processing.'}
                 </p>
                 <ul className="space-y-4">
@@ -461,7 +531,7 @@ const Verification = () => {
                 <details key={i} className="group bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden transition-all hover:border-blue-200">
                   <summary className="flex items-center justify-between p-6 cursor-pointer font-bold text-slate-800 list-none">
                     {faq.question}
-                    <ChevronDown className="group-open:rotate-180 transition-transform text-slate-400" size={20} />
+                    <ChevronDown className="group-open:rotate-180 transition-transform text-slate-600" size={20} />
                   </summary>
                   <div className="px-6 pb-6 text-slate-500 text-sm leading-relaxed border-t border-slate-50 pt-4">
                     {faq.answer}

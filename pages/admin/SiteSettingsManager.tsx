@@ -1,6 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { db } from '../../lib/firebase';
-import { collection, query, where, getDocs, doc, setDoc } from 'firebase/firestore';
 import { useUserRole } from '../../hooks/useUserRole';
 import { Save, Plus, Trash2, ExternalLink, GripVertical, X } from 'lucide-react';
 
@@ -59,6 +57,10 @@ const SiteSettingsManager = () => {
 
     const fetchSettings = async () => {
         try {
+            const { getFirestoreDb } = await import('../../lib/firebase');
+            const { collection, query, where, getDocs } = await import('firebase/firestore');
+            const db = await getFirestoreDb();
+
             const settingsQuery = query(
                 collection(db, 'site_settings'),
                 where('key', 'in', ['nav_menu', 'header_cta', 'rec_course_button', 'online_course_button', 'footer_quick_links', 'footer_departments', 'footer_policy_links', 'footer_text', 'contact_form_settings', 'contact_page_content'])
@@ -107,6 +109,10 @@ const SiteSettingsManager = () => {
     const saveMenu = async (key: string, items: NavMenuItem[], category: string) => {
         setSaving(true);
         try {
+            const { getFirestoreDb } = await import('../../lib/firebase');
+            const { doc, setDoc } = await import('firebase/firestore');
+            const db = await getFirestoreDb();
+
             await setDoc(doc(db, 'site_settings', key), {
                 key, // Ensure key is saved inside the document for safer fetching
                 value: { items },
@@ -125,6 +131,10 @@ const SiteSettingsManager = () => {
     const saveFooterText = async () => {
         setSaving(true);
         try {
+            const { getFirestoreDb } = await import('../../lib/firebase');
+            const { doc, setDoc } = await import('firebase/firestore');
+            const db = await getFirestoreDb();
+
             await setDoc(doc(db, 'site_settings', 'footer_text'), {
                 value: footerText,
                 category: 'footer'
@@ -142,6 +152,10 @@ const SiteSettingsManager = () => {
     const saveFormSettings = async () => {
         setSaving(true);
         try {
+            const { getFirestoreDb } = await import('../../lib/firebase');
+            const { doc, setDoc } = await import('firebase/firestore');
+            const db = await getFirestoreDb();
+
             await setDoc(doc(db, 'site_settings', 'contact_form_settings'), {
                 value: formSettings,
                 category: 'contact'
@@ -159,6 +173,10 @@ const SiteSettingsManager = () => {
     const saveContactPageSettings = async () => {
         setSaving(true);
         try {
+            const { getFirestoreDb } = await import('../../lib/firebase');
+            const { doc, setDoc } = await import('firebase/firestore');
+            const db = await getFirestoreDb();
+
             await setDoc(doc(db, 'site_settings', 'contact_page_content'), {
                 value: contactPageSettings,
                 category: 'contact'
@@ -176,6 +194,10 @@ const SiteSettingsManager = () => {
     const saveHeaderCTA = async () => {
         setSaving(true);
         try {
+            const { getFirestoreDb } = await import('../../lib/firebase');
+            const { doc, setDoc } = await import('firebase/firestore');
+            const db = await getFirestoreDb();
+
             await setDoc(doc(db, 'site_settings', 'header_cta'), {
                 value: headerCTA,
                 category: 'header'
@@ -193,6 +215,10 @@ const SiteSettingsManager = () => {
     const saveRecCourseButton = async () => {
         setSaving(true);
         try {
+            const { getFirestoreDb } = await import('../../lib/firebase');
+            const { doc, setDoc } = await import('firebase/firestore');
+            const db = await getFirestoreDb();
+
             await setDoc(doc(db, 'site_settings', 'rec_course_button'), {
                 value: recCourseButton,
                 category: 'header'
@@ -210,6 +236,10 @@ const SiteSettingsManager = () => {
     const saveOnlineCourseButton = async () => {
         setSaving(true);
         try {
+            const { getFirestoreDb } = await import('../../lib/firebase');
+            const { doc, setDoc } = await import('firebase/firestore');
+            const db = await getFirestoreDb();
+
             await setDoc(doc(db, 'site_settings', 'online_course_button'), {
                 value: onlineCourseButton,
                 category: 'floating'

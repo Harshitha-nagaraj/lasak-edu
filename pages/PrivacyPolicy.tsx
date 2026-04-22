@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Mail, Phone, MapPin } from "lucide-react";
-import { db } from "../lib/firebase";
-import { doc, getDoc } from "firebase/firestore";
 
 const PrivacyPolicy = () => {
   const [content, setContent] = useState<string>('');
@@ -11,6 +9,9 @@ const PrivacyPolicy = () => {
   useEffect(() => {
     const fetchContent = async () => {
       try {
+        const { getFirestoreDb } = await import('../lib/firebase');
+        const { doc, getDoc } = await import('firebase/firestore');
+        const db = await getFirestoreDb();
         const docRef = doc(db, 'site_settings', 'privacy_policy_content');
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
@@ -78,7 +79,7 @@ const PrivacyPolicy = () => {
             <div className="relative z-10 grid md:grid-cols-2 gap-12 items-center">
               <div>
                 <h2 className="text-3xl font-black mb-4">Questions?</h2>
-                <p className="text-slate-400 font-medium">If you have any questions regarding this Privacy Policy, please reach out to our legal team.</p>
+                <p className="text-slate-600 font-medium">If you have any questions regarding this Privacy Policy, please reach out to our legal team.</p>
               </div>
               <div className="space-y-6">
                 <div className="flex items-center gap-4 group/item">
@@ -86,7 +87,7 @@ const PrivacyPolicy = () => {
                     <Mail className="text-blue-400" />
                   </div>
                   <div>
-                    <p className="text-xs text-slate-400 font-black uppercase tracking-widest">Email Us</p>
+                    <p className="text-xs text-slate-600 font-black uppercase tracking-widest">Email Us</p>
                     <p className="font-bold">info@lasakedu.in</p>
                   </div>
                 </div>
@@ -95,7 +96,7 @@ const PrivacyPolicy = () => {
                     <Phone className="text-emerald-400" />
                   </div>
                   <div>
-                    <p className="text-xs text-slate-400 font-black uppercase tracking-widest">Call Us</p>
+                    <p className="text-xs text-slate-600 font-black uppercase tracking-widest">Call Us</p>
                     <p className="font-bold">+91 74187 32525</p>
                   </div>
                 </div>
@@ -104,7 +105,7 @@ const PrivacyPolicy = () => {
                     <MapPin className="text-rose-400" />
                   </div>
                   <div>
-                    <p className="text-xs text-slate-400 font-black uppercase tracking-widest">Visit Us</p>
+                    <p className="text-xs text-slate-600 font-black uppercase tracking-widest">Visit Us</p>
                     <p className="font-bold text-sm leading-relaxed">
                       11A, STV Nagar, Peelamedu,<br />
                       Nava India Signal, Coimbatore - 641004

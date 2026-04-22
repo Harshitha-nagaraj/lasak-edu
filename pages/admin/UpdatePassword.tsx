@@ -2,8 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { Lock, ArrowRight } from 'lucide-react';
-import { auth } from '../../lib/firebase';
-import { updatePassword, onAuthStateChanged } from 'firebase/auth';
 
 const UpdatePassword = () => {
     const [password, setPassword] = useState('');
@@ -11,19 +9,33 @@ const UpdatePassword = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        const unsubscribe = onAuthStateChanged(auth, (user) => {
-            if (!user) {
-                alert("Invalid or expired reset link. Please try again.");
-                navigate('/admin/login');
-            }
-        });
-        return () => unsubscribe();
+        const initAuth = async () => {
+            const { getFirebaseAuth } = await import('../../lib/firebase');
+            const { onAuthStateChanged } = await import('firebase/auth');
+            const auth = await getFirebaseAuth();
+            
+            const unsubscribe = onAuthStateChanged(auth, (user) => {
+                if (!user) {
+                    alert("Invalid or expired reset link. Please try again.");
+                    navigate('/admin/login');
+                }
+            });
+            return unsubscribe;
+        };
+
+        let unsubscribe: (() => void) | undefined;
+        initAuth().then(unsub => { unsubscribe = unsub; });
+
+        return () => { if (unsubscribe) unsubscribe(); };
     }, [navigate]);
 
     const handleUpdate = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
         try {
+            const { getFirebaseAuth } = await import('../../lib/firebase');
+            const { updatePassword } = await import('firebase/auth');
+            const auth = await getFirebaseAuth();
             const user = auth.currentUser;
             if (!user) throw new Error("No user session found");
 

@@ -1,8 +1,8 @@
 import React from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { m, AnimatePresence } from 'framer-motion';
 import { X, Check, Building2, Phone, ArrowRight, ArrowLeft, BookOpen } from 'lucide-react';
 import { Course } from '../types';
-import { COMPANY_LOGOS } from '../constants';
+import { COMPANY_LOGOS } from '../constants/ui';
 
 const cleanPath = (url: string) => {
     if (!url) return url;
@@ -61,7 +61,7 @@ const CourseDetailsModal: React.FC<CourseDetailsModalProps> = ({ course, isOpen,
             {isOpen && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6">
                     {/* Backdrop */}
-                    <motion.div
+                    <m.div
                         variants={overlayVariants}
                         initial="hidden"
                         animate="visible"
@@ -71,7 +71,7 @@ const CourseDetailsModal: React.FC<CourseDetailsModalProps> = ({ course, isOpen,
                     />
 
                     {/* Modal Container */}
-                    <motion.div
+                    <m.div
                         variants={modalVariants}
                         initial="hidden"
                         animate="visible"
@@ -90,7 +90,8 @@ const CourseDetailsModal: React.FC<CourseDetailsModalProps> = ({ course, isOpen,
                             <div className="absolute top-6 left-6 z-10">
                                 <button
                                     onClick={onClose}
-                                    className="flex items-center gap-2 px-4 py-2 bg-white/10 hover:bg-white/20 backdrop-blur-md text-white rounded-full text-sm font-medium transition-colors"
+                                    aria-label="Back to courses"
+                                    className="flex items-center gap-2 px-4 py-2 bg-white/20 hover:bg-white/30 backdrop-blur-md text-white rounded-full text-sm font-bold transition-all shadow-lg"
                                 >
                                     <ArrowLeft size={16} /> Back
                                 </button>
@@ -237,7 +238,7 @@ const CourseDetailsModal: React.FC<CourseDetailsModalProps> = ({ course, isOpen,
                             </div>
                         </div>
 
-                    </motion.div>
+                    </m.div>
                 </div>
             )}
         </AnimatePresence>

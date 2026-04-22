@@ -1,9 +1,8 @@
 
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { db } from '../../lib/firebase';
-import { doc, getDoc, setDoc, updateDoc, serverTimestamp } from 'firebase/firestore';
 import { ArrowLeft, Save, Briefcase, Image as ImageIcon } from 'lucide-react';
+import ImageUploader from '../../components/admin/ImageUploader';
 import { useUserRole } from '../../hooks/useUserRole';
 
 const MOUEditor = () => {
@@ -29,6 +28,10 @@ const MOUEditor = () => {
     const fetchMOU = async (mouId: string) => {
         try {
             setLoading(true);
+            const { getFirestoreDb } = await import('../../lib/firebase');
+            const { doc, getDoc } = await import('firebase/firestore');
+            const db = await getFirestoreDb();
+
             const mouDoc = await getDoc(doc(db, 'mous', mouId));
             if (!mouDoc.exists()) {
                 alert('MOU not found!');
@@ -61,11 +64,17 @@ const MOUEditor = () => {
         const isNew = !id || id === 'new';
         try {
             setSaving(true);
-            const mouData = {
+            const { getFirestoreDb } = await import('../../lib/firebase');
+            const { doc, setDoc, updateDoc, serverTimestamp } = await import('firebase/firestore');
+            const db = await getFirestoreDb();
+
+            const mouData: any = {
                 ...formData,
-                updated_at: serverTimestamp(),
-                created_at: isNew ? serverTimestamp() : undefined
+                updated_at: serverTimestamp()
             };
+            if (isNew) {
+                mouData.created_at = serverTimestamp();
+            }
 
             if (id && id !== 'new') {
                 await updateDoc(doc(db, 'mous', id), mouData);
@@ -153,25 +162,14 @@ const MOUEditor = () => {
                     </div>
 
                     <div className="md:col-span-2">
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Image URL</label>
-                        <div className="flex gap-4 items-start">
-                            <div className="flex-1">
-                                <input
-                                    type="text"
-                                    value={formData.image}
-                                    onChange={(e) => setFormData({ ...formData, image: e.target.value })}
-                                    className="w-full px-4 py-2 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none"
-                                    placeholder="/img/mous/college-mou.jpg"
-                                />
-                            </div>
-                            <div className="w-32 h-20 bg-gray-50 rounded-xl border border-gray-200 overflow-hidden flex items-center justify-center shrink-0">
-                                {formData.image ? (
-                                    <img src={formData.image} alt="Preview" className="w-full h-full object-cover" />
-                                ) : (
-                                    <ImageIcon className="text-gray-300" />
-                                )}
-                            </div>
-                        </div>
+                        <ImageUploader
+                            value={formData.image}
+                            onChange={(url) => setFormData({ ...formData, image: url })}
+                            storagePath="mous"
+                            label="Image URL"
+                            placeholder="/img/mous/college-mou.jpg"
+                            previewClass="w-48 h-32 rounded-xl object-cover border border-gray-200"
+                        />
                     </div>
                 </div>
 

@@ -1,8 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
 import { Plus, Trash2, Upload, Building2, Link as LinkIcon, Save, Briefcase, Filter } from 'lucide-react';
-import { db } from '../../lib/firebase';
-import { collection, query, getDocs, orderBy, addDoc, serverTimestamp, deleteDoc, doc } from 'firebase/firestore';
 import ImageUploader from '../../components/admin/ImageUploader';
 import { useUserRole } from '../../hooks/useUserRole';
 
@@ -14,6 +12,13 @@ interface Partner {
     logo: string;
     type?: 'training' | 'placement';
 }
+
+const cleanPath = (url: string) => {
+    if (!url) return url;
+    if (url.startsWith('https://') || url.startsWith('http://')) return url;
+    let cleaned = url.replace(/\\/g, '/').replace(/^\/?public\//, '/').replace(/\/+/g, '/');
+    return cleaned.startsWith('/') ? cleaned : '/' + cleaned;
+};
 
 const PartnerManager = () => {
     const { canEdit } = useUserRole();
@@ -36,6 +41,10 @@ const PartnerManager = () => {
 
     const fetchPartners = async () => {
         try {
+            const { getFirestoreDb } = await import('../../lib/firebase');
+            const { collection, getDocs } = await import('firebase/firestore');
+            const db = await getFirestoreDb();
+
             const querySnapshot = await getDocs(collection(db, 'partners'));
             const data = querySnapshot.docs.map(doc => ({
                 id: doc.id,
@@ -61,6 +70,10 @@ const PartnerManager = () => {
         setSaving(true);
         setErrorMsg(null);
         try {
+            const { getFirestoreDb } = await import('../../lib/firebase');
+            const { collection, addDoc, serverTimestamp } = await import('firebase/firestore');
+            const db = await getFirestoreDb();
+
             await addDoc(collection(db, 'partners'), {
                 name: newName,
                 logo: newLogo,
@@ -85,6 +98,10 @@ const PartnerManager = () => {
     const handleDelete = async (id: string) => {
         setErrorMsg(null);
         try {
+            const { getFirestoreDb } = await import('../../lib/firebase');
+            const { doc, deleteDoc } = await import('firebase/firestore');
+            const db = await getFirestoreDb();
+
             await deleteDoc(doc(db, 'partners', id));
             // Optimistic update
             setPartners(partners.filter(p => p.id !== id));
@@ -224,7 +241,7 @@ const PartnerManager = () => {
                                     <div className={`absolute top-2 right-2 w-2 h-2 rounded-full ${partner.type === 'training' ? 'bg-purple-500' : 'bg-blue-500'}`} title={partner.type || 'placement'}></div>
 
                                     <img
-                                        src={partner.logo}
+                                        src={cleanPath(partner.logo)}
                                         alt={partner.name}
                                         className="max-w-full max-h-full object-contain filter grayscale hover:grayscale-0 transition-all duration-300"
                                         onError={(e) => {

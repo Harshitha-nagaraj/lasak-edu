@@ -2,8 +2,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Plus, Edit2, Trash2, Search, Briefcase } from 'lucide-react';
-import { db } from '../../lib/firebase';
-import { collection, query, orderBy, getDocs, doc, deleteDoc } from 'firebase/firestore';
 import { useUserRole } from '../../hooks/useUserRole';
 import { MOU } from '../../types';
 
@@ -20,6 +18,10 @@ const MOUManager = () => {
 
     const fetchMOUs = async () => {
         try {
+            const { getFirestoreDb } = await import('../../lib/firebase');
+            const { collection, query, orderBy, getDocs } = await import('firebase/firestore');
+            const db = await getFirestoreDb();
+
             const mousRef = collection(db, 'mous');
             const q = query(mousRef, orderBy('order_num', 'asc'));
             const querySnapshot = await getDocs(q);
@@ -41,6 +43,10 @@ const MOUManager = () => {
         if (!window.confirm('Are you sure you want to delete this MOU?')) return;
 
         try {
+            const { getFirestoreDb } = await import('../../lib/firebase');
+            const { doc, deleteDoc } = await import('firebase/firestore');
+            const db = await getFirestoreDb();
+
             await deleteDoc(doc(db, 'mous', id));
             setMous(mous.filter(m => m.id !== id));
         } catch (error) {

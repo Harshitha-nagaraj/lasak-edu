@@ -1,9 +1,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Plus, Edit2, Trash2, Search, Video } from 'lucide-react';
-import { db } from '../../lib/firebase';
-import { collection, query, orderBy, getDocs, doc, deleteDoc } from 'firebase/firestore';
+import { Plus, Edit2, Trash2, Video, ChevronUp, ChevronDown } from 'lucide-react';
 import { useUserRole } from '../../hooks/useUserRole';
 
 interface VideoTestimonial {
@@ -18,6 +16,7 @@ const VideoTestimonialManager = () => {
     const { canEdit } = useUserRole();
     const [videos, setVideos] = useState<VideoTestimonial[]>([]);
     const [loading, setLoading] = useState(true);
+    const [reordering, setReordering] = useState(false);
 
     useEffect(() => {
         fetchVideos();
@@ -25,9 +24,15 @@ const VideoTestimonialManager = () => {
 
     const fetchVideos = async () => {
         try {
+            const { getFirestoreDb } = await import('../../lib/firebase');
+            const { collection, query, orderBy, getDocs } = await import('firebase/firestore');
+            const db = await getFirestoreDb();
+
             const snapshot = await getDocs(query(collection(db, 'video_testimonials'), orderBy('order_num', 'asc')));
             const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as VideoTestimonial));
-            setVideos(data || []);
+            // Ensure order_num is set for all items
+            const normalized = data.map((v, i) => ({ ...v, order_num: v.order_num ?? i + 1 }));
+            setVideos(normalized);
         } catch (error) {
             console.error('Error fetching video testimonials:', error);
         } finally {
@@ -39,11 +44,49 @@ const VideoTestimonialManager = () => {
         if (!window.confirm('Are you sure you want to delete this video testimonial?')) return;
 
         try {
+            const { getFirestoreDb } = await import('../../lib/firebase');
+            const { doc, deleteDoc } = await import('firebase/firestore');
+            const db = await getFirestoreDb();
+
             await deleteDoc(doc(db, 'video_testimonials', id));
             setVideos(videos.filter(v => v.id !== id));
         } catch (error) {
             console.error('Error deleting video:', error);
             alert('Failed to delete video');
+        }
+    };
+
+    const moveItem = async (index: number, direction: 'up' | 'down') => {
+        const swapIndex = direction === 'up' ? index - 1 : index + 1;
+        if (swapIndex < 0 || swapIndex >= videos.length) return;
+
+        setReordering(true);
+        try {
+            const newVideos = [...videos];
+            // Swap order_num values
+            const aOrder = newVideos[index].order_num;
+            const bOrder = newVideos[swapIndex].order_num;
+            newVideos[index] = { ...newVideos[index], order_num: bOrder };
+            newVideos[swapIndex] = { ...newVideos[swapIndex], order_num: aOrder };
+            // Swap positions in array
+            [newVideos[index], newVideos[swapIndex]] = [newVideos[swapIndex], newVideos[index]];
+
+            setVideos(newVideos);
+
+            // Persist to Firestore
+            const { getFirestoreDb } = await import('../../lib/firebase');
+            const { doc, updateDoc } = await import('firebase/firestore');
+            const db = await getFirestoreDb();
+            await Promise.all([
+                updateDoc(doc(db, 'video_testimonials', newVideos[index].id), { order_num: newVideos[index].order_num }),
+                updateDoc(doc(db, 'video_testimonials', newVideos[swapIndex].id), { order_num: newVideos[swapIndex].order_num }),
+            ]);
+        } catch (error) {
+            console.error('Error reordering:', error);
+            alert('Failed to save order. Please try again.');
+            fetchVideos();
+        } finally {
+            setReordering(false);
         }
     };
 
@@ -60,7 +103,7 @@ const VideoTestimonialManager = () => {
             <div className="flex flex-col md:flex-row justify-between items-center gap-4">
                 <div>
                     <h1 className="text-2xl font-bold text-gray-800">Student Video Testimonials</h1>
-                    <p className="text-gray-500">Manage video success stories on the home page</p>
+                    <p className="text-gray-500">Manage video success stories on the home page · Use ↑↓ to reorder</p>
                 </div>
                 {canEdit && (
                     <button
@@ -78,16 +121,43 @@ const VideoTestimonialManager = () => {
                 </div>
             ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {videos.map((video) => {
+                    {videos.map((video, index) => {
                         const ytId = getYoutubeId(video.video_url);
                         return (
                             <div key={video.id} className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+                                {/* Order badge + arrow controls */}
+                                <div className="flex items-center justify-between mb-3">
+                                    <span className="inline-flex items-center gap-1.5 text-xs font-bold text-blue-700 bg-blue-50 border border-blue-100 px-2.5 py-1 rounded-full">
+                                        # {index + 1}
+                                    </span>
+                                    {canEdit && (
+                                        <div className="flex gap-1">
+                                            <button
+                                                onClick={() => moveItem(index, 'up')}
+                                                disabled={index === 0 || reordering}
+                                                className="p-1.5 rounded-lg text-gray-400 hover:text-blue-600 hover:bg-blue-50 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                                                title="Move Up"
+                                            >
+                                                <ChevronUp size={16} />
+                                            </button>
+                                            <button
+                                                onClick={() => moveItem(index, 'down')}
+                                                disabled={index === videos.length - 1 || reordering}
+                                                className="p-1.5 rounded-lg text-gray-400 hover:text-blue-600 hover:bg-blue-50 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                                                title="Move Down"
+                                            >
+                                                <ChevronDown size={16} />
+                                            </button>
+                                        </div>
+                                    )}
+                                </div>
+
                                 <div className="aspect-[9/16] bg-black rounded-xl mb-4 overflow-hidden relative group">
                                     {ytId ? (
                                         <img
-                                            src={`https://img.youtube.com/vi/${ytId}/maxresdefault.jpg`}
-                                            className="w-full h-full object-cover"
-                                            alt="YouTube preview"
+                                            src={`https://img.youtube.com/vi/${ytId}/hqdefault.jpg`}
+                                            alt="Video thumbnail"
+                                            className="w-full h-full object-cover opacity-60"
                                             onError={(e) => {
                                                 (e.target as HTMLImageElement).src = `https://img.youtube.com/vi/${ytId}/hqdefault.jpg`;
                                             }}
@@ -116,12 +186,14 @@ const VideoTestimonialManager = () => {
                                                 <button
                                                     onClick={() => navigate(`/admin/video-testimonials/${video.id}`)}
                                                     className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                                                    title="Edit"
                                                 >
                                                     <Edit2 size={18} />
                                                 </button>
                                                 <button
                                                     onClick={() => handleDelete(video.id)}
                                                     className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                                                    title="Delete"
                                                 >
                                                     <Trash2 size={18} />
                                                 </button>

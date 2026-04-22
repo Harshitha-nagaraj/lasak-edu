@@ -1,9 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { db } from '../../lib/firebase';
-import {
-    collection, getDocs, addDoc, updateDoc, deleteDoc,
-    doc, serverTimestamp, orderBy, query
-} from 'firebase/firestore';
 import { Plus, Trash2, Edit2, Save, X, Tag, CheckCircle, AlertCircle, Percent } from 'lucide-react';
 
 interface Coupon {
@@ -43,12 +38,20 @@ const CouponManager = () => {
     const fetchCoupons = async () => {
         setLoading(true);
         try {
+            const { getFirestoreDb } = await import('../../lib/firebase');
+            const { collection, getDocs, orderBy, query } = await import('firebase/firestore');
+            const db = await getFirestoreDb();
+
             const q = query(collection(db, 'coupons'), orderBy('createdAt', 'desc'));
             const snap = await getDocs(q);
             setCoupons(snap.docs.map(d => ({ id: d.id, ...d.data() } as Coupon)));
         } catch (err) {
             // Try without orderBy if index not yet created
             try {
+                const { getFirestoreDb } = await import('../../lib/firebase');
+                const { collection, getDocs } = await import('firebase/firestore');
+                const db = await getFirestoreDb();
+
                 const snap = await getDocs(collection(db, 'coupons'));
                 setCoupons(snap.docs.map(d => ({ id: d.id, ...d.data() } as Coupon)));
             } catch (err2) {
@@ -92,6 +95,10 @@ const CouponManager = () => {
 
         setSaving(true);
         try {
+            const { getFirestoreDb } = await import('../../lib/firebase');
+            const { collection, addDoc, doc, updateDoc, serverTimestamp } = await import('firebase/firestore');
+            const db = await getFirestoreDb();
+
             const payload = {
                 code: form.code.trim().toUpperCase(),
                 percentage: Number(form.percentage),
@@ -120,6 +127,10 @@ const CouponManager = () => {
     const handleDelete = async (id: string) => {
         if (!confirm('Delete this coupon?')) return;
         try {
+            const { getFirestoreDb } = await import('../../lib/firebase');
+            const { doc, deleteDoc } = await import('firebase/firestore');
+            const db = await getFirestoreDb();
+
             await deleteDoc(doc(db, 'coupons', id));
             showToast('success', 'Coupon deleted.');
             fetchCoupons();
@@ -131,6 +142,10 @@ const CouponManager = () => {
     const toggleActive = async (coupon: Coupon) => {
         if (!coupon.id) return;
         try {
+            const { getFirestoreDb } = await import('../../lib/firebase');
+            const { doc, updateDoc } = await import('firebase/firestore');
+            const db = await getFirestoreDb();
+
             await updateDoc(doc(db, 'coupons', coupon.id), { active: !coupon.active });
             fetchCoupons();
         } catch {
@@ -302,8 +317,8 @@ const CouponManager = () => {
             ) : coupons.length === 0 ? (
                 <div className="text-center py-20 bg-white rounded-3xl border border-slate-100">
                     <Tag size={48} className="mx-auto text-slate-200 mb-4" />
-                    <h3 className="text-xl font-bold text-slate-400">No coupons yet</h3>
-                    <p className="text-slate-400 text-sm mt-1">Click "Add Coupon" to create your first coupon code.</p>
+                    <h3 className="text-xl font-bold text-slate-600">No coupons yet</h3>
+                    <p className="text-slate-600 text-sm mt-1">Click "Add Coupon" to create your first coupon code.</p>
                 </div>
             ) : (
                 <div className="space-y-4">

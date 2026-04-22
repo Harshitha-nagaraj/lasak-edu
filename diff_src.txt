@@ -1,0 +1,443 @@
+﻿diff --git a/package.json b/package.json
+index e7450a0..fcc56d8 100644
+--- a/package.json
++++ b/package.json
+@@ -24,9 +24,9 @@
+     "react-dom": "^19.2.0",
+     "react-helmet": "^6.1.0",
+     "react-hot-toast": "^2.6.0",
+-    "react-markdown": "^10.1.0",
++    "react-markdown": "^8.0.7",
+     "react-router-dom": "^7.9.6",
+-    "remark-gfm": "^4.0.1"
++    "remark-gfm": "^3.0.1"
+   },
+   "devDependencies": {
+     "@types/node": "^22.14.0",
+diff --git a/pages/Courses.tsx b/pages/Courses.tsx
+index db1b30b..4835932 100644
+--- a/pages/Courses.tsx
++++ b/pages/Courses.tsx
+@@ -113,6 +113,14 @@ const Courses = () => {
+             modules: (fetched.modules && fetched.modules.length > 0) ? fetched.modules : staticCourse.modules,
+           } as Course;
+         });
++        
++        // Sort courses by order property
++        mergedCourses.sort((a, b) => {
++          const orderA = a.order !== undefined ? a.order : 999;
++          const orderB = b.order !== undefined ? b.order : 999;
++          return orderA - orderB;
++        });
++        
+         setCourses(mergedCourses);
+       }
+     } catch (error) {
+@@ -133,11 +141,26 @@ const Courses = () => {
+     }
+   };
+ 
+-  const filteredCourses = activeCategory === 'All'
+-    ? courses
+-    : courses.filter(c => c.category === activeCategory);
++  const filteredCourses = React.useMemo(() => {
++    return activeCategory === 'All'
++      ? courses
++      : courses.filter(c => c.category === activeCategory);
++  }, [activeCategory, courses]);
++
++  const predefinedIds = CATEGORIES.map(c => c.id);
++  const dbCatIds = dbCategories.length > 0 ? dbCategories.map(c => c.id) : predefinedIds;
++  
++  // Sort dbCatIds using the hardcoded predefined order
++  dbCatIds.sort((a, b) => {
++    const i = predefinedIds.indexOf(a);
++    const j = predefinedIds.indexOf(b);
++    if (i === -1 && j === -1) return 0;
++    if (i === -1) return 1; // Unrecognized DB categories go at the end
++    if (j === -1) return -1;
++    return i - j;
++  });
+ 
+-  const filterTabs = ['All', ...(dbCategories.length > 0 ? dbCategories.map(c => c.id) : CATEGORIES.map(c => c.id))];
++  const filterTabs = ['All', ...dbCatIds];
+ 
+   // Animation variants
+   const bounceVariant: Variants = {
+@@ -156,14 +179,14 @@ const Courses = () => {
+     show: {
+       opacity: 1,
+       transition: {
+-        staggerChildren: 0.1
++        staggerChildren: 0.05 // Sped up from 0.1
+       }
+     }
+   };
+ 
+   const itemVariants: Variants = {
+-    hidden: { opacity: 0, y: 30, scale: 0.9 },
+-    show: { opacity: 1, y: 0, scale: 1, transition: { type: "spring", stiffness: 300, damping: 24 } }
++    hidden: { opacity: 0, y: 15, scale: 0.95 },
++    show: { opacity: 1, y: 0, scale: 1, transition: { type: "tween", duration: 0.2 } }
+   };
+ 
+   return (
+@@ -207,7 +230,7 @@ const Courses = () => {
+                 : 'bg-white border-slate-200 text-slate-500 hover:bg-slate-50 hover:text-slate-800'
+                 }`}
+             >
+-              {dbCategories.find(c => c.id === cat)?.name || cat}
++              {CATEGORIES.find(c => c.id === cat)?.name || dbCategories.find(c => c.id === cat)?.name || cat}
+             </button>
+           ))}
+         </div>
+@@ -259,7 +282,6 @@ const Courses = () => {
+           </div>
+         ) : (
+           <motion.div
+-            layout
+             variants={containerVariants}
+             initial="hidden"
+             animate="show"
+@@ -268,7 +290,6 @@ const Courses = () => {
+           >
+             {filteredCourses.map((course) => (
+               <motion.div
+-                layout
+                 variants={itemVariants}
+                 whileTap={{ scale: 0.98, boxShadow: "0 0 30px rgba(37, 99, 235, 0.4)" }} // Lighting shadow
+                 whileHover={{ y: -10 }}
+@@ -278,7 +299,7 @@ const Courses = () => {
+                   }`}
+               >
+                 <div className="h-56 relative overflow-hidden">
+-                  <img src={course.image} alt={course.title} width="400" height="224" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" loading="lazy" />
++                  <img src={course.image} alt={course.title} width="400" height="224" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" decoding="async" fetchPriority="high" />
+                   <div className={`absolute top-4 right-4 px-3 py-1 rounded-full text-xs font-bold border backdrop-blur-md shadow-sm ${course.category === 'Kids'
+                     ? 'bg-yellow-100 text-yellow-800 border-yellow-200'
+                     : 'bg-white text-slate-800 border-slate-100'
+diff --git a/pages/Home.tsx b/pages/Home.tsx
+index d7644a2..a49f90c 100644
+--- a/pages/Home.tsx
++++ b/pages/Home.tsx
+@@ -1,16 +1,18 @@
+-∩╗┐
+-import React, { useEffect, useState, useRef, ReactNode } from 'react';
++
++import React, { useEffect, useState, useRef, ReactNode, lazy, Suspense } from 'react';
+ import { motion, useInView, AnimatePresence } from 'framer-motion';
+ import { Link, useNavigate } from 'react-router-dom';
+ import { ArrowRight, CheckCircle, Award, Users, Star, ExternalLink, ChevronLeft, ChevronRight, Play, Megaphone, Sparkles, Bot, X, Calendar, Clock, Check, Code, Settings, Home as HomeIcon, PenTool, Gamepad2 } from 'lucide-react';
+ import { ACCREDITATIONS, CATEGORIES, COURSES, COMPANY_LOGOS, PARTNERS, TESTIMONIALS as FALLBACK_STORIES, DEMO_VIDEOS as FALLBACK_YT_VIDEOS } from '../constants';
+ import { Course } from '../types';
+ import SEO from '../components/SEO';
+-import StudentTestimonials from './studenttestmonials';
+ import { BLOGS } from '../constants';
+ import { User } from 'lucide-react';
+ import CategoryCard from '../components/CategoryCard';
+-import BlogAutoScroll from "../components/BlogAutoScroll";
++
++// Lazy-load below-fold heavy components for better initial load
++const StudentTestimonials = lazy(() => import('./studenttestmonials'));
++const BlogAutoScroll = lazy(() => import('../components/BlogAutoScroll'));
+ import { auth, db } from '../lib/firebase';
+ import { onAuthStateChanged } from 'firebase/auth';
+ import { collection, query, where, getDocs, orderBy, limit, doc, getDoc } from 'firebase/firestore';
+@@ -35,7 +37,7 @@ export const InfiniteTicker = ({ items, direction = 'left', speed = 'fast' }: {
+   );
+ };
+ 
+-const ScrollReveal = ({ children, delay = 0 }: { children?: ReactNode, delay?: number }) => (
++const ScrollReveal = React.memo(({ children, delay = 0 }: { children?: ReactNode, delay?: number }) => (
+   <motion.div
+     initial={{ opacity: 0, y: 50 }}
+     whileInView={{ opacity: 1, y: 0 }}
+@@ -44,7 +46,7 @@ const ScrollReveal = ({ children, delay = 0 }: { children?: ReactNode, delay?: n
+   >
+     {children}
+   </motion.div>
+-);
++));
+ 
+ // Video Card for Demo Section
+ const VideoCard: React.FC<{ videoId: string; title?: string; thumbnail: string }> = ({
+@@ -159,18 +161,18 @@ const AchieversScroller = React.memo(({ testimonials }: { testimonials: any[] })
+           ).map((story, i) => (
+             <div
+               key={`${story.id}-${i}`}
+-              className="w-[220px] xs:w-[300px] bg-white p-6 rounded-2xl shadow-lg border border-slate-100 flex-shrink-0 mr-4 md:mr-8"
++              className="w-[280px] md:w-[340px] lg:w-[380px] xl:w-[400px] bg-white p-6 md:p-8 rounded-2xl shadow-lg border border-slate-100 flex-shrink-0 mr-4 md:mr-6"
+             >
+-              <div className="flex flex-col items-center text-center gap-3 mb-4">
+-                <div className="w-16 h-16 rounded-full border-2 border-white shadow-md overflow-hidden bg-blue-50 flex items-center justify-center shrink-0">
++              <div className="flex flex-col items-center text-center gap-4 mb-4">
++                <div className="w-24 h-24 rounded-full border-2 border-white shadow-md overflow-hidden bg-blue-50 flex items-center justify-center shrink-0">
+                   {story.image ? (
+                     <img
+                       src={cleanPath(story.image)}
+                       alt={story.name}
+-                      width="64"
+-                      height="64"
++                      width="96"
++                      height="96"
+                       loading="lazy"
+-                      className="w-full h-full object-cover"
++                      className="w-full h-full object-cover object-[center_10%]"
+                       onError={(e) => {
+                         (e.target as HTMLImageElement).src = `https://ui-avatars.com/api/?name=${encodeURIComponent(story.name)}&background=random`;
+                       }}
+@@ -215,7 +217,7 @@ const AchieversScroller = React.memo(({ testimonials }: { testimonials: any[] })
+ 
+ 
+ 
+-const StatCounter = ({ end, label }: { end: number, label: string }) => {
++const StatCounter = React.memo(({ end, label }: { end: number, label: string }) => {
+   const ref = useRef(null);
+   const isInView = useInView(ref, { once: true });
+   const [count, setCount] = useState(0);
+@@ -254,7 +256,7 @@ const StatCounter = ({ end, label }: { end: number, label: string }) => {
+       <p className="text-slate-500 font-bold uppercase tracking-wider text-xs md:text-sm">{label}</p>
+     </motion.div>
+   );
+-};
++});
+ 
+ const CourseCard: React.FC<{
+   course: Course;
+@@ -963,8 +965,11 @@ const Home = () => {
+             <img
+               src={cleanPath(heroSlides[currentSlide]?.image)}
+               alt={heroSlides[currentSlide]?.title}
++              width="1920"
++              height="1080"
+               className="w-full h-full object-cover brightness-125"
+               loading={currentSlide === 0 ? "eager" : "lazy"}
++              decoding={currentSlide === 0 ? "sync" : "async"}
+               fetchPriority={currentSlide === 0 ? "high" : "low"}
+             />
+ 
+@@ -1345,7 +1350,9 @@ const Home = () => {
+ 
+ 
+       {/* 9. Student Voices (Autoplay Local Videos + Infinite Scroll) */}
+-      <StudentTestimonials videos={videoTestimonials} />
++      <Suspense fallback={<div className="py-20 text-center text-slate-400">Loading testimonials...</div>}>
++        <StudentTestimonials videos={videoTestimonials} />
++      </Suspense>
+ 
+       {/* 10. Demo Courses Ticker */}
+       <section className="py-20 relative bg-slate-950 overflow-hidden">
+@@ -1474,7 +1481,9 @@ const Home = () => {
+         </div>
+       </section>
+ 
+-      <BlogAutoScroll />
++      <Suspense fallback={<div className="py-16 text-center text-slate-400">Loading blogs...</div>}>
++        <BlogAutoScroll />
++      </Suspense>
+ 
+       <InquiryModal
+         isOpen={inquiryModal.isOpen}
+diff --git a/pages/admin/CourseEditor.tsx b/pages/admin/CourseEditor.tsx
+index cf79931..3597a79 100644
+--- a/pages/admin/CourseEditor.tsx
++++ b/pages/admin/CourseEditor.tsx
+@@ -47,6 +47,7 @@ const CourseEditor = () => {
+         skills_passport_price?: string;
+         interview_passport_price?: string;
+         job_passport_price?: string;
++        order?: number;
+     }>({
+         id: '',
+         title: '',
+@@ -75,7 +76,8 @@ const CourseEditor = () => {
+         faqs: [{ question: '', answer: '' }],
+         skills_passport_price: '',
+         interview_passport_price: '',
+-        job_passport_price: ''
++        job_passport_price: '',
++        order: 999
+     });
+ 
+     useEffect(() => {
+@@ -122,7 +124,8 @@ const CourseEditor = () => {
+                     faqs: data.faqs || [{ question: '', answer: '' }],
+                     skills_passport_price: data.skills_passport_price || '',
+                     interview_passport_price: data.interview_passport_price || '',
+-                    job_passport_price: data.job_passport_price || ''
++                    job_passport_price: data.job_passport_price || '',
++                    order: data.order !== undefined ? data.order : 999
+                 });
+             }
+         } catch (error: any) {
+@@ -195,7 +198,8 @@ const CourseEditor = () => {
+                 faqs: formData.faqs.filter(f => f.question.trim() !== ''),
+                 skills_passport_price: formData.skills_passport_price,
+                 interview_passport_price: formData.interview_passport_price,
+-                job_passport_price: formData.job_passport_price
++                job_passport_price: formData.job_passport_price,
++                order: formData.order !== undefined ? formData.order : 999
+             };
+ 
+             if (isNew) {
+@@ -255,6 +259,10 @@ const CourseEditor = () => {
+                             <label className="block text-xs font-black uppercase text-slate-400 mb-2">Duration</label>
+                             <input name="duration" value={formData.duration} onChange={handleChange} className="w-full px-5 py-3.5 bg-slate-50 border-2 border-transparent focus:border-blue-600 rounded-2xl outline-none font-bold text-slate-800" placeholder="e.g. 60 Days / 240 Hours" />
+                         </div>
++                        <div>
++                            <label className="block text-xs font-black uppercase text-slate-400 mb-2">Display Order</label>
++                            <input type="number" name="order" value={formData.order} onChange={(e) => setFormData(prev => ({...prev, order: parseInt(e.target.value) || 0}))} className="w-full px-5 py-3.5 bg-slate-50 border-2 border-transparent focus:border-blue-600 rounded-2xl outline-none font-bold text-slate-800" placeholder="e.g. 1" />
++                        </div>
+                     </div>
+                 </section>
+ 
+diff --git a/pages/admin/CourseManager.tsx b/pages/admin/CourseManager.tsx
+index 496f293..682c4e4 100644
+--- a/pages/admin/CourseManager.tsx
++++ b/pages/admin/CourseManager.tsx
+@@ -26,6 +26,12 @@ const CourseManager = () => {
+                 id: doc.id,
+                 ...doc.data()
+             } as Course));
++
++            fetchedCourses.sort((a, b) => {
++                const orderA = a.order !== undefined ? a.order : 999;
++                const orderB = b.order !== undefined ? b.order : 999;
++                return orderA - orderB;
++            });
+             setCourses(fetchedCourses);
+         } catch (error: any) {
+             console.error('Error fetching courses:', error.message);
+@@ -45,6 +51,31 @@ const CourseManager = () => {
+         }
+     };
+ 
++    const handleOrderChange = async (id: string, newOrder: string) => {
++        const orderValue = parseInt(newOrder, 10);
++        if (isNaN(orderValue)) return;
++        
++        try {
++            const courseRef = doc(db, 'courses', id);
++            await updateDoc(courseRef, { order: orderValue });
++
++            // Update local state and sort
++            const updatedCourses = courses.map(c =>
++                c.id === id ? { ...c, order: orderValue } : c
++            );
++            
++            updatedCourses.sort((a, b) => {
++                const orderA = a.order !== undefined ? a.order : 999;
++                const orderB = b.order !== undefined ? b.order : 999;
++                return orderA - orderB;
++            });
++            
++            setCourses(updatedCourses);
++        } catch (error: any) {
++            alert('Error updating order: ' + error.message);
++        }
++    };
++
+     const toggleHomeVisibility = async (id: string, currentValue: boolean) => {
+         try {
+             const courseRef = doc(db, 'courses', id);
+@@ -122,6 +153,7 @@ const CourseManager = () => {
+                             <tr className="bg-gray-50 border-b border-gray-100">
+                                 <th className="p-4 font-semibold text-gray-600">Course Name</th>
+                                 <th className="p-4 font-semibold text-gray-600">Category</th>
++                                <th className="p-4 font-semibold text-gray-600">Order</th>
+                                 <th className="p-4 font-semibold text-gray-600">Price</th>
+                                 <th className="p-4 font-semibold text-gray-600">Duration</th>
+                                 <th className="p-4 font-semibold text-gray-600">Show on Home</th>
+@@ -142,6 +174,16 @@ const CourseManager = () => {
+                                             {course.category}
+                                         </span>
+                                     </td>
++                                    <td className="p-4">
++                                        <input 
++                                            type="number" 
++                                            min="0"
++                                            defaultValue={course.order !== undefined ? course.order : 999}
++                                            onBlur={(e) => handleOrderChange(course.id, e.target.value)}
++                                            className="w-16 px-2 py-1 border border-gray-200 rounded text-center focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
++                                            disabled={!canEdit}
++                                        />
++                                    </td>
+                                     <td className="p-4 font-medium text-gray-700">{course.price}</td>
+                                     <td className="p-4 text-gray-500">{course.duration}</td>
+                                     <td className="p-4">
+diff --git a/public/robots.txt b/public/robots.txt
+index b876c0b..f044973 100644
+--- a/public/robots.txt
++++ b/public/robots.txt
+@@ -1,4 +1,4 @@
+ User-agent: *
+ Allow: /
+ 
+-Sitemap: https://lasakedu.in/sitemap.xml
++Sitemap: https://lasakedu.in/sitemap.xml
+\ No newline at end of file
+diff --git a/types.ts b/types.ts
+index eae5aee..d89149d 100644
+--- a/types.ts
++++ b/types.ts
+@@ -11,6 +11,7 @@ export interface Course {
+   modules: string[];
+   isFree?: boolean;
+   show_on_home?: boolean;
++  order?: number;
+   slug?: string;
+   enrollLink?: string;
+   phone?: string;
+diff --git a/vite.config.ts b/vite.config.ts
+index e74b0dd..14ac060 100644
+--- a/vite.config.ts
++++ b/vite.config.ts
+@@ -13,6 +13,13 @@ export default defineConfig(({ mode }) => {
+ 
+     plugins: [react()],
+ 
++    optimizeDeps: {
++      include: [
++        'react-markdown',
++        'remark-gfm',
++      ]
++    },
++
+     define: {
+       'process.env.API_KEY': JSON.stringify(env.GEMINI_API_KEY),
+       'process.env.GEMINI_API_KEY': JSON.stringify(env.GEMINI_API_KEY)
+@@ -21,15 +28,15 @@ export default defineConfig(({ mode }) => {
+     resolve: {
+       alias: {
+         '@': path.resolve(__dirname, '.'),
+-        'micromark-extension-gfm-strikethrough': path.resolve(__dirname, 'node_modules/micromark-extension-gfm-strikethrough/dev/index.js'),
++        'micromark-extension-gfm-strikethrough': path.resolve(__dirname, 'node_modules/micromark-extension-gfm-strikethrough/index.js'),
+         'micromark-extension-gfm-strikethrough/html': path.resolve(__dirname, 'node_modules/micromark-extension-gfm-strikethrough/dev/html.js'),
+-        'micromark-extension-gfm-autolink-literal': path.resolve(__dirname, 'node_modules/micromark-extension-gfm-autolink-literal/dev/index.js'),
++        'micromark-extension-gfm-autolink-literal': path.resolve(__dirname, 'node_modules/micromark-extension-gfm-autolink-literal/index.js'),
+         'micromark-extension-gfm-autolink-literal/html': path.resolve(__dirname, 'node_modules/micromark-extension-gfm-autolink-literal/dev/html.js'),
+-        'micromark-extension-gfm-task-list-item': path.resolve(__dirname, 'node_modules/micromark-extension-gfm-task-list-item/dev/index.js'),
++        'micromark-extension-gfm-task-list-item': path.resolve(__dirname, 'node_modules/micromark-extension-gfm-task-list-item/index.js'),
+         'micromark-extension-gfm-task-list-item/html': path.resolve(__dirname, 'node_modules/micromark-extension-gfm-task-list-item/dev/html.js'),
+-        'micromark-extension-gfm-table': path.resolve(__dirname, 'node_modules/micromark-extension-gfm-table/dev/index.js'),
++        'micromark-extension-gfm-table': path.resolve(__dirname, 'node_modules/micromark-extension-gfm-table/index.js'),
+         'micromark-extension-gfm-table/html': path.resolve(__dirname, 'node_modules/micromark-extension-gfm-table/dev/html.js'),
+-        'micromark-util-normalize-identifier': path.resolve(__dirname, 'node_modules/micromark-util-normalize-identifier/dev/index.js'),
++        'micromark-util-normalize-identifier': path.resolve(__dirname, 'node_modules/micromark-util-normalize-identifier/index.js'),
+       }
+     },
+ 
+@@ -45,7 +52,12 @@ export default defineConfig(({ mode }) => {
+ 
+       rollupOptions: {
+         output: {
+-          // default chunking
++          manualChunks: {
++            'vendor-react': ['react', 'react-dom', 'react-router-dom'],
++            'vendor-firebase': ['firebase/app', 'firebase/auth', 'firebase/firestore'],
++            'vendor-motion': ['framer-motion'],
++            'vendor-icons': ['lucide-react'],
++          }
+         }
+       }
+     }

@@ -1,9 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Trash2, UserPlus, Shield, User, Save, X, Edit2, CheckCircle, KeyRound, Eye, EyeOff } from 'lucide-react';
-import { db, auth } from '../../lib/firebase';
-import { collection, query, orderBy, getDocs, doc, deleteDoc, updateDoc, setDoc, serverTimestamp } from 'firebase/firestore';
-import { sendPasswordResetEmail } from 'firebase/auth';
 import { useUserRole } from '../../hooks/useUserRole';
 
 interface UserData {
@@ -26,7 +23,6 @@ const UserManager = () => {
     const [isAdding, setIsAdding] = useState(false);
     const [editingId, setEditingId] = useState<string | null>(null);
     const [editRole, setEditRole] = useState<'admin' | 'editor' | 'viewer'>('viewer');
-    const [editPassword, setEditPassword] = useState('');
     const [showNewPassword, setShowNewPassword] = useState(false);
 
     useEffect(() => {
@@ -35,6 +31,10 @@ const UserManager = () => {
 
     const fetchUsers = async () => {
         try {
+            const { getFirestoreDb } = await import('../../lib/firebase');
+            const { collection, query, orderBy, getDocs } = await import('firebase/firestore');
+            const db = await getFirestoreDb();
+
             // 1. Fetch all user roles (This is the source of truth for who has access)
             const rolesSnapshot = await getDocs(query(collection(db, 'user_roles'), orderBy('created_at', 'desc')));
             const roles = rolesSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as any));
@@ -67,31 +67,68 @@ const UserManager = () => {
 
     const handleAddUser = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (!newUserEmail) return;
+        if (!newUserEmail || !newUserPassword) return;
 
         try {
-            // In Firebase client-side, we can't create another user's auth account without logging out.
-            // But we can add them to 'user_roles' which will grant them permissions once they sign up.
-            const userRoleData = {
+            const { getFirebaseAuth, getFirestoreDb } = await import('../../lib/firebase');
+            const { createUserWithEmailAndPassword, signInWithEmailAndPassword } = await import('firebase/auth');
+            const { doc, setDoc, serverTimestamp } = await import('firebase/firestore');
+
+            const auth = await getFirebaseAuth();
+            const db = await getFirestoreDb();
+
+            // Save current admin's email before we get signed out
+            const adminEmail = auth.currentUser?.email;
+            if (!adminEmail) {
+                alert('Error: Could not identify current admin session.');
+                return;
+            }
+
+            // Ask admin for their own password upfront (needed to restore session)
+            const adminPassword = prompt(
+                `To create the new user, you will be temporarily signed out and back in.\n\nPlease enter YOUR (admin) password to continue:`
+            );
+            if (!adminPassword) {
+                alert('Cancelled. Admin password is required to restore your session.');
+                return;
+            }
+
+            // Step 1: Create the new user's Firebase Auth account
+            // This will automatically sign us in as the new user
+            await createUserWithEmailAndPassword(auth, newUserEmail.trim(), newUserPassword);
+
+            // Step 2: Write the user role to Firestore (while signed in as new user, can still write)
+            const docId = newUserEmail.trim().toLowerCase().replace(/[^a-z0-9]/g, '_');
+            await setDoc(doc(db, 'user_roles', docId), {
                 email: newUserEmail.trim().toLowerCase(),
                 full_name: newUserFullName.trim(),
                 role: newUserRole,
                 created_at: serverTimestamp()
-            };
+            });
 
-            // Use email as doc ID to prevent duplicates
-            const docId = newUserEmail.trim().toLowerCase().replace(/[^a-z0-9]/g, '_');
-            await setDoc(doc(db, 'user_roles', docId), userRoleData);
+            // Step 3: Sign back in as the admin
+            await signInWithEmailAndPassword(auth, adminEmail, adminPassword);
 
-            alert(`✅ User role added! They will have ${newUserRole} access once they sign up with this email.`);
+            alert(`✅ User "${newUserEmail}" created successfully with ${newUserRole} access!\nThey can now login with the email and password you set.`);
 
             setNewUserEmail('');
             setNewUserFullName('');
+            setNewUserPassword('');
             setNewUserRole('viewer');
             setIsAdding(false);
             fetchUsers();
         } catch (error: any) {
-            alert('Error adding user: ' + error.message);
+            console.error('Error adding user:', error);
+            // Friendly error messages
+            if (error.code === 'auth/email-already-in-use') {
+                alert('⚠ This email already has a Firebase Auth account.\n\nIf they cannot login, use the 🔑 "Send Password Reset" button on their row to send a reset email.');
+            } else if (error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') {
+                alert('❌ Wrong admin password entered. Your session may have been affected.\nPlease refresh the page and log in again.');
+            } else if (error.code === 'auth/weak-password') {
+                alert('❌ Password is too weak. Must be at least 6 characters.');
+            } else {
+                alert('Error creating user: ' + error.message);
+            }
         }
     };
 
@@ -99,6 +136,10 @@ const UserManager = () => {
         if (!confirm(`Are you sure you want to remove access for ${email}?`)) return;
 
         try {
+            const { getFirestoreDb } = await import('../../lib/firebase');
+            const { doc, deleteDoc } = await import('firebase/firestore');
+            const db = await getFirestoreDb();
+
             await deleteDoc(doc(db, 'user_roles', id));
             alert('✅ User role removed. Their account still exists in Auth, but they no longer have permissions.');
             fetchUsers();
@@ -116,6 +157,10 @@ const UserManager = () => {
     const handleSendPasswordReset = async (email: string) => {
         if (!confirm(`Are you sure you want to send a password reset email to ${email}?`)) return;
         try {
+            const { getFirebaseAuth } = await import('../../lib/firebase');
+            const { sendPasswordResetEmail } = await import('firebase/auth');
+            const auth = await getFirebaseAuth();
+
             await sendPasswordResetEmail(auth, email);
             alert(`✅ Password reset email sent to ${email}`);
         } catch (error: any) {
@@ -126,6 +171,10 @@ const UserManager = () => {
 
     const handleUpdateUser = async (user: UserData) => {
         try {
+            const { getFirestoreDb } = await import('../../lib/firebase');
+            const { doc, updateDoc } = await import('firebase/firestore');
+            const db = await getFirestoreDb();
+
             await updateDoc(doc(db, 'user_roles', user.id), {
                 role: editRole,
                 full_name: user.full_name
@@ -261,7 +310,7 @@ const UserManager = () => {
                                         <div>
                                             <p className="font-bold text-slate-900">{user.full_name || 'No Name'}</p>
                                             <p className="text-sm text-slate-500">{user.email}</p>
-                                            <p className="text-[10px] text-slate-400 font-mono uppercase tracking-tighter">ID: {user.id.slice(0, 8)}...</p>
+                                            <p className="text-[10px] text-slate-600 font-mono uppercase tracking-tighter">ID: {user.id.slice(0, 8)}...</p>
                                         </div>
                                     </div>
                                 </td>
@@ -282,20 +331,13 @@ const UserManager = () => {
                                                 <option value="editor">Editor</option>
                                                 <option value="admin">Admin</option>
                                             </select>
-                                            <input
-                                                type="password"
-                                                value={editPassword}
-                                                onChange={(e) => setEditPassword(e.target.value)}
-                                                placeholder="New Password (optional)"
-                                                className="w-full px-3 py-1.5 text-xs border border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                            />
                                         </div>
                                     ) : (
                                         <span className={`inline-flex px-3 py-1 rounded-full text-xs font-bold capitalize border ${user.role === 'admin'
                                             ? 'bg-purple-100 text-purple-700 border-purple-200'
                                             : user.role === 'editor'
                                                 ? 'bg-blue-100 text-blue-700 border-blue-200'
-                                                : 'bg-slate-100 text-slate-400 border-slate-200'
+                                                : 'bg-slate-100 text-slate-600 border-slate-200'
                                             }`}>
                                             {user.role || 'No Access'}
                                         </span>
@@ -317,7 +359,7 @@ const UserManager = () => {
                                                 </button>
                                                 <button
                                                     onClick={() => setEditingId(null)}
-                                                    className="p-2 text-slate-400 hover:bg-slate-100 rounded-lg transition-colors"
+                                                    className="p-2 text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
                                                     title="Cancel"
                                                 >
                                                     <X size={18} />
@@ -354,7 +396,7 @@ const UserManager = () => {
                         ))}
                         {users.length === 0 && (
                             <tr>
-                                <td colSpan={4} className="px-6 py-12 text-center text-slate-400">
+                                <td colSpan={4} className="px-6 py-12 text-center text-slate-600">
                                     <UserPlus size={48} className="mx-auto mb-4 opacity-20" />
                                     <p>No users found.</p>
                                 </td>

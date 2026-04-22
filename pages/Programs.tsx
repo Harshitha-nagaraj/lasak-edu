@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { m } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { CheckCircle, Award, Target, ArrowRight, Zap, Briefcase, BookOpen, MapPin, Settings, Percent, Flame, Calendar, Clock } from 'lucide-react';
-import { db } from '../lib/firebase';
-import { collection, query, where, getDocs, orderBy, limit, addDoc, serverTimestamp } from 'firebase/firestore';
 import { fetchWithCache } from '../lib/cacheUtils';
 import SEO from '../components/SEO';
 import InquiryModal from '../components/InquiryModal';
+import { DEFAULT_WORKSHOPS } from '../constants/ui';
 
 // Helper to render icon by name
 const IconDisplay = ({ name, size = 24, className }: { name: string, size?: number, className?: string }) => {
@@ -14,42 +13,6 @@ const IconDisplay = ({ name, size = 24, className }: { name: string, size?: numb
   const IconComponent = icons[name] || Zap;
   return <IconComponent size={size} className={className} />;
 };
-
-const DEFAULT_WORKSHOPS = [
-  {
-    id: 'ws-1',
-    title: 'Full Stack Development (MERN)',
-    description: 'Learn to build modern web applications from scratch with industry experts. 100% hands-on training.',
-    type: 'live',
-    badge_text: 'LIMITED SLOTS',
-    icon: 'Zap',
-    tags: ['React', 'Node.js', 'Project Based'],
-    button_text: 'Register Now',
-    active: true
-  },
-  {
-    id: 'ws-2',
-    title: 'Advanced SolidWorks Bootcamp',
-    description: 'Master 3D modeling and product design. Perfect for Mechanical Engineering students and professionals.',
-    type: 'offline',
-    badge_text: 'SUNDAY BATCH',
-    icon: 'Settings',
-    tags: ['Mechanical', 'CAD', 'Certification'],
-    button_text: 'Join Workshop',
-    active: true
-  },
-  {
-    id: 'ws-3',
-    title: 'Early Bird Special Offer',
-    description: 'Get up to 20% flat discount on all premium professional courses. Valid for registrations this week only.',
-    type: 'offer',
-    badge_text: 'FESTIVE OFFER',
-    icon: 'Percent',
-    tags: ['IT', 'Mech', 'Civil'],
-    button_text: 'Claim Discount',
-    active: true
-  }
-];
 
 const Programs = () => {
   const [activeTab, setActiveTab] = useState('IT');
@@ -64,6 +27,9 @@ const Programs = () => {
 
   const fetchData = async () => {
     try {
+      const { getFirestoreDb } = await import('../lib/firebase');
+      const { collection, query, where, orderBy } = await import('firebase/firestore');
+      const db = await getFirestoreDb();
       // Fetch Workshops
       const wsQ = query(
         collection(db, 'workshops'),
@@ -101,15 +67,10 @@ const Programs = () => {
 
 
       {/* 1. Landing Hero (White) */}
-      <section className="relative bg-white pt-24 pb-20 border-b border-slate-200 overflow-hidden">
+      <section className="hero-section relative bg-white pt-24 pb-20 border-b border-slate-200 overflow-hidden">
         <div className="container mx-auto px-4 relative z-10">
           <div className="flex flex-col lg:flex-row items-center gap-16">
-            <motion.div
-              initial={{ opacity: 0, x: -50 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8 }}
-              className="lg:w-1/2"
-            >
+            <div className="lg:w-1/2">
               <div className="inline-block px-4 py-2 bg-blue-50 text-blue-700 rounded-full font-bold text-sm mb-6 border border-blue-100 shadow-sm">
                 🚀 Admissions Open for 2025 Batch
               </div>
@@ -126,6 +87,7 @@ const Programs = () => {
                     setSelectedWorkshop({ id: 'workshop-hero', title: 'Workshops 2025', category: 'General' });
                     setInquiryModalOpen(true);
                   }}
+                  aria-label="Enquire about 2025 workshops"
                   className="px-8 py-4 bg-blue-600 text-white rounded-lg font-bold shadow-lg hover:bg-blue-700 transition-all text-center flex items-center justify-center gap-2 hover:-translate-y-1"
                 >
                   Enquiry now <ArrowRight size={20} />
@@ -137,23 +99,22 @@ const Programs = () => {
                   Explore Courses
                 </Link>
               </div>
-            </motion.div>
+            </div>
 
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.8 }}
-              className="lg:w-1/2 relative"
-            >
+            <div className="lg:w-1/2 relative">
               <div className="absolute inset-0 bg-gradient-to-tr from-blue-100 to-yellow-100 rounded-3xl transform rotate-3 scale-105 blur-lg opacity-60"></div>
               <img
-                src="/our career.png"
+                src="/our career.webp"
                 alt="Students in classroom"
-                className="relative rounded-3xl shadow-2xl border-4 border-white z-10"
+                width="650"
+                height="433"
+                sizes="(max-width: 768px) 100vw, 650px"
+                className="relative rounded-3xl shadow-2xl border-4 border-white z-10 w-full h-auto"
                 loading="eager"
+                fetchPriority="high"
               />
               {/* Floating Badge */}
-              <motion.div
+              <m.div
                 animate={{ y: [0, -10, 0] }}
                 transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
                 className="absolute -bottom-10 -left-10 bg-white p-6 rounded-2xl shadow-xl border border-slate-100 z-20 hidden md:block"
@@ -167,8 +128,8 @@ const Programs = () => {
                     <div className="text-slate-500 text-sm font-semibold">Placement Rate</div>
                   </div>
                 </div>
-              </motion.div>
-            </motion.div>
+              </m.div>
+            </div>
           </div>
         </div>
       </section>
@@ -215,7 +176,7 @@ const Programs = () => {
                 <Flame size={16} /> Hot & Trending
               </div>
               <h2 className="text-3xl font-black font-tech text-white">Workshops & Offers</h2>
-              <p className="text-slate-400 mt-2">Grab these limited-time opportunities.</p>
+              <p className="text-slate-600 mt-2">Grab these limited-time opportunities.</p>
             </div>
           </div>
 
@@ -226,7 +187,7 @@ const Programs = () => {
               /* Fallback if no data */
               <div className="text-slate-500 italic p-4">No active workshops at the moment. Check back soon!</div>
             ) : workshops.map((item) => (
-              <motion.div
+              <m.div
                 key={item.id}
                 whileHover={{ y: -5 }}
                 className={`min-w-[320px] md:min-w-[380px] rounded-2xl p-6 border shadow-xl snap-center flex flex-col relative overflow-hidden group 
@@ -254,7 +215,7 @@ const Programs = () => {
                 </div>
 
                 <h3 className="text-xl font-bold text-white mb-2">{item.title}</h3>
-                <p className={`text-sm mb-6 leading-relaxed ${item.type === 'offer' ? 'text-blue-100' : 'text-slate-400'}`}>
+                <p className={`text-sm mb-6 leading-relaxed ${item.type === 'offer' ? 'text-blue-100' : 'text-slate-600'}`}>
                   {item.description}
                 </p>
 
@@ -276,6 +237,7 @@ const Programs = () => {
                           setSelectedWorkshop({ id: item.id || 'offer', title: item.title, category: 'General' });
                           setInquiryModalOpen(true);
                         }}
+                        aria-label={`Claim discount for ${item.title}`}
                         className="w-full text-blue-900 bg-white hover:bg-blue-50 px-4 py-3 rounded-lg text-sm font-bold transition-colors shadow-lg"
                       >
                         {item.button_text}
@@ -285,6 +247,7 @@ const Programs = () => {
                         <span className="text-green-400 font-bold text-sm">Register Now</span>
                         <button
                           className="text-white bg-blue-600 hover:bg-blue-500 px-4 py-2 rounded-lg text-sm font-bold transition-colors"
+                          aria-label={`Register for ${item.title}`}
                           onClick={() => {
                             setSelectedWorkshop({ id: item.id || 'workshop', title: item.title, category: 'General' });
                             setInquiryModalOpen(true);
@@ -296,7 +259,7 @@ const Programs = () => {
                     )}
                   </div>
                 </div>
-              </motion.div>
+              </m.div>
             ))}
           </div>
         </div>
@@ -325,7 +288,7 @@ const Programs = () => {
                 </div>
               ))
             ) : programFeatures.map((feature, i) => (
-              <motion.div
+              <m.div
                 key={i}
                 whileHover={{ y: -10, boxShadow: "0 20px 40px -10px rgba(59, 130, 246, 0.15)" }}
                 className="bg-slate-50 p-6 xs:p-8 rounded-2xl border border-slate-100 hover:shadow-xl transition-all group cursor-pointer"
@@ -341,7 +304,7 @@ const Programs = () => {
                 </div>
                 <h3 className="text-xl font-bold text-slate-900 mb-3">{feature.title}</h3>
                 <p className="text-slate-500 leading-relaxed text-sm">{feature.description}</p>
-              </motion.div>
+              </m.div>
             ))}
           </div>
         </div>
@@ -357,7 +320,7 @@ const Programs = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {/* IT Programs */}
-            <motion.div
+            <m.div
               whileHover={{ y: -10, boxShadow: "0 20px 40px -10px rgba(37, 99, 235, 0.2)" }}
               className="bg-white rounded-2xl p-6 xs:p-8 border border-slate-200 shadow-lg hover:shadow-xl transition-all relative overflow-hidden cursor-pointer"
             >
@@ -387,10 +350,10 @@ const Programs = () => {
               <Link to="/courses/IT" className="text-blue-600 font-bold flex items-center gap-2 hover:gap-3 transition-all">
                 Explore IT Courses <ArrowRight size={16} />
               </Link>
-            </motion.div>
+            </m.div>
 
             {/* Mechanical Programs */}
-            <motion.div
+            <m.div
               whileHover={{ y: -10, boxShadow: "0 20px 40px -10px rgba(147, 51, 234, 0.2)" }}
               className="bg-white rounded-2xl p-6 xs:p-8 border border-slate-200 shadow-lg hover:shadow-xl transition-all relative overflow-hidden cursor-pointer"
             >
@@ -420,10 +383,10 @@ const Programs = () => {
               <Link to="/courses/Mechanical" className="text-purple-600 font-bold flex items-center gap-2 hover:gap-3 transition-all">
                 Explore Mechanical Courses <ArrowRight size={16} />
               </Link>
-            </motion.div>
+            </m.div>
 
             {/* Civil Programs */}
-            <motion.div
+            <m.div
               whileHover={{ y: -10, boxShadow: "0 20px 40px -10px rgba(22, 163, 74, 0.2)" }}
               className="bg-white rounded-2xl p-6 xs:p-8 border border-slate-200 shadow-lg hover:shadow-xl transition-all relative overflow-hidden cursor-pointer"
             >
@@ -453,7 +416,7 @@ const Programs = () => {
               <Link to="/courses/Civil" className="text-green-600 font-bold flex items-center gap-2 hover:gap-3 transition-all">
                 Explore Civil Courses <ArrowRight size={16} />
               </Link>
-            </motion.div>
+            </m.div>
           </div>
         </div>
       </section>
@@ -598,6 +561,9 @@ const Programs = () => {
                 };
 
                 try {
+                  const { getFirestoreDb } = await import('../lib/firebase');
+                  const { collection, addDoc, serverTimestamp } = await import('firebase/firestore');
+                  const db = await getFirestoreDb();
                   // 1. Save to Firestore
                   const enquiryData = {
                     ...submission,
@@ -606,34 +572,29 @@ const Programs = () => {
                   };
                   await addDoc(collection(db, 'enquiries'), enquiryData);
 
-                  // 2. Send to Google Sheets
+                  // 2. Send to Google Sheets as JSON Payload
+
+                  const scriptUrl = "https://script.google.com/macros/s/AKfycbyCXeBcecLMxEqsI895ypcAgNwa0v4obpE6lXMczvDolz3kaMRPf6aDxmTH9vEL5FzKsw/exec";
+                  
                   const sheetsData = {
-                    fullName: formData.get('fullName'),
-                    qualification: formData.get('qualification'),
-                    phone: formData.get('phone'),
-                    email: formData.get('email'),
-                    department: formData.get('department'),
-                    status: formData.get('status'),
-                    preferredBranch: formData.get('branch'), // Match Apps Script column
-                    course: "Workshop Lead" // Generic course name for this form
+                    fullName: String(formData.get('fullName')),
+                    qualification: String(formData.get('qualification')),
+                    phone: String(formData.get('phone')),
+                    email: String(formData.get('email')),
+                    department: String(formData.get('department')),
+                    status: String(formData.get('status')),
+                    preferredBranch: String(formData.get('branch')),
+                    course: "Workshop Lead"
                   };
 
-                  const response = await fetch(
-                    "https://script.google.com/macros/s/AKfycbwA4ov727SfKJtwf851GvUQEATLRpUUV_JzWzAhgjIWuETQmKPHH9e7N35T5wWnE7PF4w/exec",
-                    {
-                      method: "POST",
-                      body: JSON.stringify(sheetsData),
-                    }
-                  );
+                  fetch(scriptUrl, {
+                    method: "POST",
+                    mode: 'no-cors',
+                    body: JSON.stringify(sheetsData),
+                  }).catch(err => console.error("Google Sheets Error:", err));
 
-                  const text = await response.text();
-
-                  if (text === "success") {
-                    alert("Enquiry Submitted Successfully! We will contact you soon.");
-                    form.reset();
-                  } else {
-                    alert("Form submitted, but there was an issue with the confirmation. We'll get back to you!");
-                  }
+                  alert("Enquiry Submitted Successfully! We will contact you soon.");
+                  form.reset();
                 } catch (error) {
                   console.error("Submission error:", error);
                   alert("Submission Failed! Please try again later.");
@@ -737,6 +698,7 @@ const Programs = () => {
 
               <button
                 type="submit"
+                aria-label="Submit workshop enquiry"
                 className="w-full bg-cyan-400 text-[#0a0f1e] font-black py-4 rounded-lg hover:bg-cyan-300 active:scale-[0.98] transition-all shadow-[0_0_20px_rgba(34,211,238,0.3)] mt-2"
               >
                 Submit

@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { db } from '../../lib/firebase';
-import { collection, query, orderBy, getDocs, doc, deleteDoc, updateDoc, writeBatch } from 'firebase/firestore';
 import { useUserRole } from '../../hooks/useUserRole';
 import { Plus, Edit2, Trash2, ChevronUp, ChevronDown, Eye, EyeOff } from 'lucide-react';
 
@@ -28,6 +26,10 @@ const HeroSlidesManager = () => {
 
     const fetchSlides = async () => {
         try {
+            const { getFirestoreDb } = await import('../../lib/firebase');
+            const { collection, query, orderBy, getDocs } = await import('firebase/firestore');
+            const db = await getFirestoreDb();
+
             const slidesSnapshot = await getDocs(query(collection(db, 'hero_slides'), orderBy('order_num', 'asc')));
             const data = slidesSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as HeroSlide));
             setSlides(data || []);
@@ -43,6 +45,10 @@ const HeroSlidesManager = () => {
         if (!confirm('Are you sure you want to delete this slide?')) return;
 
         try {
+            const { getFirestoreDb } = await import('../../lib/firebase');
+            const { doc, deleteDoc } = await import('firebase/firestore');
+            const db = await getFirestoreDb();
+
             await deleteDoc(doc(db, 'hero_slides', id));
             alert('Slide deleted successfully!');
             fetchSlides();
@@ -54,6 +60,10 @@ const HeroSlidesManager = () => {
 
     const handleToggleActive = async (id: string, currentActive: boolean) => {
         try {
+            const { getFirestoreDb } = await import('../../lib/firebase');
+            const { doc, updateDoc } = await import('firebase/firestore');
+            const db = await getFirestoreDb();
+
             await updateDoc(doc(db, 'hero_slides', id), { active: !currentActive });
             fetchSlides();
         } catch (error: any) {
@@ -73,6 +83,10 @@ const HeroSlidesManager = () => {
         [newSlides[currentIndex], newSlides[newIndex]] = [newSlides[newIndex], newSlides[currentIndex]];
 
         try {
+            const { getFirestoreDb } = await import('../../lib/firebase');
+            const { doc, writeBatch } = await import('firebase/firestore');
+            const db = await getFirestoreDb();
+
             const batch = writeBatch(db);
             newSlides.forEach((slide, index) => {
                 batch.update(doc(db, 'hero_slides', slide.id), { order_num: index });

@@ -1,6 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { db } from '../../lib/firebase';
-import { collection, query, orderBy, getDocs, doc, deleteDoc, updateDoc, addDoc } from 'firebase/firestore';
 import { useUserRole } from '../../hooks/useUserRole';
 import { Plus, Trash2, X, Edit, Award, Briefcase, Zap, BookOpen } from 'lucide-react';
 
@@ -35,6 +33,10 @@ const FeatureManager = () => {
 
     const fetchFeatures = async () => {
         try {
+            const { getFirestoreDb } = await import('../../lib/firebase');
+            const { collection, query, orderBy, getDocs } = await import('firebase/firestore');
+            const db = await getFirestoreDb();
+
             const featuresSnapshot = await getDocs(query(collection(db, 'program_features'), orderBy('order_num', 'asc')));
             const data = featuresSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Feature));
             setFeatures(data || []);
@@ -57,6 +59,10 @@ const FeatureManager = () => {
         };
 
         try {
+            const { getFirestoreDb } = await import('../../lib/firebase');
+            const { collection, addDoc, doc, updateDoc } = await import('firebase/firestore');
+            const db = await getFirestoreDb();
+
             if (currentId) {
                 // Update
                 await updateDoc(doc(db, 'program_features', currentId), featureData);
@@ -77,6 +83,10 @@ const FeatureManager = () => {
     const handleDelete = async (id: string) => {
         if (!confirm('Delete this feature?')) return;
         try {
+            const { getFirestoreDb } = await import('../../lib/firebase');
+            const { doc, deleteDoc } = await import('firebase/firestore');
+            const db = await getFirestoreDb();
+
             await deleteDoc(doc(db, 'program_features', id));
             setFeatures(features.filter(f => f.id !== id));
         } catch (error: any) {

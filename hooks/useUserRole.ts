@@ -1,7 +1,4 @@
 import { useEffect, useState } from 'react';
-import { auth, db } from '../lib/firebase';
-import { onAuthStateChanged } from 'firebase/auth';
-import { doc, getDoc } from 'firebase/firestore';
 
 export type UserRole = 'admin' | 'editor' | 'viewer';
 
@@ -11,49 +8,64 @@ export const useUserRole = () => {
     const [email, setEmail] = useState<string | null>(null);
 
     useEffect(() => {
-        console.log('useUserRole: Setting up Auth listener...');
-        const unsubscribe = onAuthStateChanged(auth, async (user) => {
-            try {
-                if (!user || !user.email) {
-                    console.log('useUserRole: No user found');
+        const setupAuth = async () => {
+            const { getFirebaseAuth, getFirestoreDb } = await import('../lib/firebase');
+            const { onAuthStateChanged } = await import('firebase/auth');
+            const { doc, getDoc } = await import('firebase/firestore');
+            const auth = await getFirebaseAuth();
+            const db = await getFirestoreDb();
+
+            const unsubscribe = onAuthStateChanged(auth, async (user) => {
+                try {
+                    if (!user || !user.email) {
+                        console.log('useUserRole: No user found');
+                        setRole(null);
+                        setEmail(null);
+                        setLoading(false);
+                        return;
+                    }
+
+                    const userEmail = user.email.toLowerCase();
+                    console.log('useUserRole: Found user:', userEmail);
+                    setEmail(userEmail);
+
+                    // EMERGENCY OVERRIDE: Prevent lockout for main admins
+                    if (userEmail === 'info@lasakedu.in' || userEmail === 'brindhaa.lasak@gmail.com') {
+                        console.log('useUserRole: EMERGENCY BYPASS triggered');
+                        setRole('admin');
+                        setLoading(false);
+                        return;
+                    }
+
+                    console.log('useUserRole: Querying Firestore for role...');
+                    const roleDoc = await getDoc(doc(db, 'user_roles', userEmail));
+
+                    if (roleDoc.exists()) {
+                        const data = roleDoc.data();
+                        console.log('useUserRole: Role found:', data.role);
+                        setRole(data.role as UserRole);
+                    } else {
+                        console.warn('useUserRole: No role document found for', userEmail);
+                        setRole(null);
+                    }
+                } catch (err: any) {
+                    console.error('useUserRole Error:', err.message || err);
                     setRole(null);
-                    setEmail(null);
+                } finally {
                     setLoading(false);
-                    return;
                 }
+            });
+            return unsubscribe;
+        };
 
-                const userEmail = user.email.toLowerCase();
-                console.log('useUserRole: Found user:', userEmail);
-                setEmail(userEmail);
-
-                // EMERGENCY OVERRIDE: Prevent lockout for main admin
-                if (userEmail === 'info@lasakedu.in') {
-                    console.log('useUserRole: EMERGENCY BYPASS triggered');
-                    setRole('admin');
-                    setLoading(false);
-                    return;
-                }
-
-                console.log('useUserRole: Querying Firestore for role...');
-                const roleDoc = await getDoc(doc(db, 'user_roles', userEmail));
-
-                if (roleDoc.exists()) {
-                    const data = roleDoc.data();
-                    console.log('useUserRole: Role found:', data.role);
-                    setRole(data.role as UserRole);
-                } else {
-                    console.warn('useUserRole: No role document found for', userEmail);
-                    setRole(null);
-                }
-            } catch (err: any) {
-                console.error('useUserRole Error:', err.message || err);
-                setRole(null);
-            } finally {
-                setLoading(false);
-            }
+        let unsubscribe: (() => void) | undefined;
+        setupAuth().then(unsub => {
+            unsubscribe = unsub;
         });
 
-        return () => unsubscribe();
+        return () => {
+            if (unsubscribe) unsubscribe();
+        };
     }, []);
 
     return {

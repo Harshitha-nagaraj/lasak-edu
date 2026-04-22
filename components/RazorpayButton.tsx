@@ -1,7 +1,5 @@
 import React, { useState } from 'react';
 import { CreditCard, Loader2, CheckCircle, X, Download } from 'lucide-react';
-import { db, auth } from '../lib/firebase';
-import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 
 interface RazorpayButtonProps {
     amount: number;
@@ -34,8 +32,15 @@ const loadRazorpayScript = (): Promise<boolean> => {
         if (window.Razorpay) { resolve(true); return; }
         const script = document.createElement('script');
         script.src = 'https://checkout.razorpay.com/v1/checkout.js';
-        script.onload = () => resolve(true);
-        script.onerror = () => resolve(false);
+        script.async = true;
+        script.onload = () => {
+            console.log("Razorpay SDK loaded successfully");
+            resolve(true);
+        };
+        script.onerror = () => {
+            console.error("Razorpay SDK failed to load. This might be due to an ad-blocker or network issue.");
+            resolve(false);
+        };
         document.body.appendChild(script);
     });
 };
@@ -123,6 +128,11 @@ const RazorpayButton = React.forwardRef<any, RazorpayButtonProps>(({
                 },
                 handler: async (response: any) => {
                     try {
+                        const { getFirebaseAuth, getFirestoreDb } = await import('../lib/firebase');
+                        const auth = await getFirebaseAuth();
+                        const db = await getFirestoreDb();
+                        const { collection, addDoc, serverTimestamp } = await import('firebase/firestore');
+
                         // Save enrollment record to Firestore
                         const user = auth.currentUser;
                         await addDoc(collection(db, 'enrollments'), {
@@ -193,7 +203,7 @@ const RazorpayButton = React.forwardRef<any, RazorpayButtonProps>(({
                         {/* Close */}
                         <button
                             onClick={() => setPaymentSuccess(null)}
-                            className="absolute top-4 right-4 p-2 rounded-full text-slate-400 hover:bg-slate-100 transition-colors"
+                            className="absolute top-4 right-4 p-2 rounded-full text-slate-600 hover:bg-slate-100 transition-colors"
                         >
                             <X size={20} />
                         </button>

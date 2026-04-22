@@ -2,8 +2,6 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate, Link } from 'react-router-dom';
 import { Lock, User, Mail, Phone, ArrowRight, CheckCircle2 } from 'lucide-react';
-import { auth } from '../lib/firebase';
-import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
 
 const Signup = () => {
     const [email, setEmail] = useState('');
@@ -18,6 +16,10 @@ const Signup = () => {
         e.preventDefault();
         setLoading(true);
         try {
+            const { getFirebaseAuth } = await import('../lib/firebase');
+            const { createUserWithEmailAndPassword, updateProfile } = await import('firebase/auth');
+            const auth = await getFirebaseAuth();
+
             const normalizedEmail = email.trim().toLowerCase();
             const normalizedPassword = password.trim();
 

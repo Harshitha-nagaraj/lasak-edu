@@ -1,12 +1,9 @@
 
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Plus, Edit2, Trash2, Search, Quote } from 'lucide-react';
-import { db } from '../../lib/firebase';
-import { collection, query, orderBy, getDocs, doc, deleteDoc } from 'firebase/firestore';
+import { Plus, Edit2, Trash2, Search, Quote, ChevronUp, ChevronDown } from 'lucide-react';
 import { useUserRole } from '../../hooks/useUserRole';
 
-// Helper type based on schema
 interface Testimonial {
     id: string;
     name: string;
@@ -14,6 +11,7 @@ interface Testimonial {
     content: string;
     image: string;
     rating: number;
+    order_num?: number;
 }
 
 const TestimonialManager = () => {
@@ -22,6 +20,7 @@ const TestimonialManager = () => {
     const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
+    const [reordering, setReordering] = useState(false);
 
     useEffect(() => {
         fetchTestimonials();
@@ -29,18 +28,27 @@ const TestimonialManager = () => {
 
     const fetchTestimonials = async () => {
         try {
-            const testimonialsRef = collection(db, 'testimonials');
-            const querySnapshot = await getDocs(testimonialsRef);
-            const fetchedTestimonials: Testimonial[] = querySnapshot.docs.map(doc => ({
+            const { getFirestoreDb } = await import('../../lib/firebase');
+            const { collection, getDocs } = await import('firebase/firestore');
+            const db = await getFirestoreDb();
+
+            const querySnapshot = await getDocs(collection(db, 'testimonials'));
+            const fetched: Testimonial[] = querySnapshot.docs.map(doc => ({
                 id: doc.id,
                 ...doc.data()
             } as Testimonial));
-            fetchedTestimonials.sort((a: any, b: any) => {
+
+            // Sort: prefer order_num, fall back to created_at
+            fetched.sort((a: any, b: any) => {
+                if (a.order_num != null && b.order_num != null) return a.order_num - b.order_num;
                 const aTime = a.created_at?.toMillis?.() || 0;
                 const bTime = b.created_at?.toMillis?.() || 0;
-                return bTime - aTime;
+                return aTime - bTime;
             });
-            setTestimonials(fetchedTestimonials);
+
+            // Assign order_num if missing
+            const normalized = fetched.map((t, i) => ({ ...t, order_num: t.order_num ?? i + 1 }));
+            setTestimonials(normalized);
         } catch (error) {
             console.error('Error fetching testimonials:', error);
         } finally {
@@ -52,11 +60,46 @@ const TestimonialManager = () => {
         if (!window.confirm('Are you sure you want to delete this testimonial?')) return;
 
         try {
+            const { getFirestoreDb } = await import('../../lib/firebase');
+            const { doc, deleteDoc } = await import('firebase/firestore');
+            const db = await getFirestoreDb();
+
             await deleteDoc(doc(db, 'testimonials', id));
             setTestimonials(testimonials.filter(t => t.id !== id));
         } catch (error) {
             console.error('Error deleting testimonial:', error);
             alert('Failed to delete testimonial');
+        }
+    };
+
+    const moveItem = async (index: number, direction: 'up' | 'down') => {
+        const swapIndex = direction === 'up' ? index - 1 : index + 1;
+        if (swapIndex < 0 || swapIndex >= testimonials.length) return;
+
+        setReordering(true);
+        try {
+            const newList = [...testimonials];
+            const aOrder = newList[index].order_num ?? index + 1;
+            const bOrder = newList[swapIndex].order_num ?? swapIndex + 1;
+            newList[index] = { ...newList[index], order_num: bOrder };
+            newList[swapIndex] = { ...newList[swapIndex], order_num: aOrder };
+            [newList[index], newList[swapIndex]] = [newList[swapIndex], newList[index]];
+
+            setTestimonials(newList);
+
+            const { getFirestoreDb } = await import('../../lib/firebase');
+            const { doc, updateDoc } = await import('firebase/firestore');
+            const db = await getFirestoreDb();
+            await Promise.all([
+                updateDoc(doc(db, 'testimonials', newList[index].id), { order_num: newList[index].order_num }),
+                updateDoc(doc(db, 'testimonials', newList[swapIndex].id), { order_num: newList[swapIndex].order_num }),
+            ]);
+        } catch (error) {
+            console.error('Error reordering:', error);
+            alert('Failed to save order. Please try again.');
+            fetchTestimonials();
+        } finally {
+            setReordering(false);
         }
     };
 
@@ -70,7 +113,7 @@ const TestimonialManager = () => {
             <div className="flex flex-col md:flex-row justify-between items-center gap-4">
                 <div>
                     <h1 className="text-2xl font-bold text-gray-800">Our Achievers</h1>
-                    <p className="text-gray-500">Manage student success stories displayed on the home page</p>
+                    <p className="text-gray-500">Manage student success stories displayed on the home page · Use ↑↓ to reorder</p>
                 </div>
                 {canEdit && (
                     <button
@@ -101,8 +144,35 @@ const TestimonialManager = () => {
                 </div>
             ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {filteredTestimonials.map((testimonial) => (
+                    {filteredTestimonials.map((testimonial, index) => (
                         <div key={testimonial.id} className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow">
+                            {/* Order badge + controls */}
+                            <div className="flex items-center justify-between mb-3">
+                                <span className="inline-flex items-center gap-1.5 text-xs font-bold text-blue-700 bg-blue-50 border border-blue-100 px-2.5 py-1 rounded-full">
+                                    # {index + 1}
+                                </span>
+                                {canEdit && !searchTerm && (
+                                    <div className="flex gap-1">
+                                        <button
+                                            onClick={() => moveItem(index, 'up')}
+                                            disabled={index === 0 || reordering}
+                                            className="p-1.5 rounded-lg text-gray-400 hover:text-blue-600 hover:bg-blue-50 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                                            title="Move Up"
+                                        >
+                                            <ChevronUp size={16} />
+                                        </button>
+                                        <button
+                                            onClick={() => moveItem(index, 'down')}
+                                            disabled={index === filteredTestimonials.length - 1 || reordering}
+                                            className="p-1.5 rounded-lg text-gray-400 hover:text-blue-600 hover:bg-blue-50 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                                            title="Move Down"
+                                        >
+                                            <ChevronDown size={16} />
+                                        </button>
+                                    </div>
+                                )}
+                            </div>
+
                             <div className="flex items-start justify-between mb-4">
                                 <div className="flex items-center gap-3">
                                     <div className="w-12 h-12 rounded-full overflow-hidden bg-gray-100 flex items-center justify-center">

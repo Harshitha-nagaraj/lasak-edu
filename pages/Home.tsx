@@ -1,211 +1,34 @@
-﻿
-import React, { useEffect, useState, useRef, ReactNode } from 'react';
-import { motion, useInView, AnimatePresence } from 'framer-motion';
+
+import React, { useEffect, useState, useRef, ReactNode, lazy, Suspense } from 'react';
+import { m, AnimatePresence } from 'framer-motion';
+import { useNativeInView } from '../hooks/useNativeInView';
 import { Link, useNavigate } from 'react-router-dom';
-import { ArrowRight, CheckCircle, Award, Users, Star, ExternalLink, ChevronLeft, ChevronRight, Play, Megaphone, Sparkles, Bot, X, Calendar, Clock, Check, Code, Settings, Home as HomeIcon, PenTool, Gamepad2 } from 'lucide-react';
-import { ACCREDITATIONS, CATEGORIES, COURSES, COMPANY_LOGOS, PARTNERS, TESTIMONIALS as FALLBACK_STORIES, DEMO_VIDEOS as FALLBACK_YT_VIDEOS } from '../constants';
+import { ArrowRight, CheckCircle, Award, Users, Star, ExternalLink, ChevronLeft, ChevronRight, Play, Megaphone, Sparkles, Bot, X, Calendar, Clock, Check, Code, Settings, Home as HomeIcon, PenTool, Gamepad2, Briefcase, Globe } from 'lucide-react';
+import { COURSE_SUMMARIES as COURSES } from '../constants/courseSummaries';
+import { TESTIMONIALS as FALLBACK_STORIES } from '../constants/testimonials';
+import { BLOG_SUMMARIES as BLOGS } from '../constants/blogSummaries';
+import { ACCREDITATIONS, CATEGORIES, COMPANY_LOGOS, PARTNERS, DEMO_VIDEOS as FALLBACK_YT_VIDEOS, HERO_SLIDES_FALLBACK, GOOGLE_REVIEWS_LIST, IMPORTANT_PROGRAM_BLOCKS, STUDENT_VIDEOS } from '../constants/ui';
 import { Course } from '../types';
 import SEO from '../components/SEO';
-import StudentTestimonials from './studenttestmonials';
-import { BLOGS } from '../constants';
-import { User } from 'lucide-react';
 import CategoryCard from '../components/CategoryCard';
-import BlogAutoScroll from "../components/BlogAutoScroll";
-import { auth, db } from '../lib/firebase';
-import { onAuthStateChanged } from 'firebase/auth';
-import { collection, query, where, getDocs, orderBy, limit, doc, getDoc } from 'firebase/firestore';
-import { fetchWithCache } from '../lib/cacheUtils';
-import InquiryModal from '../components/InquiryModal';
-import RazorpayButton from '../components/RazorpayButton';
 import { normalizeImagePath } from '../lib/imageUtils';
+
+const StudentTestimonials = lazy(() => import('./studenttestmonials'));
+const BlogAutoScroll = lazy(() => import('../components/BlogAutoScroll'));
+const HomeExtra = lazy(() => import('../components/HomeExtra').then(m => ({ default: (props: any) => null as any }))); // Placeholder for type, actual lazy load below
+
+// Granular lazy loading of Home sections
+const LazyAchieversScroller = lazy(() => import('../components/HomeExtra').then(m => ({ default: m.AchieversScroller })));
+const LazyYouTubeScroller = lazy(() => import('../components/HomeExtra').then(m => ({ default: m.YouTubeScroller })));
+const LazyStatCounter = lazy(() => import('../components/HomeExtra').then(m => ({ default: m.StatCounter })));
+const LazyProgramSegments = lazy(() => import('../components/ProgramSegments'));
+const LazyLearningBenefits = lazy(() => import('../components/LearningBenefits'));
+const InquiryModal = lazy(() => import('../components/InquiryModal'));
+const RazorpayButton = lazy(() => import('../components/RazorpayButton'));
 
 // --- Sub Components ---
 
-export const InfiniteTicker = ({ items, direction = 'left', speed = 'fast' }: { items: string[], direction?: 'left' | 'right', speed?: 'fast' | 'slow' }) => {
-  return (
-    <div className="relative flex overflow-hidden w-full py-8 group bg-transparent">
-      <div className={`flex whitespace-nowrap ${direction === 'left' ? 'animate-scroll' : 'animate-scroll-reverse'} hover:pause space-x-16`}>
-        {[...items, ...items, ...items, ...items].map((item, idx) => (
-          <span key={idx} className="text-xl md:text-2xl font-bold text-slate-400 uppercase tracking-widest hover:text-blue-600 transition-colors px-4">
-            {item}
-          </span>
-        ))}
-      </div>
-    </div>
-  );
-};
-
-const ScrollReveal = ({ children, delay = 0 }: { children?: ReactNode, delay?: number }) => (
-  <motion.div
-    initial={{ opacity: 0, y: 50 }}
-    whileInView={{ opacity: 1, y: 0 }}
-    viewport={{ once: true, margin: "-50px" }}
-    transition={{ duration: 0.6, delay, ease: "easeOut" }}
-  >
-    {children}
-  </motion.div>
-);
-
-// Video Card for Demo Section
-const VideoCard: React.FC<{ videoId: string; title?: string; thumbnail: string }> = ({
-  videoId,
-  title = "Watch on YouTube",
-  thumbnail,
-}) => {
-  return (
-    <a
-      href={`https://www.youtube.com/watch?v=${videoId}`}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="block"
-    >
-      <motion.div
-        whileHover={{ scale: 1.05, y: -5 }}
-        whileTap={{ scale: 0.98 }}
-        className="w-[140px] xs:w-[180px] md:w-[400px] flex-shrink-0 bg-white rounded-2xl overflow-hidden border border-slate-200 shadow-lg group transition-all duration-300"
-      >
-        {/* Thumbnail */}
-        <div className="aspect-video bg-black relative">
-          <img
-            src={`https://img.youtube.com/vi/${videoId}/mqdefault.jpg`}
-            alt="YouTube Video"
-            loading="lazy"
-            decoding="async"
-            fetchPriority="low"
-            className="w-full h-full object-cover"
-          />
-
-
-          {/* Play Overlay */}
-          <div className="absolute inset-0 flex items-center justify-center bg-black/40">
-            <div className="w-16 h-16 bg-red-600 rounded-full flex items-center justify-center shadow-xl group-hover:scale-110 transition">
-              <Play fill="white" className="text-white ml-1" />
-            </div>
-          </div>
-        </div>
-
-        {/* Footer */}
-        <div className="p-4 text-center">
-          <p className="text-blue-600 font-bold text-sm flex items-center justify-center gap-1">
-            Watch on YouTube <ExternalLink size={14} />
-          </p>
-        </div>
-      </motion.div>
-    </a>
-  );
-};
 const cleanPath = normalizeImagePath;
-
-// YouTube Scroller Component
-const YouTubeScroller = React.memo(({ youtubeVideos }: { youtubeVideos: any[] }) => {
-  return (
-    <div className="relative w-full">
-      <div
-        className="youtube-scroller pb-4 px-4 md:px-0"
-        onMouseDown={(e) => e.currentTarget.classList.add('paused')}
-        onMouseUp={(e) => e.currentTarget.classList.remove('paused')}
-        onTouchStart={(e) => e.currentTarget.classList.add('paused')}
-        onTouchEnd={(e) => e.currentTarget.classList.remove('paused')}
-        style={{
-          scrollbarWidth: 'none',
-          msOverflowStyle: 'none',
-          overflowX: youtubeVideos.length >= 3 ? 'auto' : 'hidden'
-        }}
-      >
-        <div
-          className={`flex w-max ${youtubeVideos.length >= 3 ? 'animate-scroll-loop' : 'justify-center'}`}
-          style={{ '--duration': `${youtubeVideos.length * 3}s` } as React.CSSProperties}
-        >
-          {(youtubeVideos.length >= 3
-            ? [...youtubeVideos, ...youtubeVideos]
-            : youtubeVideos
-          ).map((video, idx) => (
-            <div key={`${video.id || video.video_id}-${idx}`} className="mr-4 md:mr-8 flex-shrink-0">
-              <VideoCard
-                videoId={video.video_id}
-                thumbnail={video.thumbnail}
-              />
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-});
-
-// Achievers Scroller Component
-const AchieversScroller = React.memo(({ testimonials }: { testimonials: any[] }) => {
-  return (
-    <div className="relative w-full">
-      <div
-        className="achievers-scroller pb-4 px-4 md:px-0"
-        onMouseDown={(e) => e.currentTarget.classList.add('paused')}
-        onMouseUp={(e) => e.currentTarget.classList.remove('paused')}
-        onTouchStart={(e) => e.currentTarget.classList.add('paused')}
-        onTouchEnd={(e) => e.currentTarget.classList.remove('paused')}
-        style={{
-          scrollbarWidth: 'none',
-          msOverflowStyle: 'none',
-          overflowX: testimonials.length >= 3 ? 'auto' : 'hidden'
-        }}
-      >
-        <div
-          className={`flex w-max ${testimonials.length >= 3 ? 'animate-scroll-loop' : 'justify-center'}`}
-          style={{ '--duration': `${testimonials.length * 4}s` } as React.CSSProperties}
-        >
-          {(testimonials.length >= 3
-            ? [...testimonials, ...testimonials]
-            : testimonials
-          ).map((story, i) => (
-            <div
-              key={`${story.id}-${i}`}
-              className="w-[220px] xs:w-[300px] bg-white p-6 rounded-2xl shadow-lg border border-slate-100 flex-shrink-0 mr-4 md:mr-8"
-            >
-              <div className="flex flex-col items-center text-center gap-3 mb-4">
-                <div className="w-16 h-16 rounded-full border-2 border-white shadow-md overflow-hidden bg-blue-50 flex items-center justify-center shrink-0">
-                  {story.image ? (
-                    <img
-                      src={cleanPath(story.image)}
-                      alt={story.name}
-                      width="64"
-                      height="64"
-                      loading="lazy"
-                      className="w-full h-full object-cover"
-                      onError={(e) => {
-                        (e.target as HTMLImageElement).src = `https://ui-avatars.com/api/?name=${encodeURIComponent(story.name)}&background=random`;
-                      }}
-                    />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center bg-blue-600 text-white font-bold text-xl">{story.name.charAt(0)}</div>
-                  )}
-                </div>
-                <div className="flex flex-col items-center text-center">
-                  <h4 className="font-bold text-lg text-slate-900">{story.name}</h4>
-                  <p className="text-sm text-blue-600 font-semibold leading-tight mt-1">
-                    {story.role}
-                  </p>
-                  <div className="flex justify-center text-yellow-400 text-xs mt-2">
-                    {[...Array(story.rating || 5)].map((_, i) => <span key={i}>★</span>)}
-                  </div>
-                </div>
-              </div>
-              {story.company && (
-                <p className="text-xs text-slate-500 font-semibold mb-3 flex items-center justify-center gap-1 w-full text-center">
-                  <span className="w-1.5 h-1.5 rounded-full bg-blue-500 inline-block"></span>
-                  {story.company}
-                  {story.package && <span className="ml-1 text-green-600 font-bold">{story.package}</span>}
-                </p>
-              )}
-              <p className="text-slate-600 italic leading-relaxed line-clamp-4 text-center">
-                &ldquo;{story.content || story.quote || ''}&rdquo;
-              </p>
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-});
 
 
 
@@ -215,72 +38,78 @@ const AchieversScroller = React.memo(({ testimonials }: { testimonials: any[] })
 
 
 
-const StatCounter = ({ end, label }: { end: number, label: string }) => {
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true });
-  const [count, setCount] = useState(0);
-
-  useEffect(() => {
-    if (isInView) {
-      let start = 0;
-      const duration = 2000;
-      const increment = end / (duration / 16);
-
-      const timer = setInterval(() => {
-        start += increment;
-        if (start >= end) {
-          setCount(end);
-          clearInterval(timer);
-        } else {
-          setCount(Math.floor(start));
-        }
-      }, 16);
-      return () => clearInterval(timer);
-    }
-  }, [isInView, end]);
-
+// InfiniteTicker and ScrollReveal moved back or kept if light
+export const InfiniteTicker = ({ items, direction = 'left', speed = 'fast' }: { items: string[], direction?: 'left' | 'right', speed?: 'fast' | 'slow' }) => {
   return (
-    <motion.div
-      ref={ref}
-      whileHover={{ y: -5 }}
-      className="text-center p-6 glass-card rounded-2xl relative overflow-hidden group"
-    >
-      <div className="absolute top-0 right-0 p-4 opacity-0 group-hover:opacity-10 transition-opacity">
-        <Sparkles className="text-blue-500" />
+    <div className="relative flex overflow-hidden w-full py-8 group bg-transparent">
+      <div className={`flex whitespace-nowrap ${direction === 'left' ? 'animate-scroll' : 'animate-scroll-reverse'} hover:pause space-x-16`}>
+        {[...items, ...items, ...items, ...items].map((item, idx) => (
+          <span key={idx} className="text-xl md:text-2xl font-bold text-slate-600 uppercase tracking-widest hover:text-blue-600 transition-colors px-4">
+            {item}
+          </span>
+        ))}
       </div>
-      <h3 className="text-4xl md:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-br from-blue-600 to-indigo-600 mb-2 font-tech">
-        {count}+
-      </h3>
-      <p className="text-slate-500 font-bold uppercase tracking-wider text-xs md:text-sm">{label}</p>
-    </motion.div>
+    </div>
   );
 };
+
+const ScrollReveal = React.memo(({ children, delay = 0, active = true }: { children?: ReactNode, delay?: number, active?: boolean }) => {
+  const [ref, isInView] = useNativeInView<HTMLDivElement>({ once: true, threshold: 0.1, rootMargin: '-100px' });
+
+  return (
+    <div
+      ref={ref}
+      style={{
+        opacity: !active || isInView ? 1 : 0,
+        transform: !active || isInView ? 'translateY(0)' : 'translateY(50px)',
+        transition: `opacity 0.6s ease-out ${delay}s, transform 0.6s ease-out ${delay}s`,
+      }}
+    >
+      {children}
+    </div>
+  );
+});
 
 const CourseCard: React.FC<{
   course: Course;
   onEnroll: (course: Course) => void;
   onModules: (course: Course) => void;
   user: any;
-}> = ({ course, onEnroll, onModules, user }) => {
+  priority?: "high" | "low" | "auto";
+  index?: number;
+}> = ({ course, onEnroll, onModules, user, priority = "auto", index = 0 }) => {
+  const [cardRef, isCardInView] = useNativeInView<HTMLDivElement>({ once: true, threshold: 0.1 });
   const navigate = useNavigate();
 
+  // Optimized image loading for above-the-fold content
+  const isEager = index < 3;
+
   return (
-    <motion.div
+    <m.div
+      ref={cardRef}
       onClick={() => navigate("/courses")}
       whileHover={{ y: -10 }}
       whileTap={{ scale: 0.98 }}
-      initial={{ opacity: 0, scale: 0.95 }}
-      whileInView={{ opacity: 1, scale: 1 }}
-      viewport={{ once: true }}
+      style={{
+        opacity: priority === "high" || isCardInView ? 1 : 0,
+        transform: priority === "high" || isCardInView ? 'scale(1)' : 'scale(0.95)',
+        transition: 'opacity 0.5s ease-out, transform 0.5s ease-out',
+      }}
       className="bg-white rounded-2xl overflow-hidden group border border-slate-200
-                 shadow-lg hover:shadow-2xl transition-all duration-300
+                 shadow-lg hover:shadow-2xl
                  h-full flex flex-col cursor-pointer"
     >
       <div className="relative h-48 overflow-hidden">
         <img
           src={course.image}
           alt={course.title}
+          loading={isEager ? "eager" : "lazy"}
+          fetchPriority={isEager ? "high" : "low"}
+          width="400"
+          height="224"
+          sizes="(max-width: 768px) 100vw, 400px"
           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+          decoding="async"
         />
         <div className="absolute top-4 right-4 bg-white/95 px-3 py-1 rounded-full text-xs font-bold">
           {course.category}
@@ -308,7 +137,7 @@ const CourseCard: React.FC<{
         <div className="mt-auto pt-4 border-t border-slate-100">
           <div className="flex items-center gap-3 mb-4">
             {course.oldPrice && (
-              <span className="text-slate-400 line-through text-sm font-medium">
+              <span className="text-gray-700 line-through text-sm font-medium">
                 {course.oldPrice}
               </span>
             )}
@@ -350,110 +179,29 @@ const CourseCard: React.FC<{
                 Modules
               </button>
             </div>
-            <RazorpayButton
-              amount={Number((course.price || "0").toString().replace(/[^0-9]/g, ''))}
-              courseId={course.id}
-              courseTitle={course.title}
-              courseCategory={course.category}
-              studentInfo={{
-                full_name: user?.user_metadata?.full_name || user?.user_metadata?.name,
-                email: user?.email,
-                phone: user?.user_metadata?.phone
-              }}
-              className="w-full py-3 rounded-xl font-bold text-sm bg-white border-2 border-blue-600 text-blue-600 hover:bg-blue-50 transition-all shadow-md active:scale-95"
-            />
+            <Suspense fallback={<div className="h-12 w-full bg-slate-100 animate-pulse rounded-xl"></div>}>
+              <RazorpayButton
+                amount={Number((course.price || "0").toString().replace(/[^0-9]/g, ''))}
+                courseId={course.id}
+                courseTitle={course.title}
+                courseCategory={course.category}
+                studentInfo={{
+                  full_name: user?.user_metadata?.full_name || user?.user_metadata?.name,
+                  email: user?.email,
+                  phone: user?.user_metadata?.phone
+                }}
+                className="w-full py-3 rounded-xl font-bold text-sm bg-white border-2 border-blue-600 text-blue-700 hover:bg-blue-50 transition-all shadow-md active:scale-95"
+              />
+            </Suspense>
           </div>
         </div>
       </div>
-    </motion.div>
+    </m.div>
   );
 };
 
 
 // --- Slider Data (will be fetched from Firestore) ---
-const HERO_SLIDES_FALLBACK = [
-  {
-    id: 1,
-    image: "/img/websitebanner1.webp",
-    title: "Master Practical Skills",
-    subtitle: "Hands-on training with 100% Placement Support",
-    link: "/courses",
-    cta: "Start Learning"
-  },
-  {
-    id: 2,
-    image: "/img/websitebanner2.webp",
-    title: "Learn from Experts",
-    subtitle: "Industry-aligned training guided by experienced professionals",
-    link: "/about",
-    cta: "View Accreditations"
-  },
-  {
-    id: 3,
-    image: "/img/websitebanner3.webp",
-    title: "Transform Your Career",
-    subtitle: "With Industry-Driven Courses in Engineering & IT",
-    link: "/placements",
-    cta: "See Success Stories"
-  },
-  {
-    id: 4,
-    image: "/img/banner-6.webp",
-    title: "Internship Program",
-    subtitle: "Work on Live Projects with LASAK Technologies Pvt Ltd",
-    link: "https://docs.google.com/forms/d/e/1FAIpQLScL1mo2i4LF9aineii9xi9V-CVntO8xSbk1Qi_5oU_5mpOnvg/viewform?usp=pp_url",
-    cta: "Apply for Internship"
-  },
-  {
-    id: 5,
-    image: "/img/websitebanner4.webp",
-    title: "College Workshops",
-    subtitle: "Conduct Interactive Sessions & Workshops in Colleges with LASAK Technologies Pvt Ltd",
-    link: "/contact",
-    cta: "Apply to Conduct Workshop"
-  }
-];
-
-
-
-const GOOGLE_REVIEWS_LIST = [
-  {
-    name: "Sakthi",
-    image: "/img/saravana-kumar-r.webp",
-    rating: 5,
-    text: "I recently completed my internship at LASAK Company and had a great learning experience. The environment is very professional...",
-    verified: true
-  },
-  {
-    name: "Vishnu R",
-    image: "/img/mr-dharsan-v.webp",
-    rating: 5,
-    text: "Actually, I had went there for five days training on solidworks, The of teaching was very nice, simple and understandable.",
-    verified: true
-  },
-  {
-    name: "King Maker",
-    image: "/img/mr-lokkesh-v.webp",
-    rating: 5,
-    text: "I got a basic idea about solid work, good teaching and excellent place for learning...",
-    verified: true
-  },
-  {
-    name: "Priya Darshini",
-    image: "/img/ms-chandraleka-k.webp",
-    rating: 5,
-    text: "One of the best institutes in Coimbatore for Civil CADD. The syllabus is up to date and placement support is genuine.",
-    verified: true
-  },
-  {
-    name: "Rahul K",
-    image: "/img/mr-surya-m.webp",
-    rating: 5,
-    text: "Hands down the best place to learn mechanical design software. The faculty is very knowledgeable.",
-    verified: true
-  }
-];
-// --- Main Page Component ---
 
 const Home = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -481,6 +229,10 @@ const Home = () => {
   const [popupButtonText, setPopupButtonText] = useState('Apply Now');
   const [accreditations, setAccreditations] = useState<any[]>(ACCREDITATIONS);
   const [categories, setCategories] = useState<any[]>(CATEGORIES);
+  const [programSegments, setProgramSegments] = useState<any[]>([]);
+  const [learningEcosystem, setLearningEcosystem] = useState<any[]>([]);
+
+
 
   const CATEGORY_ICONS: Record<string, any> = {
     'IT': <Code className="w-8 h-8 text-cyan-400" />,
@@ -505,44 +257,77 @@ const Home = () => {
     }))
   );
   const [heroSlides, setHeroSlides] = useState<{ id: string, image: string, title: string, subtitle: string, cta_text: string, cta_link: string }[]>(
-    HERO_SLIDES_FALLBACK.map((slide, index) => ({
-      id: `fallback-${index}`,
-      image: slide.image,
-      title: slide.title,
-      subtitle: slide.subtitle,
-      cta_text: slide.cta,
-      cta_link: slide.link
-    }))
+    [
+      {
+        id: 'lcp-fallback',
+        image: '/img/websitebanner1.webp',
+        title: 'Master Practical Skills',
+        subtitle: 'Hands-on training with 100% Placement Support',
+        cta_text: 'Start Learning',
+        cta_link: '/courses'
+      },
+      ...HERO_SLIDES_FALLBACK.slice(1).map((slide, index) => ({
+        id: `fallback-${index + 1}`,
+        image: slide.image,
+        title: slide.title,
+        subtitle: slide.subtitle,
+        cta_text: slide.cta,
+        cta_link: slide.link
+      }))
+    ]
   );
   const [youtubeVideos, setYoutubeVideos] = useState<any[]>(FALLBACK_YT_VIDEOS.map(v => ({ video_id: v.id, thumbnail: v.thumbnail })));
   const [videoTestimonials, setVideoTestimonials] = useState<any[]>([]);
-  const [courses, setCourses] = useState<Course[]>(COURSES.slice(0, 3)); // Initialize with fallback
+  // Performance: Initialize with LCP-critical courses to avoid layout shift and resource delay
+  const getInitialCourses = () => {
+    const lcpCourse = COURSES.find(c => c.id === 'it4');
+    const others = COURSES.filter(c => c.id !== 'it4').slice(0, 2);
+    return lcpCourse ? [lcpCourse, ...others] : COURSES.slice(0, 3);
+  };
+
+  const [courses, setCourses] = useState<Course[]>(getInitialCourses());
 
   useEffect(() => {
-    fetchData();
+    const runHeavyTasks = () => {
+      fetchData();
 
-    // Auth and Inquiry tracking
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setUser(user);
-      if (user) {
-        checkInquiryStatus(user.email || undefined);
-      } else {
-        setHasSubmittedInquiry(false);
-      }
-    });
+      let unsubscribe: any;
+      const initAuth = async () => {
+        try {
+          const { getFirebaseAuth } = await import('../lib/firebase');
+          const { onAuthStateChanged } = await import('firebase/auth');
+          const auth = await getFirebaseAuth();
+          unsubscribe = onAuthStateChanged(auth, (u: any) => {
+            setUser(u);
+            if (u) {
+              checkInquiryStatus(u.email || undefined);
+            } else {
+              setHasSubmittedInquiry(false);
+            }
+          });
+        } catch (err) {
+          console.error('Auth initialization error:', err);
+        }
+      };
+      initAuth();
+      getPopupData();
 
-    return () => unsubscribe();
+      return () => { if (unsubscribe) unsubscribe(); };
+    };
+
+    if ('requestIdleCallback' in window) {
+      requestIdleCallback(runHeavyTasks);
+    } else {
+      setTimeout(runHeavyTasks, 2000);
+    }
   }, []);
 
   const checkInquiryStatus = async (email: string | undefined) => {
     if (!email) return;
     try {
-      const q = query(collection(db, 'enquiries'), where('email', '==', email), limit(1));
-      const snapshot = await getDocs(q);
-
-      if (!snapshot.empty) {
-        setHasSubmittedInquiry(true);
-      }
+      const { checkUserInquiryStatus } = await import('../lib/homeData');
+      const hasInquiry = await checkUserInquiryStatus(email);
+      setHasSubmittedInquiry(hasInquiry);
     } catch (error) {
       console.error('Error checking inquiry status:', error);
     }
@@ -550,26 +335,19 @@ const Home = () => {
 
   const fetchData = async () => {
     try {
-      // Execute all Firestore queries in parallel to eliminate the waterfall delay
-      const [
-        partnersRaw,
-        testimonialsRaw,
-        heroRaw,
-        ytRaw,
-        vtRaw,
-        coursesRaw,
-        accreditationsRaw,
-        categoriesRaw
-      ] = await Promise.all([
-        fetchWithCache('cache_home_partners', query(collection(db, 'partners'), limit(40))),
-        fetchWithCache('cache_home_testimonials', query(collection(db, 'testimonials'), limit(15))),
-        fetchWithCache('cache_hero_slides', query(collection(db, 'hero_slides'), where('active', '==', true))),
-        fetchWithCache('cache_youtube_videos', query(collection(db, 'youtube_videos'), where('active', '==', true))),
-        fetchWithCache('cache_video_testimonials', query(collection(db, 'video_testimonials'), where('active', '==', true))),
-        fetchWithCache('cache_courses_home', query(collection(db, 'courses'), where('show_on_home', '==', true))),
-        fetchWithCache('cache_accreditations', query(collection(db, 'accreditations'), orderBy('order_num', 'asc'))),
-        fetchWithCache('cache_categories', query(collection(db, 'categories'), orderBy('order_num', 'asc')))
-      ]);
+      const { fetchHomeData } = await import('../lib/homeData');
+      const { 
+        partnersRaw, 
+        testimonialsRaw, 
+        heroRaw, 
+        ytRaw, 
+        vtRaw, 
+        coursesRaw, 
+        accreditationsRaw, 
+        categoriesRaw,
+        programSegmentsRaw,
+        learningEcosystemRaw
+      } = await fetchHomeData();
 
       // Process Partners
       if (partnersRaw && partnersRaw.length > 0) {
@@ -630,7 +408,15 @@ const Home = () => {
 
       // Process Categories
       if (categoriesRaw && categoriesRaw.length > 0) {
-        setCategories(categoriesRaw);
+        const mergedCategories = CATEGORIES.map(defaultCat => {
+          const fromFirestore = categoriesRaw.find((c: any) => c.id === defaultCat.id);
+          return fromFirestore ? { ...defaultCat, ...fromFirestore } : defaultCat;
+        });
+
+        // Add any extra categories from Firestore that aren't in defaults
+        const extraCategories = categoriesRaw.filter((c: any) => !CATEGORIES.some(d => d.id === c.id));
+
+        setCategories([...mergedCategories, ...extraCategories]);
       }
 
       // Process Hero Slides
@@ -694,6 +480,17 @@ const Home = () => {
 
         setCourses(mergedCourses);
       }
+
+      // Process Program Segments
+      if (programSegmentsRaw && programSegmentsRaw.length > 0) {
+        setProgramSegments(programSegmentsRaw);
+      }
+
+      // Process Learning Ecosystem
+      if (learningEcosystemRaw && learningEcosystemRaw.length > 0) {
+        setLearningEcosystem(learningEcosystemRaw);
+      }
+
     } catch (error) {
       console.error('Error fetching data:', error);
     }
@@ -707,61 +504,48 @@ const Home = () => {
     return () => clearInterval(timer);
   }, [heroSlides.length]);
 
-  // Trigger Popup on Load (Firestore)
-  useEffect(() => {
-    const fetchPopupData = async () => {
-      try {
-        // Fetch config
-        const configDoc = await getDoc(doc(db, 'popup_config', 'default'));
 
-        if (configDoc.exists()) {
-          const configData = configDoc.data();
-          setPopupEnabled(configData.enabled);
-          setPromoInterval(configData.interval);
-          setFormUrl(configData.form_url);
-          if (configData.title) setPopupTitle(configData.title);
-          if (configData.description) setPopupDesc(configData.description);
-          if (configData.button_text) setPopupButtonText(configData.button_text);
 
-          const features = [];
-          if (configData.feature_1) features.push(configData.feature_1);
-          if (configData.feature_2) features.push(configData.feature_2);
-          if (configData.feature_3) features.push(configData.feature_3);
-          if (features.length > 0) setPopupFeatures(features);
+  const getPopupData = async () => {
+    try {
+      const { fetchHomePopupData } = await import('../lib/homeData');
+      const data = await fetchHomePopupData();
+      if (data) {
+        const { configData, slidesData } = data;
+        setPopupEnabled(configData.enabled);
+        setPromoInterval(configData.interval);
+        setFormUrl(configData.form_url);
+        if (configData.title) setPopupTitle(configData.title);
+        if (configData.description) setPopupDesc(configData.description);
+        if (configData.button_text) setPopupButtonText(configData.button_text);
 
-          if (configData.enabled) {
-            // Fetch slides without orderBy to avoid index requirement
-            const slidesRaw = await fetchWithCache('cache_popup_slides', query(collection(db, 'popup_slides'), where('active', '==', true)));
+        const features = [];
+        if (configData.feature_1) features.push(configData.feature_1);
+        if (configData.feature_2) features.push(configData.feature_2);
+        if (configData.feature_3) features.push(configData.feature_3);
+        if (features.length > 0) setPopupFeatures(features);
 
-            if (slidesRaw && slidesRaw.length > 0) {
-              const slidesData = slidesRaw
-                .map((s: any) => {
-                  return {
-                    id: s.id,
-                    image: cleanPath(s.image_url),
-                    clickable: s.clickable,
-                    style: s.style || 'standard',
-                    title: s.title,
-                    description: s.description,
-                    button_text: s.button_text,
-                    order_num: s.order_num || 0,
-                    features: [s.feature_1, s.feature_2, s.feature_3].filter(Boolean)
-                  };
-                })
-                .sort((a: any, b: any) => a.order_num - b.order_num);
+        if (configData.enabled && slidesData.length > 0) {
+          const mappedSlides = slidesData.map((s: any) => ({
+            id: s.id,
+            image: cleanPath(s.image_url || s.image),
+            clickable: s.clickable,
+            style: s.style || 'standard',
+            title: s.title,
+            description: s.description,
+            button_text: s.button_text,
+            order_num: s.order_num || 0,
+            features: [s.feature_1, s.feature_2, s.feature_3].filter(Boolean)
+          })).sort((a: any, b: any) => a.order_num - b.order_num);
 
-              setPromoSlides(slidesData);
-              setTimeout(() => setShowPromoPopup(true), 3000);
-            }
-          }
+          setPromoSlides(mappedSlides);
+          setTimeout(() => setShowPromoPopup(true), 3000);
         }
-      } catch (error) {
-        console.error('Error fetching popup data:', error);
       }
-    };
-
-    fetchPopupData();
-  }, []);
+    } catch (error) {
+      console.error('Error fetching popup data:', error);
+    }
+  };
 
 
   // Promo Popup Auto Scroll
@@ -795,7 +579,7 @@ const Home = () => {
 
 
   return (
-    <div className="min-h-screen bg-transparent relative overflow-x-hidden font-sans selection:bg-amber-400 selection:text-slate-900">
+    <div className="min-h-screen bg-transparent relative font-sans selection:bg-amber-400 selection:text-slate-900">
       {/* Visually hidden H1 for SEO */}
       <h1 className="sr-only">LASAK EDU – Best Training Institute in Coimbatore for IT, Mechanical & Civil Courses</h1>
 
@@ -818,7 +602,7 @@ const Home = () => {
       "
           >
             {/* Background Overlay */}
-            <motion.div
+            <m.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
@@ -848,7 +632,7 @@ const Home = () => {
             </button>
 
             {/* Popup Content Container */}
-            <motion.div
+            <m.div
               initial={{ scale: 0.9, opacity: 0, y: 20 }}
               animate={{ scale: 1, opacity: 1, y: 0 }}
               exit={{ scale: 0.9, opacity: 0, y: 20 }}
@@ -877,7 +661,7 @@ const Home = () => {
                       onClick={() => setShowPromoPopup(false)}
                       className="block w-full h-full relative group"
                     >
-                      <motion.img
+                      <m.img
                         key={currentPromoSlide}
                         src={promoSlides[currentPromoSlide]?.image}
                         alt="Special Offer"
@@ -891,7 +675,7 @@ const Home = () => {
                   ) : (
                     // Last 2 images without link
                     <div className="relative w-full h-full">
-                      <motion.img
+                      <m.img
                         key={currentPromoSlide}
                         src={promoSlides[currentPromoSlide]?.image}
                         alt="Special Offer"
@@ -942,7 +726,7 @@ const Home = () => {
                   </a>
                 </div>
               )}
-            </motion.div>
+            </m.div>
           </div>
         )}
       </AnimatePresence>
@@ -952,36 +736,40 @@ const Home = () => {
 
         {/* Slider Background */}
         < AnimatePresence >
-          <motion.div
+          <m.div
             key={currentSlide}
-            initial={{ opacity: 0 }}
+            initial={currentSlide === 0 ? false : { opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 1.5 }}
+            transition={{ duration: currentSlide === 0 ? 0 : 1.5 }}
             className="absolute inset-0 z-0"
           >
             <img
-              src={cleanPath(heroSlides[currentSlide]?.image)}
+              src={cleanPath(heroSlides[currentSlide]?.image || '/img/websitebanner1.webp')}
               alt={heroSlides[currentSlide]?.title}
+              width="1920"
+              height="1080"
+              sizes="(max-width: 768px) 100vw, 1920px"
               className="w-full h-full object-cover brightness-125"
               loading={currentSlide === 0 ? "eager" : "lazy"}
+              decoding={currentSlide === 0 ? "sync" : "async"}
               fetchPriority={currentSlide === 0 ? "high" : "low"}
             />
 
             {/* Dark overlay without blur – image stays sharp */}
 
             <div className="absolute inset-0 bg-black/70"></div>
-          </motion.div>
+          </m.div>
         </AnimatePresence >
 
         {/* Animated Blobs */}
         < div className="absolute inset-0 overflow-hidden pointer-events-none z-0" >
-          <motion.div
+          <m.div
             animate={{ x: [0, 100, 0], y: [0, -50, 0] }}
             transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
             className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-blue-500/10 rounded-full blur-[100px]"
           />
-          <motion.div
+          <m.div
             animate={{ x: [0, -100, 0], y: [0, 50, 0] }}
             transition={{ duration: 12, repeat: Infinity, ease: "easeInOut", delay: 1 }}
             className="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] bg-indigo-500/10 rounded-full blur-[100px]"
@@ -997,22 +785,21 @@ const Home = () => {
               key={idx}
               onClick={() => setCurrentSlide(idx)}
               aria-label={`Go to slide ${idx + 1}`}
-              className={`h-2 rounded-full transition-all duration-300 ${idx === currentSlide ? 'bg-blue-600 w-8' : 'bg-slate-300 w-2 hover:bg-slate-400'
-                }`}
+              className={`w-3 h-3 rounded-full transition-all duration-300 ${currentSlide === idx ? 'bg-blue-600 w-8' : 'bg-white/50 hover:bg-white'}`}
             />
           ))}
         </div>
 
         {/* Content */}
         <div className="relative z-10 container mx-auto px-4 text-center">
-          <motion.div
+          <m.div
             key={currentSlide}
-            initial={{ opacity: 0, y: 30 }}
+            initial={currentSlide === 0 ? false : { opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
           >
             <h1 className="text-3xl xs:text-5xl md:text-7xl lg:text-8xl font-tech font-black mb-4 md:mb-6 tracking-tighter leading-tight drop-shadow-[0_4px_20px_rgba(0,0,0,0.7)]">
-              <motion.span
+              <m.span
                 key={heroSlides[currentSlide]?.title}
                 initial={{ scale: 0.8, opacity: 0, filter: 'blur(20px)' }}
                 animate={{ scale: 1, opacity: 1, filter: 'blur(0px)' }}
@@ -1027,7 +814,7 @@ const Home = () => {
                     {word}{" "}
                   </span>
                 ))}
-              </motion.span>
+              </m.span>
             </h1>
 
             <p className="text-lg md:text-2xl lg:text-3xl text-white/90 drop-shadow-[0_3px_12px_rgba(0,0,0,0.7)] font-sans font-medium tracking-wide max-w-4xl mx-auto mb-8 md:mb-12 leading-relaxed min-h-[3em] flex items-center justify-center px-4">
@@ -1035,7 +822,7 @@ const Home = () => {
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <motion.div
+              <m.div
                 animate={{ y: [0, -6, 0] }}
                 transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
               >
@@ -1046,9 +833,9 @@ const Home = () => {
                   {heroSlides[currentSlide]?.cta_text}
                   <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
                 </Link>
-              </motion.div>
+              </m.div>
 
-              <motion.div
+              <m.div
                 animate={{ y: [0, -6, 0] }}
                 transition={{ duration: 4, repeat: Infinity, ease: "easeInOut", delay: 3 }}
               >
@@ -1058,9 +845,9 @@ const Home = () => {
                 >
                   Contact Us
                 </Link>
-              </motion.div>
+              </m.div>
             </div>
-          </motion.div>
+          </m.div>
         </div>
       </section >
 
@@ -1145,7 +932,7 @@ const Home = () => {
       {/* 4. Internship + Vendor (White) */}
       < section className="py-24 px-4 bg-white relative overflow-hidden" >
         <ScrollReveal>
-          <motion.div
+          <m.div
             whileHover={{ y: -5 }}
             className="max-w-6xl mx-auto bg-slate-50 rounded-3xl p-10 md:p-16 relative z-10 border border-slate-200 shadow-2xl transition-all flex flex-col md:flex-row items-center gap-10 h-auto md:h-[700px] overflow-hidden"
           >
@@ -1199,29 +986,30 @@ const Home = () => {
                 </div>
               </div>
             </div>
-          </motion.div>
+          </m.div>
         </ScrollReveal>
       </section >
 
 
 
       {/* 5. Statistics (Gradient Blue) */}
-      < section className="py-20 bg-gradient-to-r from-blue-50 to-indigo-50" >
+      <section className="py-12 bg-gradient-to-r from-blue-50 to-indigo-50">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
-            <StatCounter end={1500} label="Students" />
-            <StatCounter end={100} label="Placement %" />
-            <StatCounter end={50} label="College Tie-ups" />
-            <StatCounter end={30} label="Courses" />
-            <StatCounter end={12} label="Highest Package" />
-            <StatCounter end={5} label="Years Exp." />
+            <Suspense fallback={<div className="h-20 animate-pulse bg-slate-100 rounded-xl" />}>
+              <LazyStatCounter end={1500} label="Students" />
+              <LazyStatCounter end={100} label="Placement %" />
+              <LazyStatCounter end={50} label="College Tie-ups" />
+              <LazyStatCounter end={30} label="Courses" />
+              <LazyStatCounter end={12} label="Highest Package" />
+              <LazyStatCounter end={5} label="Years Exp." />
+            </Suspense>
           </div>
         </div>
-      </section >
-
+      </section>
 
       {/* 6. Categories (White) */}
-      < section className="py-20 bg-white" >
+      <section className="pt-10 bg-white">
         <div className="container mx-auto px-4">
           <h2 className="text-3xl font-black text-center mb-16">
             Explore Course Categories
@@ -1232,60 +1020,23 @@ const Home = () => {
               <CategoryCard
                 key={cat.id}
                 title={cat.name}
-                icon={CATEGORY_ICONS[cat.id] || cat.icon || <Code />}
+                icon={CATEGORY_ICONS[cat.id] || cat.icon?.() || <Code />}
                 path={`/courses/${cat.id}`}
               />
             ))}
           </div>
         </div>
-      </section >
+      </section>
 
-
-
-      {/* 6.5 Launch Offer Section (Gradient/Slate) */}
-      {/*<section className="py-20 bg-slate-50 px-4">
-        <div className="container mx-auto">
-          <ScrollReveal>
-             <div className="bg-gradient-to-r from-blue-600 to-indigo-600 rounded-3xl p-8 md:p-16 relative overflow-hidden shadow-2xl text-white">
-                <div className="absolute top-0 right-0 w-64 h-64 bg-white opacity-10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/4 pointer-events-none"></div>
-                <div className="absolute bottom-0 left-0 w-64 h-64 bg-purple-500 opacity-20 rounded-full blur-3xl translate-y-1/2 -translate-x-1/4 pointer-events-none"></div>
-                
-                <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-8">
-                   <div className="flex-1 text-center md:text-left">
-                      <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm px-4 py-1.5 rounded-full text-sm font-bold mb-6 border border-white/10">
-                         <Sparkles size={16} className="text-yellow-300" />
-                         <span className="uppercase tracking-wider text-yellow-100">Launching Soon</span>
-                      </div>
-                      <h2 className="text-3xl md:text-5xl font-black font-tech mb-4 leading-tight">
-                         Generative AI & LLM Specialist
-                      </h2>
-                      <p className="text-indigo-100 text-lg md:text-xl mb-8 max-w-2xl leading-relaxed">
-                         Master the future of technology. Learn to build Custom GPTs, RAG Pipelines, and fine-tune Large Language Models.
-                      </p>
-                      <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
-                         <Link to="/contact" className="px-8 py-4 bg-white text-indigo-700 rounded-lg font-bold shadow-lg hover:bg-indigo-50 transition-all transform hover:-translate-y-1 flex items-center justify-center gap-2">
-                            Enquire Now <Megaphone size={20} />
-                         </Link>
-                         <div className="flex items-center gap-2 px-6 py-4 border border-white/30 rounded-lg bg-white/5 backdrop-blur-sm">
-                            <span className="font-bold">Limited Seats Available</span>
-                         </div>
-                      </div>
-                   </div>
-                   <div className="hidden lg:block">
-                      <div className="w-48 h-48 bg-white/10 rounded-full flex items-center justify-center backdrop-blur-md border border-white/20 animate-float">
-                          <Bot size={80} className="text-white/90" />
-                      </div>
-                   </div>
-                </div>
-             </div>
-          </ScrollReveal>
-        </div>
-      </section> */}
+      {/* 6.3 Important Program Segments - Pure Tailwind Sticky Stack */}
+      <Suspense fallback={<div className="h-96 animate-pulse bg-slate-100 rounded-3xl mx-4 my-20" />}>
+        <LazyProgramSegments segments={programSegments} />
+      </Suspense>
 
       {/* 7. Latest Courses (White) */}
-      <section className="py-20 bg-white">
+      <section className="pb-20 pt-10 bg-white">
         <div className="container mx-auto px-4">
-          <ScrollReveal>
+          <ScrollReveal active={false}>
             <div className="flex justify-between items-end mb-12">
               <div>
                 <h2 className="text-3xl font-black text-slate-900 mb-2">Latest Courses</h2>
@@ -1299,6 +1050,8 @@ const Home = () => {
                   key={course.id}
                   course={course}
                   user={user}
+                  priority={i < 3 ? "high" : "low"}
+                  index={i}
                   onEnroll={(c) => setInquiryModal({
                     isOpen: true,
                     courseId: c.id,
@@ -1338,14 +1091,18 @@ const Home = () => {
               Our Achievers
             </h2>
 
-            <AchieversScroller testimonials={testimonials} />
+            <Suspense fallback={<div className="h-64 flex items-center justify-center text-slate-600">Loading achievers...</div>}>
+              <LazyAchieversScroller testimonials={testimonials} cleanPath={cleanPath} />
+            </Suspense>
           </ScrollReveal>
         </div>
       </section>
 
 
       {/* 9. Student Voices (Autoplay Local Videos + Infinite Scroll) */}
-      <StudentTestimonials videos={videoTestimonials} />
+      <Suspense fallback={<div className="py-20 text-center text-slate-600">Loading testimonials...</div>}>
+        <StudentTestimonials videos={videoTestimonials} />
+      </Suspense>
 
       {/* 10. Demo Courses Ticker */}
       <section className="py-20 relative bg-slate-950 overflow-hidden">
@@ -1362,9 +1119,16 @@ const Home = () => {
           </ScrollReveal>
         </div>
 
-        <YouTubeScroller youtubeVideos={youtubeVideos} />
+        <Suspense fallback={<div className="h-48 flex items-center justify-center text-white/50">Loading videos...</div>}>
+          <LazyYouTubeScroller youtubeVideos={youtubeVideos} />
+        </Suspense>
       </section>
 
+
+      {/* 10.5 Learning Benefits Grid (from skillryt.com) */}
+      <Suspense fallback={<div className="h-96 animate-pulse bg-slate-100 rounded-3xl mx-4 my-24" />}>
+        <LazyLearningBenefits benefitsData={learningEcosystem} />
+      </Suspense>
 
       {/* 11. Testimonials (White) */}
       <section className="py-24 bg-white text-slate-900 border-b border-slate-100">
@@ -1379,7 +1143,7 @@ const Home = () => {
                 <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-t-3xl"></div>
 
                 <div className="w-24 h-24 rounded-full bg-white flex items-center justify-center border border-slate-200 shadow-md overflow-hidden mb-6 p-2">
-                  <img src="/img/lasakedulogo.png" className="w-full h-full object-cover scale-110" alt="Lasak Edu" />
+                  <img src={cleanPath("/img/favicon.png")} className="w-[80%] h-[80%] object-contain" alt="Lasak Edu" />
                 </div>
 
                 <h3 className="text-xl font-bold text-slate-900">LASAK EDU</h3>
@@ -1403,7 +1167,7 @@ const Home = () => {
               {/* Review Carousel Container */}
               <div className="overflow-hidden px-2 py-4">
                 <AnimatePresence mode='wait'>
-                  <motion.div
+                  <m.div
                     key={reviewIndex} // Key change triggers animation
                     initial={{ opacity: 0, x: 50 }}
                     animate={{ opacity: 1, x: 0 }}
@@ -1443,7 +1207,7 @@ const Home = () => {
                         </div>
                       );
                     })}
-                  </motion.div>
+                  </m.div>
                 </AnimatePresence>
               </div>
 
@@ -1474,17 +1238,21 @@ const Home = () => {
         </div>
       </section>
 
-      <BlogAutoScroll />
+      <Suspense fallback={<div className="py-16 text-center text-slate-600">Loading blogs...</div>}>
+        <BlogAutoScroll />
+      </Suspense>
 
-      <InquiryModal
-        isOpen={inquiryModal.isOpen}
-        onClose={() => setInquiryModal(prev => ({ ...prev, isOpen: false }))}
-        courseId={inquiryModal.courseId}
-        courseTitle={inquiryModal.courseTitle}
-        category={inquiryModal.category}
-        actionType={inquiryModal.actionType}
-        onSuccess={inquiryModal.onSuccess}
-      />
+      <Suspense fallback={null}>
+        <InquiryModal
+          isOpen={inquiryModal.isOpen}
+          onClose={() => setInquiryModal(prev => ({ ...prev, isOpen: false }))}
+          courseId={inquiryModal.courseId}
+          courseTitle={inquiryModal.courseTitle}
+          category={inquiryModal.category}
+          actionType={inquiryModal.actionType}
+          onSuccess={inquiryModal.onSuccess}
+        />
+      </Suspense>
     </div >
   );
 };

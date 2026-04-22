@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Calendar, ArrowRight, Newspaper, Bell, ExternalLink } from 'lucide-react';
-import { db } from '../lib/firebase';
-import { collection, query, getDocs, orderBy, limit } from 'firebase/firestore';
 import { fetchWithCache } from '../lib/cacheUtils';
 import SEO from '../components/SEO';
+import { normalizeImagePath } from '../lib/imageUtils';
 
 // Static news cards — shown immediately as fallback and when no Firestore news exists
 const MOCK_NEWS = [
@@ -37,6 +36,9 @@ const News = () => {
 
     const fetchNews = async () => {
         try {
+            const { getFirestoreDb } = await import('../lib/firebase');
+            const { collection, query, orderBy, limit } = await import('firebase/firestore');
+            const db = await getFirestoreDb();
             // Fetch from 'news' collection (not 'blogs')
             const newsQ = query(collection(db, 'news'), orderBy('created_at', 'desc'), limit(20));
             const data = await fetchWithCache(
@@ -118,10 +120,12 @@ const News = () => {
                                     {/* Image Section */}
                                     <div className="w-full md:w-2/5 h-64 md:h-auto overflow-hidden relative bg-gray-100">
                                         <img
-                                            src={item.image || 'https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=800&auto=format&fit=crop&q=60'}
+                                            src={normalizeImagePath(item.image) || 'https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=800&auto=format&fit=crop&q=60'}
                                             alt={item.title}
                                             className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-                                            loading="lazy"
+                                            loading={idx === 0 ? "eager" : "lazy"}
+                                            {...(idx === 0 ? { fetchPriority: "high" } : {})}
+                                            decoding="async"
                                         />
                                         <div className="absolute top-4 left-4">
                                             <span className="bg-white/95 text-blue-600 px-3 py-1 rounded-full text-xs font-bold shadow-sm">
@@ -132,7 +136,7 @@ const News = () => {
 
                                     {/* Content Section */}
                                     <div className="w-full md:w-3/5 p-8 flex flex-col">
-                                        <div className="flex items-center gap-2 text-slate-400 text-sm font-semibold mb-3 uppercase tracking-wider">
+                                        <div className="flex items-center gap-2 text-slate-600 text-sm font-semibold mb-3 uppercase tracking-wider">
                                             <Calendar size={14} />
                                             {item.date}
                                         </div>
@@ -185,10 +189,24 @@ const News = () => {
             {/* Social Feed Links */}
             <section className="py-20 bg-white border-t border-slate-100">
                 <div className="container mx-auto max-w-6xl px-4 text-center">
-                    <h4 className="text-slate-400 uppercase tracking-widest font-bold text-sm mb-10">Follow Our Social Feed</h4>
-                    <div className="flex flex-wrap justify-center gap-8 md:gap-16 opacity-60">
-                        <span className="font-bold text-slate-900 hover:text-blue-600 cursor-pointer transition-colors flex items-center gap-1">Instagram <ExternalLink size={14} /></span>
-                        <span className="font-bold text-slate-900 hover:text-blue-600 cursor-pointer transition-colors flex items-center gap-1">LinkedIn <ExternalLink size={14} /></span>
+                    <h4 className="text-slate-600 uppercase tracking-widest font-bold text-sm mb-10">Follow Our Social Feed</h4>
+                    <div className="flex flex-wrap justify-center gap-8 md:gap-16">
+                        <a 
+                            href="https://www.instagram.com/lasak_edu/?next=%2F&hl=en" 
+                            target="_blank" 
+                            rel="noopener noreferrer" 
+                            className="font-bold text-slate-900 hover:text-pink-600 cursor-pointer transition-colors flex items-center gap-1 group"
+                        >
+                            Instagram <ExternalLink size={14} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+                        </a>
+                        <a 
+                            href="https://www.linkedin.com/company/lasak-edu/" 
+                            target="_blank" 
+                            rel="noopener noreferrer" 
+                            className="font-bold text-slate-900 hover:text-blue-700 cursor-pointer transition-colors flex items-center gap-1 group"
+                        >
+                            LinkedIn <ExternalLink size={14} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+                        </a>
                     </div>
                 </div>
             </section>

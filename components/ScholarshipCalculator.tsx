@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { GraduationCap, Percent, BookOpen, AlertCircle, CheckCircle2, X, Sparkles, Info, Phone, Camera } from 'lucide-react';
-import { auth, db } from '../lib/firebase';
-import { collection, query, where, getDocs, orderBy, limit, addDoc, serverTimestamp } from 'firebase/firestore';
 import { fetchWithCache } from '../lib/cacheUtils';
 
 interface ScholarshipRule {
@@ -114,6 +112,9 @@ const ScholarshipCalculator: React.FC<ScholarshipCalculatorProps> = ({
 
   const fetchRules = async () => {
     try {
+      const { getFirestoreDb } = await import('../lib/firebase');
+      const { collection, query, where, orderBy } = await import('firebase/firestore');
+      const db = await getFirestoreDb();
       const q = query(collection(db, 'scholarship_rules'), where('is_active', '==', true), orderBy('priority', 'asc'));
       const rulesData = await fetchWithCache('cache_scholarship_rules', q);
 
@@ -127,6 +128,9 @@ const ScholarshipCalculator: React.FC<ScholarshipCalculatorProps> = ({
 
   const fetchSettings = async () => {
     try {
+      const { getFirestoreDb } = await import('../lib/firebase');
+      const { collection, query, limit } = await import('firebase/firestore');
+      const db = await getFirestoreDb();
       const q = query(collection(db, 'scholarship_settings'), limit(1));
       const settingsData = await fetchWithCache('cache_scholarship_settings', q);
 
@@ -237,6 +241,10 @@ const ScholarshipCalculator: React.FC<ScholarshipCalculatorProps> = ({
     // Store in Firestore
     try {
       setSubmitting(true);
+      const { getFirebaseAuth, getFirestoreDb } = await import('../lib/firebase');
+      const { collection, addDoc, serverTimestamp } = await import('firebase/firestore');
+      const auth = await getFirebaseAuth();
+      const db = await getFirestoreDb();
       const user = auth.currentUser;
 
       await addDoc(collection(db, 'scholarship_applications'), {
@@ -327,11 +335,11 @@ const ScholarshipCalculator: React.FC<ScholarshipCalculatorProps> = ({
               <div className="space-y-3 md:space-y-6">
                 {courseName && (
                   <div className="bg-slate-50 rounded-2xl p-3 md:p-5 border border-slate-100">
-                    <span className="text-[8px] md:text-[10px] uppercase font-bold text-slate-400 tracking-wider">Selected Course</span>
+                    <span className="text-[8px] md:text-[10px] uppercase font-bold text-slate-600 tracking-wider">Selected Course</span>
                     <h3 className="text-base md:text-xl font-black text-slate-800 mt-0.5">{courseName}</h3>
                     <div className="flex items-baseline gap-2 mt-2 md:mt-4">
                       <p className="text-xl md:text-3xl font-black text-blue-600">₹{price.toLocaleString()}</p>
-                      <p className="text-[9px] md:text-sm text-slate-400 font-bold uppercase tracking-tight">Course Fee</p>
+                      <p className="text-[9px] md:text-sm text-slate-600 font-bold uppercase tracking-tight">Course Fee</p>
                     </div>
                   </div>
                 )}
@@ -420,7 +428,7 @@ const ScholarshipCalculator: React.FC<ScholarshipCalculatorProps> = ({
                       <div className="bg-slate-50 rounded-2xl border border-slate-100 p-3 md:p-4">
                         <div className="flex justify-between items-start mb-2 md:mb-3">
                           <div>
-                            <span className="text-[9px] md:text-[10px] font-bold text-slate-400 uppercase tracking-widest">Selected Course</span>
+                            <span className="text-[9px] md:text-[10px] font-bold text-slate-600 uppercase tracking-widest">Selected Course</span>
                             <h3 className="text-base md:text-lg font-black text-slate-800 mt-0.5">{courseName}</h3>
                           </div>
                           <div className="text-right">
@@ -432,8 +440,8 @@ const ScholarshipCalculator: React.FC<ScholarshipCalculatorProps> = ({
                         </div>
                         <div className="space-y-1.5 md:space-y-2 pt-2 border-t border-slate-200">
                           <div className="flex justify-between text-[11px] md:text-sm">
-                            <span className="text-slate-500">Original Course Fee:</span>
-                            <span className="text-slate-400 line-through">₹{result.originalPrice.toLocaleString()}</span>
+                            <span className="text-gray-600">Original Course Fee:</span>
+                            <span className="text-gray-700 line-through">₹{result.originalPrice.toLocaleString()}</span>
                           </div>
                           <div className="flex justify-between text-[11px] md:text-sm font-bold">
                             <span className="text-green-600">Scholarship Discount:</span>
@@ -488,8 +496,8 @@ const ScholarshipCalculator: React.FC<ScholarshipCalculatorProps> = ({
                 ) : (
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8">
                     <div className="bg-slate-50 rounded-2xl p-4 md:p-6 opacity-60 grayscale border">
-                      <h3 className="text-base md:text-lg font-bold text-slate-400">Not Eligible</h3>
-                      <p className="text-xl md:text-2xl font-black text-slate-400 mt-1 md:mt-2">₹{result.originalPrice.toLocaleString()}</p>
+                      <h3 className="text-base md:text-lg font-bold text-slate-600">Not Eligible</h3>
+                      <p className="text-xl md:text-2xl font-black text-slate-600 mt-1 md:mt-2">₹{result.originalPrice.toLocaleString()}</p>
                     </div>
                     <div className="space-y-3 md:space-y-4">
                       <div className="bg-red-50 rounded-2xl border border-red-100 p-4 md:p-6 flex gap-3 md:gap-4">

@@ -1,17 +1,17 @@
 import React, { useEffect, useState } from "react";
 import { Mail, Phone, MapPin, ArrowRight, CheckCircle } from "lucide-react";
-import { db } from "../lib/firebase";
-import { collection, query, where, getDocs, orderBy, doc, getDoc, addDoc, serverTimestamp } from "firebase/firestore";
 import { fetchWithCache } from "../lib/cacheUtils";
 import SEO from "../components/SEO";
 
 const Contact = () => {
   const [contactInfo, setContactInfo] = useState<any[]>([]);
   const [formSettings, setFormSettings] = useState({
-    url: 'https://script.google.com/macros/s/AKfycbwA4ov727SfKJtwf851GvUQEATLRpUUV_JzWzAhgjIWuETQmKPHH9e7N35T5wWnE7PF4w/exec',
+    url: 'https://script.google.com/macros/s/AKfycbyCXeBcecLMxEqsI895ypcAgNwa0v4obpE6lXMczvDolz3kaMRPf6aDxmTH9vEL5FzKsw/exec',
     title: 'Submit Your Details',
     departments: ['Mechanical', 'Civil', 'CSE', 'IT', 'ECE', 'Others']
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showMap, setShowMap] = useState(false);
   const [pageSettings, setPageSettings] = useState({
     heroTitle: 'Get In Touch',
     heroSubtitle: "We'd love to hear from you. Visit our branches or drop us a message.",
@@ -27,6 +27,9 @@ const Contact = () => {
 
   const fetchContactInfo = async () => {
     try {
+      const { getFirestoreDb } = await import('../lib/firebase');
+      const { collection, query, where } = await import('firebase/firestore');
+      const db = await getFirestoreDb();
       // Simplified query to avoid index requirement for orderBy
       const q = query(
         collection(db, 'contact_info'),
@@ -47,6 +50,9 @@ const Contact = () => {
 
   const fetchFormSettings = async () => {
     try {
+      const { getFirestoreDb } = await import('../lib/firebase');
+      const { doc, getDoc } = await import('firebase/firestore');
+      const db = await getFirestoreDb();
       const docRef = doc(db, 'site_settings', 'contact_form_settings');
       const docSnap = await getDoc(docRef);
 
@@ -66,6 +72,9 @@ const Contact = () => {
 
   const fetchPageSettings = async () => {
     try {
+      const { getFirestoreDb } = await import('../lib/firebase');
+      const { doc, getDoc } = await import('firebase/firestore');
+      const db = await getFirestoreDb();
       const docRef = doc(db, 'site_settings', 'contact_page_content');
       const docSnap = await getDoc(docRef);
 
@@ -174,11 +183,11 @@ const Contact = () => {
                   {/* Address Section */}
                   {branch.address && (
                     <div className="flex gap-6">
-                      <div className="w-12 h-12 bg-slate-50 rounded-xl flex items-center justify-center text-slate-400 shrink-0">
+                      <div className="w-12 h-12 bg-slate-50 rounded-xl flex items-center justify-center text-slate-600 shrink-0">
                         <MapPin size={22} />
                       </div>
                       <div>
-                        <p className="text-sm font-bold text-slate-400 uppercase tracking-widest mb-2">Location</p>
+                        <p className="text-sm font-bold text-slate-600 uppercase tracking-widest mb-2">Location</p>
                         <p className="text-slate-700 font-medium leading-relaxed">
                           {branch.address}
                         </p>
@@ -198,7 +207,7 @@ const Contact = () => {
                               <MapPin size={22} />}
                         </div>
                         <div>
-                          <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">{contact.label}</p>
+                          <p className="text-[10px] font-black text-slate-600 uppercase tracking-widest mb-1">{contact.label}</p>
                           <a
                             href={contact.type === 'phone' ? `tel:${contact.value.replace(/\s+/g, '')}` :
                               contact.type === 'email' ? `mailto:${contact.value}` : '#'}
@@ -253,74 +262,72 @@ const Contact = () => {
 
               <form
                 className="space-y-6"
-                onSubmit={async (e) => {
-                  e.preventDefault();
+                  onSubmit={async (e) => {
+                    e.preventDefault();
+                    if (isSubmitting) return;
 
-                  const form = e.target as HTMLFormElement;
-                  const formData = new FormData(form);
+                    setIsSubmitting(true);
+                    const form = e.target as HTMLFormElement;
+                    const formData = new FormData(form);
 
-                  // Convert FormData to object for Firestore
-                  const submission = {
-                    full_name: formData.get('fullName'),
-                    qualification: formData.get('qualification'),
-                    phone: formData.get('phone'),
-                    email: formData.get('email'),
-                    message: formData.get('address'), // Using address field as message for now
-                    department: formData.get('department'),
-                    status: formData.get('status'),
-                    branch: formData.get('branch'),
-                    source: formData.get('applyFrom')
-                  };
-
-                  try {
-                    // 1. Save to Firestore (Database)
-                    const enquiryData = {
-                      ...submission,
-                      created_at: serverTimestamp(),
-                      updated_at: serverTimestamp()
-                    };
-                    await addDoc(collection(db, 'enquiries'), enquiryData);
-
-                    // 2. Send to Google Sheets (External)
-                    const sheetsData = {
-                      fullName: formData.get('fullName'),
+                    // Convert FormData to object for Firestore
+                    const submission = {
+                      full_name: formData.get('fullName'),
                       qualification: formData.get('qualification'),
                       phone: formData.get('phone'),
                       email: formData.get('email'),
+                      message: formData.get('address'), // Using address field as message for now
                       department: formData.get('department'),
                       status: formData.get('status'),
-                      preferredBranch: formData.get('branch'),
-                      course: "Contact Form" // Source identifier
+                      branch: formData.get('branch'),
+                      source: formData.get('applyFrom')
                     };
 
-                    const response = await fetch(
-                      formSettings.url,
-                      {
-                        method: "POST",
-                        body: JSON.stringify(sheetsData),
-                      }
-                    );
+                    try {
+                      const { getFirestoreDb } = await import('../lib/firebase');
+                      const { collection, addDoc, serverTimestamp } = await import('firebase/firestore');
+                      const db = await getFirestoreDb();
+                      // 1. Save to Firestore (Database)
+                      const enquiryData = {
+                        ...submission,
+                        created_at: serverTimestamp(),
+                        updated_at: serverTimestamp()
+                      };
+                      await addDoc(collection(db, 'enquiries'), enquiryData);
 
-                    const text = await response.text();
+                    // 2. Send to Google Sheets (External)
+                    const sheetsData = {
+                      fullName: submission.full_name,
+                      qualification: submission.qualification,
+                      phone: submission.phone,
+                      email: submission.email,
+                      department: submission.department,
+                      status: submission.status,
+                      preferredBranch: submission.branch,
+                      course: "Contact Page"
+                    };
 
-                    if (text === "success") {
+                    fetch(formSettings.url, {
+                      method: "POST",
+                      mode: 'no-cors',
+                      body: JSON.stringify(sheetsData),
+                    }).catch(err => console.error("Google Sheets Error:", err));
+
                       alert("Enquiry Submitted Successfully! We will contact you soon.");
                       form.reset();
-                    } else {
-                      alert("Form submitted! We'll get back to you shortly.");
-                      form.reset();
+                    } catch (error: any) {
+                      console.error(error);
+                      alert("Submission error. Please try again or contact us directly.");
+                    } finally {
+                      setIsSubmitting(false);
                     }
-                  } catch (error: any) {
-                    console.error(error);
-                    alert("Submission error. Please try again or contact us directly.");
-                  }
-                }}
+                  }}
               >
-                <input name="fullName" placeholder="Full Name" required className="w-full p-3 rounded bg-slate-800 border border-white/20 text-white placeholder:text-slate-400 focus:border-cyan-400 outline-none" />
-                <input name="qualification" placeholder="Qualification" required className="w-full p-3 rounded bg-slate-800 border border-white/20 text-white placeholder:text-slate-400 focus:border-cyan-400 outline-none" />
-                <input name="phone" placeholder="Phone Number" required className="w-full p-3 rounded bg-slate-800 border border-white/20 text-white placeholder:text-slate-400 focus:border-cyan-400 outline-none" />
-                <input name="email" type="email" placeholder="Email" required className="w-full p-3 rounded bg-slate-800 border border-white/20 text-white placeholder:text-slate-400 focus:border-cyan-400 outline-none" />
-                <textarea name="address" placeholder="Address" required className="w-full p-3 rounded bg-slate-800 border border-white/20 text-white placeholder:text-slate-400 focus:border-cyan-400 outline-none" />
+                <input name="fullName" placeholder="Full Name" required className="w-full p-3 rounded bg-slate-800 border border-white/20 text-white placeholder:text-slate-600 focus:border-cyan-400 outline-none" />
+                <input name="qualification" placeholder="Qualification" required className="w-full p-3 rounded bg-slate-800 border border-white/20 text-white placeholder:text-slate-600 focus:border-cyan-400 outline-none" />
+                <input name="phone" placeholder="Phone Number" required className="w-full p-3 rounded bg-slate-800 border border-white/20 text-white placeholder:text-slate-600 focus:border-cyan-400 outline-none" />
+                <input name="email" type="email" placeholder="Email" required className="w-full p-3 rounded bg-slate-800 border border-white/20 text-white placeholder:text-slate-600 focus:border-cyan-400 outline-none" />
+                <textarea name="address" placeholder="Address" required className="w-full p-3 rounded bg-slate-800 border border-white/20 text-white placeholder:text-slate-600 focus:border-cyan-400 outline-none" />
 
                 <select name="branch" required className="w-full p-3 rounded bg-slate-800 border border-white/20 text-white focus:border-cyan-400 outline-none">
                   <option value="" className="bg-slate-900">Select Branch</option>
@@ -351,17 +358,39 @@ const Contact = () => {
                   <option value="Friends" className="bg-slate-900">Friends</option>
                 </select>
 
-                <button type="submit" className="w-full bg-cyan-400 text-black font-bold py-3 rounded">
-                  Submit
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className={`w-full font-bold py-3 rounded transition-all flex items-center justify-center gap-2 ${isSubmitting ? 'bg-slate-700 text-slate-400 cursor-not-allowed' : 'bg-cyan-400 text-black hover:bg-cyan-300 shadow-lg shadow-cyan-400/20'
+                    }`}
+                >
+                  {isSubmitting ? (
+                    <>
+                      <div className="w-5 h-5 border-2 border-slate-400 border-t-transparent rounded-full animate-spin"></div>
+                      Submitting...
+                    </>
+                  ) : (
+                    'Submit Details'
+                  )}
                 </button>
               </form>
             </div>
           </div>
         </div>
 
-        {/* Map */}
-        <div className="mt-20 h-96 w-full transition-opacity">
-          <iframe title="LasakEdu Institute Location Map - Coimbatore" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3914.5808205968732!2d76.9907446!3d11.0218845!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3ba85900902f4b99%3A0xa1463256c1a69adb!2sLASAK%20EDU!5e0!3m2!1sen!2sin!4vXXXXXXXXXXXXX" width="100%" height="100%" style={{ border: 0 }} allowFullScreen loading="lazy" referrerPolicy="no-referrer-when-downgrade" />
+        {/* Map Section - Instant Load */}
+        <div className="mt-20 h-[500px] w-full rounded-[2.5rem] overflow-hidden border border-slate-200 relative bg-slate-100 shadow-2xl">
+          <iframe
+            title="LasakEdu Institute Location Map - Coimbatore"
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3914.5808205968732!2d76.9907446!3d11.0218845!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3ba85900902f4b99%3A0xa1463256c1a69adb!2sLASAK%20EDU!5e0!3m2!1sen!2sin!4v1711345678901"
+            width="100%"
+            height="100%"
+            style={{ border: 0 }}
+            allowFullScreen
+            loading="eager"
+            referrerPolicy="no-referrer-when-downgrade"
+            className="w-full h-full grayscale-[20%] hover:grayscale-0 transition-all duration-700"
+          />
         </div>
 
       </div>

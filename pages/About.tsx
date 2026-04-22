@@ -1,18 +1,11 @@
-﻿import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import {
-  Target, Eye, CheckCircle, Users, Monitor, BookOpen, Clock, Heart, ArrowRight, User,
-  Star, Award, Shield, Zap, TrendingUp, ThumbsUp, Lightbulb, Rocket, Trophy, Gift, Smile,
-  MessageCircle, Phone, Mail, Globe, Home, Settings, Lock, Unlock, Key, Search,
-  Calendar, FileText, Folder, Download, Upload, Share2, Link2, ExternalLink,
-  AlertCircle, Info, HelpCircle, XCircle, CheckCircle2, AlertTriangle,
-  Briefcase, GraduationCap, Code, Cpu, Database, Server, Wifi, Bluetooth,
-  Camera, Image, Video, Music, Headphones, Mic, Volume2, Play, Pause,
-  ShoppingCart, CreditCard, DollarSign, TrendingDown, BarChart, PieChart, Activity
+  Target, Eye, CheckCircle, Users, Monitor, BookOpen, Clock, Heart, ArrowRight,
+  Briefcase
 } from 'lucide-react';
-import { db } from '../lib/firebase';
-import { collection, query, where, getDocs, orderBy, doc, getDoc } from 'firebase/firestore';
+import { PARTNERS } from '../constants/ui';
 import { fetchWithCache } from '../lib/cacheUtils';
 import SEO from '../components/SEO';
 
@@ -20,21 +13,21 @@ const cleanPath = (url: string) => {
   if (!url) return url;
   if (url.startsWith('https://') || url.startsWith('http://')) return url;
 
-  // Ensure we don't have double slashes and remove 'public' if it exists at the start
-  let cleaned = url.replace(/^\/?public\//, '/').replace(/\/+/g, '/');
+  // Trim spaces and remove 'public' if it exists at the start
+  let cleaned = url.trim().replace(/^\/?public\//, '/').replace(/\/+/g, '/');
 
-  // Normalize the final filename part to match our strict on-disk naming
+  // Normalize the final filename part
   const parts = cleaned.split('/');
   const lastPart = parts[parts.length - 1];
   if (lastPart.includes('.')) {
     const extIndex = lastPart.lastIndexOf('.');
     const base = lastPart.slice(0, extIndex);
-    const ext = lastPart.slice(extIndex).toLowerCase();
+    const ext = lastPart.slice(extIndex).toLowerCase().trim();
     // Normalize base: lowercase, replace non-alphanumeric with hyphen
     const normalizedBase = base.toLowerCase().replace(/[^a-z0-9]/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '');
     parts[parts.length - 1] = normalizedBase + ext;
 
-    // Also normalize mid-path directories if any
+    // Also normalize mid-path directories
     for (let i = 0; i < parts.length - 1; i++) {
       if (parts[i] && parts[i] !== 'img') {
         parts[i] = parts[i].toLowerCase().replace(/[^a-z0-9]/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '');
@@ -178,26 +171,7 @@ const About = () => {
   });
 
   const IconMap = {
-    // Basic
-    CheckCircle, Clock, Heart, Users, Target, Eye, Monitor, BookOpen, ArrowRight, User,
-    // Achievement & Success
-    Star, Award, Shield, Zap, TrendingUp, ThumbsUp, Trophy,
-    // Ideas & Innovation
-    Lightbulb, Rocket, Gift, Smile,
-    // Communication
-    MessageCircle, Phone, Mail, Globe, Home,
-    // System & Security
-    Settings, Lock, Unlock, Key, Search,
-    // Documents & Files
-    Calendar, FileText, Folder, Download, Upload, Share2, Link2, ExternalLink,
-    // Alerts & Info
-    AlertCircle, Info, HelpCircle, XCircle, CheckCircle2, AlertTriangle,
-    // Professional & Education
-    Briefcase, GraduationCap, Code, Cpu, Database, Server, Wifi, Bluetooth,
-    // Media
-    Camera, Image, Video, Music, Headphones, Mic, Volume2, Play, Pause,
-    // Business & Finance
-    ShoppingCart, CreditCard, DollarSign, TrendingDown, BarChart, PieChart, Activity
+    CheckCircle, Clock, Heart, Users, Target, Eye, Monitor, BookOpen, ArrowRight, Briefcase
   };
 
   useEffect(() => {
@@ -206,6 +180,9 @@ const About = () => {
 
   const fetchAboutContent = async () => {
     try {
+      const { getFirestoreDb } = await import('../lib/firebase');
+      const { collection, query, orderBy, doc, getDoc } = await import('firebase/firestore');
+      const db = await getFirestoreDb();
       const aboutQ = query(collection(db, 'about_content'), orderBy('order_num', 'asc'));
       const aboutData = await fetchWithCache('cache_about_content', aboutQ);
 
@@ -248,7 +225,7 @@ const About = () => {
       // Fetch MOUs (independent of about_content)
       try {
         const mousQ = query(collection(db, 'mous'));
-        const mousData = await fetchWithCache('cache_mous', mousQ);
+        const mousData = await fetchWithCache('cache_mous_v3', mousQ);
         if (mousData && mousData.length > 0) {
           const sortedMous = mousData
             .sort((a: any, b: any) => (a.order_num || 0) - (b.order_num || 0));
@@ -300,6 +277,21 @@ const About = () => {
         keywords="about LASAK EDU, LASAK EDU Coimbatore, best training institute Coimbatore, IT courses Coimbatore, mechanical training Coimbatore, civil engineering institute Coimbatore, LASAK EDU history"
         url="https://lasakedu.in/about"
       />
+
+      <style>{`
+        @keyframes marquee {
+          0% { transform: translateX(0); }
+          100% { transform: translateX(-50%); }
+        }
+        .animate-marquee {
+          display: flex;
+          animation: marquee 40s linear infinite;
+          width: max-content;
+        }
+        .animate-marquee:hover {
+          animation-play-state: paused;
+        }
+      `}</style>
 
 
       {/* 1. Hero / Intro Section */}
@@ -370,6 +362,9 @@ const About = () => {
               <img
                 src={cleanPath((mission as any).image || "/img/about1.webp")}
                 alt="Our Mission"
+                width={800}
+                height={600}
+                loading="lazy"
                 className="mt-6 rounded-xl shadow-md bg-white p-1"
                 onError={(e) => {
                   (e.target as HTMLImageElement).src = '/img/about1.webp'; // Double fallback
@@ -395,6 +390,9 @@ const About = () => {
               <img
                 src={cleanPath((vision as any).image || "/img/about4.webp")}
                 alt="Our Vision"
+                width={800}
+                height={600}
+                loading="lazy"
                 className="mt-6 rounded-xl shadow-md bg-white p-1"
                 onError={(e) => {
                   (e.target as HTMLImageElement).src = '/img/about4.webp';
@@ -418,6 +416,8 @@ const About = () => {
           <motion.img
             src={cleanPath((journey as any).image || "/img/journyabout.webp")}
             alt="Our Journey"
+            width={1200}
+            height={800}
             className="
         mx-auto mb-10
         w-full max-w-3xl
@@ -426,6 +426,7 @@ const About = () => {
         border border-slate-200
         object-cover
       "
+            loading="lazy"
             initial={{ opacity: 0, scale: 0.95, y: 20 }}
             whileInView={{ opacity: 1, scale: 1, y: 0 }}
             viewport={{ once: true }}
@@ -463,33 +464,20 @@ const About = () => {
 
           {mous.length > 5 ? (
             /* Autoscrolling Marquee for > 5 MOUs */
-            <div className="relative flex overflow-hidden">
-              <motion.div
-                className="flex gap-8 whitespace-nowrap py-10 px-4"
-                animate={{
-                  x: [0, -2000],
-                }}
-                transition={{
-                  x: {
-                    repeat: Infinity,
-                    repeatType: "loop",
-                    duration: 60,
-                    ease: "linear",
-                  },
-                }}
-                whileHover={{ animationPlayState: "paused" }}
-                style={{ display: 'flex' }}
-              >
-                {[...mous, ...mous, ...mous, ...mous].map((mou, idx) => (
+            <div className="relative flex overflow-hidden py-10">
+              <div className="animate-marquee flex gap-8">
+                {[...mous, ...mous].map((mou, idx) => (
                   <div
                     key={`${mou.id}-${idx}`}
-                    className="inline-block bg-white rounded-3xl overflow-hidden shadow-xl shadow-blue-900/5 border border-slate-100 group w-[350px] shrink-0"
+                    className="bg-white rounded-3xl overflow-hidden shadow-xl shadow-blue-900/5 border border-slate-100 group w-[350px] shrink-0"
                   >
                     <div className="h-52 overflow-hidden relative bg-slate-100">
                       {mou.image ? (
                         <img
                           src={cleanPath(mou.image)}
                           alt={mou.college_name}
+                          width={350}
+                          height={208}
                           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                         />
                       ) : (
@@ -517,7 +505,7 @@ const About = () => {
                     </div>
                   </div>
                 ))}
-              </motion.div>
+              </div>
             </div>
           ) : (
             /* Centered Flex Layout for <= 5 MOUs */
@@ -545,6 +533,8 @@ const About = () => {
                         <img
                           src={cleanPath(mou.image)}
                           alt={mou.college_name}
+                          width={350}
+                          height={208}
                           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                         />
                       ) : (
@@ -685,6 +675,8 @@ const About = () => {
               <img
                 src={cleanPath(teachingApproach?.image)}
                 alt="Teaching"
+                width={800}
+                height={600}
                 className="rounded-2xl shadow-lg w-full max-w-xl md:max-w-2xl"
                 loading="lazy"
                 onError={(e) => {
@@ -725,6 +717,8 @@ const About = () => {
               <img
                 src={cleanPath(infrastructure?.image)}
                 alt="Lab Infrastructure"
+                width={800}
+                height={600}
                 className="rounded-2xl shadow-lg w-full max-w-xl md:max-w-2xl"
                 loading="lazy"
                 onError={(e) => {
@@ -808,6 +802,9 @@ const About = () => {
                     <img
                       src={cleanPath(member.image)}
                       alt={member.name}
+                      width={64}
+                      height={64}
+                      loading="lazy"
                       className="w-16 h-16 rounded-full object-cover bg-slate-200 shrink-0"
                     />
                     <div>

@@ -2,8 +2,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Save, Video } from 'lucide-react';
-import { db } from '../../lib/firebase';
-import { doc, getDoc, setDoc, updateDoc, serverTimestamp } from 'firebase/firestore';
 
 const VideoTestimonialEditor = () => {
     const { id } = useParams();
@@ -25,6 +23,10 @@ const VideoTestimonialEditor = () => {
 
     const fetchVideo = async (videoId: string) => {
         try {
+            const { getFirestoreDb } = await import('../../lib/firebase');
+            const { doc, getDoc } = await import('firebase/firestore');
+            const db = await getFirestoreDb();
+
             const docSnap = await getDoc(doc(db, 'video_testimonials', videoId));
             if (!docSnap.exists()) {
                 alert('Video not found!');
@@ -48,7 +50,19 @@ const VideoTestimonialEditor = () => {
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value, type } = e.target as HTMLInputElement;
-        const finalValue = type === 'checkbox' ? (e.target as HTMLInputElement).checked : value;
+        let finalValue: string | boolean = type === 'checkbox' ? (e.target as HTMLInputElement).checked : value;
+
+        // Auto-fix common YouTube URL typos
+        if (name === 'video_url' && typeof finalValue === 'string') {
+            let cleaned = finalValue.trim();
+            if (cleaned.startsWith('ttps://')) cleaned = 'h' + cleaned;
+            else if (cleaned.startsWith('tp://')) cleaned = 'ht' + cleaned;
+            else if (cleaned.startsWith('www.youtube.com')) cleaned = 'https://' + cleaned;
+            else if (cleaned.startsWith('youtube.com')) cleaned = 'https://' + cleaned;
+            else if (cleaned.startsWith('youtu.be')) cleaned = 'https://' + cleaned;
+            finalValue = cleaned;
+        }
+
         setFormData(prev => ({ ...prev, [name]: finalValue }));
     };
 
@@ -57,6 +71,10 @@ const VideoTestimonialEditor = () => {
         setLoading(true);
 
         try {
+            const { getFirestoreDb } = await import('../../lib/firebase');
+            const { doc, setDoc, updateDoc, serverTimestamp } = await import('firebase/firestore');
+            const db = await getFirestoreDb();
+
             if (isNew) {
                 const newId = 'video-' + Date.now();
                 await setDoc(doc(db, 'video_testimonials', newId), {
@@ -139,9 +157,11 @@ const VideoTestimonialEditor = () => {
                     {formData.video_url && (() => {
                         const getYoutubeId = (url: string) => {
                             if (!url) return null;
-                            const match = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|shorts\/|watch\?.+&v=))([a-zA-Z0-9_-]{11})/);
+                            // Pre-clean URL for ID extraction
+                            let cleanUrl = url.trim();
+                            const match = cleanUrl.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|shorts\/|watch\?.+&v=))([a-zA-Z0-9_-]{11})/);
                             if (match) return match[1];
-                            if (url.length === 11 && !url.includes('/') && !url.includes('.mp4')) return url;
+                            if (cleanUrl.length === 11 && !cleanUrl.includes('/') && !cleanUrl.includes('.mp4')) return cleanUrl;
                             return null;
                         };
                         const ytId = getYoutubeId(formData.video_url);

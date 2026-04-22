@@ -2,12 +2,6 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { Lock, User, ArrowRight, Eye, EyeOff } from 'lucide-react';
-import { auth } from '../../lib/firebase';
-import {
-    signInWithEmailAndPassword,
-    createUserWithEmailAndPassword,
-    sendPasswordResetEmail
-} from 'firebase/auth';
 
 const AdminLogin = () => {
     const [email, setEmail] = useState('');
@@ -22,6 +16,10 @@ const AdminLogin = () => {
         e.preventDefault();
         setLoading(true);
         try {
+            const { getFirebaseAuth } = await import('../../lib/firebase');
+            const { signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail } = await import('firebase/auth');
+            const auth = await getFirebaseAuth();
+
             const normalizedEmail = email.trim().toLowerCase();
             const normalizedPassword = password.trim();
 

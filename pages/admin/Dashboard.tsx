@@ -3,9 +3,9 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { BookOpen, Users, FileText, TrendingUp, ArrowUpRight, Video as VideoIcon, PlaySquare as VideoText } from 'lucide-react';
-import { COURSES, BLOGS, TESTIMONIALS } from '../../constants';
-import { db } from '../../lib/firebase';
-import { collection, query, orderBy, limit, getDocs, getCountFromServer } from 'firebase/firestore';
+import { COURSES } from '../../constants/courseDetails';
+import { BLOGS } from '../../constants/blogDetails';
+import { TESTIMONIALS } from '../../constants/testimonials';
 import { useUserRole } from '../../hooks/useUserRole';
 
 const StatCard = ({ title, value, icon: Icon, color, trend }: any) => (
@@ -77,6 +77,10 @@ const Dashboard = () => {
     React.useEffect(() => {
         const fetchData = async () => {
             try {
+                const { getFirestoreDb } = await import('../../lib/firebase');
+                const { collection, query, orderBy, limit, getDocs, getCountFromServer } = await import('firebase/firestore');
+                const db = await getFirestoreDb();
+
                 // Fetch stats using count aggregation
                 const courseCount = (await getCountFromServer(collection(db, 'courses'))).data().count;
                 const blogCount = (await getCountFromServer(collection(db, 'blogs'))).data().count;

@@ -2,8 +2,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Plus, Edit2, Trash2, Search, BookOpen } from 'lucide-react';
-import { db } from '../../lib/firebase';
-import { collection, query, orderBy, getDocs, doc, deleteDoc } from 'firebase/firestore';
 import { useUserRole } from '../../hooks/useUserRole';
 import { BlogPost } from '../../types';
 
@@ -20,6 +18,10 @@ const BlogManager = () => {
 
     const fetchBlogs = async () => {
         try {
+            const { getFirestoreDb } = await import('../../lib/firebase');
+            const { collection, getDocs } = await import('firebase/firestore');
+            const db = await getFirestoreDb();
+
             const blogsRef = collection(db, 'blogs');
             const querySnapshot = await getDocs(blogsRef);
             const fetchedBlogs = querySnapshot.docs.map(doc => ({
@@ -44,6 +46,10 @@ const BlogManager = () => {
         if (!window.confirm('Are you sure you want to delete this blog post?')) return;
 
         try {
+            const { getFirestoreDb } = await import('../../lib/firebase');
+            const { doc, deleteDoc } = await import('firebase/firestore');
+            const db = await getFirestoreDb();
+
             await deleteDoc(doc(db, 'blogs', id));
             setBlogs(blogs.filter(b => b.id !== id));
         } catch (error) {
@@ -95,8 +101,23 @@ const BlogManager = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {filteredBlogs.map((blog) => (
                         <div key={blog.id} className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow">
-                            <div className="h-48 overflow-hidden relative">
-                                <img src={blog.image} alt={blog.title} className="w-full h-full object-cover" />
+                            <div className="h-48 overflow-hidden relative bg-gray-100">
+                                <img
+                                  src={blog.image}
+                                  alt={blog.title}
+                                  className="w-full h-full object-cover"
+                                  onError={(e) => {
+                                    const target = e.target as HTMLImageElement;
+                                    target.style.display = 'none';
+                                    const parent = target.parentElement;
+                                    if (parent && !parent.querySelector('.no-img-placeholder')) {
+                                      const ph = document.createElement('div');
+                                      ph.className = 'no-img-placeholder flex items-center justify-center w-full h-full text-gray-300 text-4xl';
+                                      ph.textContent = '🖼️';
+                                      parent.appendChild(ph);
+                                    }
+                                  }}
+                                />
                                 <div className="absolute top-2 right-2 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-bold text-gray-700">
                                     {blog.category}
                                 </div>

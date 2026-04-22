@@ -1,9 +1,9 @@
 
 import React, { useState, useEffect } from 'react';
-import { db, auth } from '../../lib/firebase';
-import { onAuthStateChanged } from 'firebase/auth';
-import { collection, doc, writeBatch, serverTimestamp, getDocs, deleteDoc, setDoc, addDoc } from 'firebase/firestore';
-import { COURSES, BLOGS, TESTIMONIALS, PARTNERS, DEMO_VIDEOS, COMPANY_LOGOS } from '../../constants';
+import { COURSES } from '../../constants/courseDetails';
+import { BLOGS } from '../../constants/blogDetails';
+import { TESTIMONIALS } from '../../constants/testimonials';
+import { PARTNERS, DEMO_VIDEOS, COMPANY_LOGOS } from '../../constants/ui';
 
 // Hero Slides Data (from Home.tsx)
 const HERO_SLIDES = [
@@ -55,15 +55,31 @@ const Setup = () => {
     const [currentUser, setCurrentUser] = useState<any>(null);
 
     useEffect(() => {
-        const unsubscribe = onAuthStateChanged(auth, (user) => {
-            setCurrentUser(user);
-        });
-        return () => unsubscribe();
+        let authUnsubscribe: (() => void) | undefined;
+
+        const initAuth = async () => {
+            const { getFirebaseAuth } = await import('../../lib/firebase');
+            const { onAuthStateChanged } = await import('firebase/auth');
+            const auth = await getFirebaseAuth();
+            authUnsubscribe = onAuthStateChanged(auth, (user) => {
+                setCurrentUser(user);
+            });
+        };
+
+        initAuth();
+        return () => {
+            if (authUnsubscribe) authUnsubscribe();
+        };
     }, []);
 
     const migrateData = async () => {
         setLoading(true);
         setStatus('Starting migration...');
+
+        const { getFirestoreDb, getFirebaseAuth } = await import('../../lib/firebase');
+        const { collection, doc, serverTimestamp, setDoc, addDoc } = await import('firebase/firestore');
+        const db = await getFirestoreDb();
+        const auth = await getFirebaseAuth();
 
         // Helper to remove duplicates
         const uniqueBy = (arr: any[], key: string) => {
@@ -631,6 +647,10 @@ const Setup = () => {
         setLoading(true);
         setStatus('Seeding Workshops & Features...');
         try {
+            const { getFirestoreDb } = await import('../../lib/firebase');
+            const { doc, setDoc, serverTimestamp } = await import('firebase/firestore');
+            const db = await getFirestoreDb();
+
             // Seed Workshops
             setStatus('Seeding Workshops...');
             const workshopsData = [
@@ -694,6 +714,10 @@ const Setup = () => {
         ];
 
         try {
+            const { getFirestoreDb } = await import('../../lib/firebase');
+            const { collection, addDoc, serverTimestamp } = await import('firebase/firestore');
+            const db = await getFirestoreDb();
+
             for (const enquiry of demoEnquiries) {
                 await addDoc(collection(db, 'enquiries'), {
                     ...enquiry,

@@ -2,8 +2,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Save, Image as ImageIcon, Eye, Edit3 } from 'lucide-react';
-import { db } from '../../lib/firebase';
-import { doc, getDoc, setDoc, updateDoc, serverTimestamp } from 'firebase/firestore';
+
 import ImageUploader from '../../components/admin/ImageUploader';
 import { normalizeImagePath } from '../../lib/imageUtils';
 import ReactMarkdown from 'react-markdown';
@@ -36,6 +35,10 @@ const BlogEditor = () => {
 
     const fetchBlog = async (blogId: string) => {
         try {
+            const { getFirestoreDb } = await import('../../lib/firebase');
+            const { doc, getDoc } = await import('firebase/firestore');
+            const db = await getFirestoreDb();
+
             const blogDoc = await getDoc(doc(db, 'blogs', blogId));
             if (!blogDoc.exists()) {
                 alert('Blog not found!');
@@ -117,6 +120,10 @@ const BlogEditor = () => {
         setLoading(true);
 
         try {
+            const { getFirestoreDb } = await import('../../lib/firebase');
+            const { doc, setDoc, updateDoc, serverTimestamp } = await import('firebase/firestore');
+            const db = await getFirestoreDb();
+
             const now = serverTimestamp();
             const blogData: any = {
                 ...formData,

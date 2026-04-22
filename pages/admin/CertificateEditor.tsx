@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { ArrowLeft, Save, Award } from 'lucide-react';
-import { db } from '../../lib/firebase';
-import { doc, getDoc, setDoc, serverTimestamp, updateDoc } from 'firebase/firestore';
 import { useUserRole } from '../../hooks/useUserRole';
+
+// Certificate ID must match: TN/CBE/069/LTIEC0119
+const CERT_ID_REGEX = /^[A-Z]{2}\/[A-Z]{3}\/\d{3}\/[A-Z]+\d+$/;
 
 interface CertificateForm {
     cert_id: string;
@@ -48,6 +49,10 @@ const CertificateEditor = () => {
         if (!id) return;
         try {
             setLoading(true);
+            const { getFirestoreDb } = await import('../../lib/firebase');
+            const { doc, getDoc } = await import('firebase/firestore');
+            const db = await getFirestoreDb();
+
             const docSnap = await getDoc(doc(db, 'certificates', id));
 
             if (docSnap.exists()) {
@@ -81,6 +86,10 @@ const CertificateEditor = () => {
             alert('Certificate ID is required');
             return;
         }
+        if (!CERT_ID_REGEX.test(formData.cert_id.trim())) {
+            alert('Invalid Certificate ID format.\nRequired format: TN/CBE/069/LTIEC0119\n(STATE/CITY/NUMBER/CODE)');
+            return;
+        }
         if (!formData.student_name.trim()) {
             alert('Student Name is required');
             return;
@@ -96,6 +105,10 @@ const CertificateEditor = () => {
 
         try {
             setSaving(true);
+            const { getFirestoreDb } = await import('../../lib/firebase');
+            const { doc, setDoc, updateDoc, serverTimestamp } = await import('firebase/firestore');
+            const db = await getFirestoreDb();
+
             const certData = {
                 cert_id: formData.cert_id.trim(),
                 student_name: formData.student_name.trim(),
@@ -107,8 +120,14 @@ const CertificateEditor = () => {
             };
 
             if (isNew) {
-                // Use cert_id as doc ID for consistency
-                await setDoc(doc(db, 'certificates', certData.cert_id), {
+                // Sanitize cert_id for use as Firestore document ID
+                // Firestore doc IDs cannot contain '/', so we replace special chars with '-'
+                const sanitizedDocId = certData.cert_id
+                    .replace(/\//g, '-')
+                    .replace(/[^a-zA-Z0-9\-_.~]/g, '-')
+                    .replace(/-+/g, '-')
+                    .replace(/^-|-$/g, '');
+                await setDoc(doc(db, 'certificates', sanitizedDocId), {
                     ...certData,
                     created_at: serverTimestamp()
                 });
@@ -174,13 +193,21 @@ const CertificateEditor = () => {
                         id="cert_id"
                         name="cert_id"
                         value={formData.cert_id}
-                        onChange={handleChange}
-                        placeholder="e.g., TN/CBE/069/LTIEC0030"
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent font-mono disabled:bg-gray-100 disabled:text-gray-500"
+                        onChange={(e) => handleChange({ ...e, target: { ...e.target, name: 'cert_id', value: e.target.value.toUpperCase() } })}
+                        placeholder="e.g., TN/CBE/069/LTIEC0119"
+                        className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent font-mono disabled:bg-gray-100 disabled:text-gray-500 ${
+                            formData.cert_id && !CERT_ID_REGEX.test(formData.cert_id)
+                                ? 'border-red-400 bg-red-50'
+                                : 'border-gray-300'
+                        }`}
                         required
                         disabled={!canEdit}
                     />
-                    <p className="text-sm text-gray-500 mt-1">Unique identifier for the certificate</p>
+                    {formData.cert_id && !CERT_ID_REGEX.test(formData.cert_id) ? (
+                        <p className="text-sm text-red-600 mt-1 font-medium">⚠ Format must be: <span className="font-mono">TN/CBE/069/LTIEC0119</span></p>
+                    ) : (
+                        <p className="text-sm text-gray-500 mt-1">Format: <span className="font-mono font-medium">STATE/CITY/NUMBER/CODE</span> &nbsp;e.g. TN/CBE/069/LTIEC0119</p>
+                    )}
                 </div>
 
                 {/* Student Name */}

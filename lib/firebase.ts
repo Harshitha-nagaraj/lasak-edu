@@ -1,8 +1,4 @@
 import { initializeApp } from 'firebase/app';
-import { getAuth } from 'firebase/auth';
-import { getFirestore, enableMultiTabIndexedDbPersistence } from 'firebase/firestore';
-import { getStorage } from 'firebase/storage';
-import { getAnalytics } from 'firebase/analytics';
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
@@ -14,21 +10,51 @@ const firebaseConfig = {
   measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID
 };
 
-const app = initializeApp(firebaseConfig);
-export const auth = getAuth(app);
-export const db = getFirestore(app);
-export const storage = getStorage(app);
-export const analytics = typeof window !== 'undefined' ? getAnalytics(app) : null;
+export const app = initializeApp(firebaseConfig);
 
-// Enable Firestore persistence for better offline/recurring visit performance 
-if (typeof window !== 'undefined') {
-  enableMultiTabIndexedDbPersistence(db).catch((err) => {
-    if (err.code === 'failed-precondition') {
-      // Multiple tabs open, persistence can only be enabled in one tab at a time.
-      console.warn("Firestore persistence failed: Multiple tabs open");
-    } else if (err.code === 'unimplemented') {
-      // Browser doesn't support persistence
-      console.warn("Firestore persistence not supported by browser");
+// TRUE Lasy-loading: services are only pulled in when a component calls the getter.
+// This removes the 400KB+ Firestore SDK from the initial site bundle.
+
+let _auth: any = null;
+let _db: any = null;
+let _storage: any = null;
+let _analytics: any = null;
+
+export const getFirebaseAuth = async () => {
+  if (!_auth) {
+    const { getAuth } = await import('firebase/auth');
+    _auth = getAuth(app);
+  }
+  return _auth;
+};
+
+export const getFirestoreDb = async () => {
+  if (!_db) {
+    const { getFirestore } = await import('firebase/firestore');
+    _db = getFirestore(app);
+  }
+  return _db;
+};
+
+export const getFirebaseStorage = async () => {
+  if (!_storage) {
+    const { getStorage } = await import('firebase/storage');
+    _storage = getStorage(app);
+  }
+  return _storage;
+};
+
+export const getFirebaseAnalytics = async () => {
+  if (typeof window === 'undefined') return null;
+  if (!_analytics) {
+    const { getAnalytics, isSupported } = await import('firebase/analytics');
+    const supported = await isSupported();
+    if (supported) {
+      _analytics = getAnalytics(app);
     }
-  });
-}
+  }
+  return _analytics;
+};
+
+// DO NOT export constants 'db' or 'auth' here.
+// Doing so forces the bundler to include the SDKs even if not used.

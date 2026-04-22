@@ -1,9 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Save, Upload, Trash2, Plus, Eye, Clock, Link as LinkIcon, Image as ImageIcon } from 'lucide-react';
-import { db, storage } from '../../lib/firebase';
-import { collection, query, getDocs, orderBy, doc, getDoc, updateDoc, setDoc, serverTimestamp, where, addDoc } from 'firebase/firestore';
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { useUserRole } from '../../hooks/useUserRole';
 
 interface PopupSlide {
@@ -49,6 +46,10 @@ const PopupManager = () => {
 
     const fetchPopupData = async () => {
         try {
+            const { getFirestoreDb } = await import('../../lib/firebase');
+            const { doc, getDoc, setDoc, query, collection, where, getDocs } = await import('firebase/firestore');
+            const db = await getFirestoreDb();
+
             // Fetch popup configuration (assuming 'default' id for singleton)
             const configRef = doc(db, 'popup_config', 'default');
             const configSnap = await getDoc(configRef);
@@ -119,6 +120,10 @@ const PopupManager = () => {
 
         setSaving(true);
         try {
+            const { getFirestoreDb } = await import('../../lib/firebase');
+            const { doc, updateDoc, serverTimestamp } = await import('firebase/firestore');
+            const db = await getFirestoreDb();
+
             // Update popup configuration
             const configRef = doc(db, 'popup_config', config.id);
             await updateDoc(configRef, {
@@ -167,6 +172,12 @@ const PopupManager = () => {
         showMessage('success', 'Uploading image... please wait');
 
         try {
+            const { getFirebaseStorage, getFirestoreDb } = await import('../../lib/firebase');
+            const { ref, uploadBytes, getDownloadURL } = await import('firebase/storage');
+            const { doc, updateDoc, collection, addDoc, serverTimestamp } = await import('firebase/firestore');
+            const storage = await getFirebaseStorage();
+            const db = await getFirestoreDb();
+
             // Upload image to Firebase Storage
             const fileExt = file.name.split('.').pop();
             const fileName = `${Date.now()}_${Math.random().toString(36).substring(2)}.${fileExt}`;
@@ -243,6 +254,10 @@ const PopupManager = () => {
         }
 
         try {
+            const { getFirestoreDb } = await import('../../lib/firebase');
+            const { collection, addDoc, serverTimestamp } = await import('firebase/firestore');
+            const db = await getFirestoreDb();
+
             const newSlideData = {
                 image_url: newImageUrl.trim(),
                 clickable: true,
@@ -285,6 +300,10 @@ const PopupManager = () => {
 
     const removeSlide = async (slideId: string) => {
         try {
+            const { getFirestoreDb } = await import('../../lib/firebase');
+            const { doc, updateDoc, serverTimestamp } = await import('firebase/firestore');
+            const db = await getFirestoreDb();
+
             const slideRef = doc(db, 'popup_slides', slideId);
             await updateDoc(slideRef, {
                 active: false,

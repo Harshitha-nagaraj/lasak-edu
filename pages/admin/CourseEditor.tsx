@@ -6,9 +6,8 @@ import {
     ArrowLeft, Save, Plus, Trash2, HelpCircle, Briefcase,
     Rocket, Target, CheckCircle, BookOpen, Brain, Wrench, Building2
 } from 'lucide-react';
-import { CATEGORIES } from '../../constants';
-import { db } from '../../lib/firebase';
-import { doc, getDoc, setDoc, updateDoc, collection, addDoc } from 'firebase/firestore';
+import { CATEGORIES } from '../../constants/ui';
+
 import ImageUploader from '../../components/admin/ImageUploader';
 
 const CourseEditor = () => {
@@ -47,6 +46,9 @@ const CourseEditor = () => {
         skills_passport_price?: string;
         interview_passport_price?: string;
         job_passport_price?: string;
+        order?: number;
+        promo_video?: string;
+        shorts_url?: string;
     }>({
         id: '',
         title: '',
@@ -75,7 +77,10 @@ const CourseEditor = () => {
         faqs: [{ question: '', answer: '' }],
         skills_passport_price: '',
         interview_passport_price: '',
-        job_passport_price: ''
+        job_passport_price: '',
+        order: 999,
+        promo_video: '',
+        shorts_url: ''
     });
 
     useEffect(() => {
@@ -86,6 +91,10 @@ const CourseEditor = () => {
 
     const fetchCourse = async (courseId: string) => {
         try {
+            const { getFirestoreDb } = await import('../../lib/firebase');
+            const { doc, getDoc } = await import('firebase/firestore');
+            const db = await getFirestoreDb();
+
             const courseDoc = await getDoc(doc(db, 'courses', courseId));
             if (!courseDoc.exists()) {
                 alert('Course not found!');
@@ -122,7 +131,10 @@ const CourseEditor = () => {
                     faqs: data.faqs || [{ question: '', answer: '' }],
                     skills_passport_price: data.skills_passport_price || '',
                     interview_passport_price: data.interview_passport_price || '',
-                    job_passport_price: data.job_passport_price || ''
+                    job_passport_price: data.job_passport_price || '',
+                    order: data.order !== undefined ? data.order : 999,
+                    promo_video: data.promo_video || '',
+                    shorts_url: data.shorts_url || ''
                 });
             }
         } catch (error: any) {
@@ -167,6 +179,10 @@ const CourseEditor = () => {
         setLoading(true);
 
         try {
+            const { getFirestoreDb } = await import('../../lib/firebase');
+            const { doc, setDoc, updateDoc } = await import('firebase/firestore');
+            const db = await getFirestoreDb();
+
             const courseData = {
                 title: formData.title,
                 category: formData.category,
@@ -195,14 +211,17 @@ const CourseEditor = () => {
                 faqs: formData.faqs.filter(f => f.question.trim() !== ''),
                 skills_passport_price: formData.skills_passport_price,
                 interview_passport_price: formData.interview_passport_price,
-                job_passport_price: formData.job_passport_price
+                job_passport_price: formData.job_passport_price,
+                order: formData.order !== undefined ? formData.order : 999,
+                promo_video: formData.promo_video || '',
+                shorts_url: formData.shorts_url || ''
             };
 
             if (isNew) {
                 const newId = formData.title.toLowerCase().replace(/[^a-z0-9]+/g, '-') + '-' + Math.floor(Math.random() * 1000);
                 await setDoc(doc(db, 'courses', newId), courseData);
             } else {
-                await updateDoc(doc(db, 'courses', id), courseData);
+                await updateDoc(doc(db, 'courses', id!), courseData);
             }
 
             alert('Course saved successfully!');
@@ -242,18 +261,22 @@ const CourseEditor = () => {
                     </h2>
                     <div className="grid md:grid-cols-2 gap-6">
                         <div className="md:col-span-2">
-                            <label className="block text-xs font-black uppercase text-slate-400 mb-2">Course Title</label>
+                            <label className="block text-xs font-black uppercase text-slate-600 mb-2">Course Title</label>
                             <input name="title" value={formData.title} onChange={handleChange} className="w-full px-5 py-3.5 bg-slate-50 border-2 border-transparent focus:border-blue-600 rounded-2xl outline-none font-bold text-slate-800 transition-all" placeholder="Enter Full Course Name" required />
                         </div>
                         <div>
-                            <label className="block text-xs font-black uppercase text-slate-400 mb-2">Category</label>
+                            <label className="block text-xs font-black uppercase text-slate-600 mb-2">Category</label>
                             <select name="category" value={formData.category} onChange={handleChange} className="w-full px-5 py-3.5 bg-slate-50 border-2 border-transparent focus:border-blue-600 rounded-2xl outline-none font-bold text-slate-800">
                                 {CATEGORIES.map(cat => <option key={cat.id} value={cat.id}>{cat.name}</option>)}
                             </select>
                         </div>
                         <div>
-                            <label className="block text-xs font-black uppercase text-slate-400 mb-2">Duration</label>
+                            <label className="block text-xs font-black uppercase text-slate-600 mb-2">Duration</label>
                             <input name="duration" value={formData.duration} onChange={handleChange} className="w-full px-5 py-3.5 bg-slate-50 border-2 border-transparent focus:border-blue-600 rounded-2xl outline-none font-bold text-slate-800" placeholder="e.g. 60 Days / 240 Hours" />
+                        </div>
+                        <div>
+                            <label className="block text-xs font-black uppercase text-slate-600 mb-2">Display Order</label>
+                            <input type="number" name="order" value={formData.order} onChange={(e) => setFormData(prev => ({...prev, order: parseInt(e.target.value) || 0}))} className="w-full px-5 py-3.5 bg-slate-50 border-2 border-transparent focus:border-blue-600 rounded-2xl outline-none font-bold text-slate-800" placeholder="e.g. 1" />
                         </div>
                     </div>
                 </section>
@@ -265,34 +288,34 @@ const CourseEditor = () => {
                     </h2>
                     <div className="grid md:grid-cols-3 gap-6">
                         <div>
-                            <label className="block text-xs font-black uppercase text-slate-400 mb-2">Price (₹)</label>
+                            <label className="block text-xs font-black uppercase text-slate-600 mb-2">Price (₹)</label>
                             <input name="price" value={formData.price} onChange={handleChange} className="w-full px-5 py-3.5 bg-slate-50 border-2 border-transparent focus:border-blue-600 rounded-2xl outline-none font-bold" placeholder="₹14,999" />
                         </div>
                         <div>
-                            <label className="block text-xs font-black uppercase text-slate-400 mb-2">Old Price</label>
+                            <label className="block text-xs font-black uppercase text-slate-600 mb-2">Old Price</label>
                             <input name="oldPrice" value={formData.oldPrice} onChange={handleChange} className="w-full px-5 py-3.5 bg-slate-50 border-2 border-transparent focus:border-blue-600 rounded-2xl outline-none" placeholder="₹25,000" />
                         </div>
                         <div>
-                            <label className="block text-xs font-black uppercase text-slate-400 mb-2">Phone Number</label>
+                            <label className="block text-xs font-black uppercase text-slate-600 mb-2">Phone Number</label>
                             <input name="phone" value={formData.phone} onChange={handleChange} className="w-full px-5 py-3.5 bg-slate-50 border-2 border-transparent focus:border-blue-600 rounded-2xl outline-none" placeholder="+91 74187 32525" />
                         </div>
                     </div>
                     <div>
-                        <label className="block text-xs font-black uppercase text-slate-400 mb-2">Enrollment Link (Google Forms / Other)</label>
+                        <label className="block text-xs font-black uppercase text-slate-600 mb-2">Enrollment Link (Google Forms / Other)</label>
                         <input name="enrollLink" value={formData.enrollLink} onChange={handleChange} className="w-full px-5 py-3.5 bg-slate-50 border-2 border-transparent focus:border-blue-600 rounded-2xl outline-none" placeholder="https://forms.gle/..." />
                     </div>
 
                     <div className="grid md:grid-cols-3 gap-6 pt-4">
                         <div>
-                            <label className="block text-xs font-black uppercase text-slate-400 mb-2">Skills Upgrade Fee (₹)</label>
+                            <label className="block text-xs font-black uppercase text-slate-600 mb-2">Skills Upgrade Fee (₹)</label>
                             <input name="skills_passport_price" value={formData.skills_passport_price} onChange={handleChange} className="w-full px-5 py-3.5 bg-blue-50/50 border-2 border-transparent focus:border-blue-600 rounded-2xl outline-none font-bold text-blue-800" placeholder="₹0" />
                         </div>
                         <div>
-                            <label className="block text-xs font-black uppercase text-slate-400 mb-2">Interview Upgrade Fee (₹)</label>
+                            <label className="block text-xs font-black uppercase text-slate-600 mb-2">Interview Upgrade Fee (₹)</label>
                             <input name="interview_passport_price" value={formData.interview_passport_price} onChange={handleChange} className="w-full px-5 py-3.5 bg-cyan-50/50 border-2 border-transparent focus:border-cyan-600 rounded-2xl outline-none font-bold text-cyan-800" placeholder="₹4,000" />
                         </div>
                         <div>
-                            <label className="block text-xs font-black uppercase text-slate-400 mb-2">Job Upgrade Fee (₹)</label>
+                            <label className="block text-xs font-black uppercase text-slate-600 mb-2">Job Upgrade Fee (₹)</label>
                             <input name="job_passport_price" value={formData.job_passport_price} onChange={handleChange} className="w-full px-5 py-3.5 bg-rose-50/50 border-2 border-transparent focus:border-rose-600 rounded-2xl outline-none font-bold text-rose-800" placeholder="₹9,000" />
                         </div>
                     </div>
@@ -304,15 +327,15 @@ const CourseEditor = () => {
                         <Rocket className="text-orange-600" size={24} /> Hero & Landing Content
                     </h2>
                     <div>
-                        <label className="block text-xs font-black uppercase text-slate-400 mb-2">Hero Tagline</label>
+                        <label className="block text-xs font-black uppercase text-slate-600 mb-2">Hero Tagline</label>
                         <input name="tagline" value={formData.tagline} onChange={handleChange} className="w-full px-5 py-3.5 bg-slate-50 border-2 border-transparent focus:border-blue-600 rounded-2xl outline-none font-bold" placeholder="Master XYZ and accelerate your career..." />
                     </div>
                     <div>
-                        <label className="block text-xs font-black uppercase text-slate-400 mb-2">Hero Introduction (Short)</label>
+                        <label className="block text-xs font-black uppercase text-slate-600 mb-2">Hero Introduction (Short)</label>
                         <textarea name="introduction" value={formData.introduction} onChange={handleChange} rows={2} className="w-full px-5 py-3.5 bg-slate-50 border-2 border-transparent focus:border-blue-600 rounded-2xl outline-none resize-none" placeholder="2-3 line summary for the top section..." />
                     </div>
                     <div>
-                        <label className="block text-xs font-black uppercase text-slate-400 mb-2">Full Course Description (SEO Rich Content)</label>
+                        <label className="block text-xs font-black uppercase text-slate-600 mb-2">Full Course Description (SEO Rich Content)</label>
                         <textarea name="long_description" value={formData.long_description} onChange={handleChange} rows={6} className="w-full px-5 py-3.5 bg-slate-50 border-2 border-transparent focus:border-blue-600 rounded-2xl outline-none resize-none" placeholder="Write 800-1200 words for SEO optimization here..." />
                     </div>
                     <ImageUploader
@@ -322,6 +345,36 @@ const CourseEditor = () => {
                         label="Course Image"
                         placeholder="/img/courses/..."
                     />
+
+                    {/* Promo Video */}
+                    <div>
+                        <label className="block text-xs font-black uppercase text-slate-600 mb-2">Promo Video URL <span className="text-slate-400 font-normal normal-case">(YouTube link or direct .mp4 URL)</span></label>
+                        <input
+                            name="promo_video"
+                            value={formData.promo_video}
+                            onChange={handleChange}
+                            className="w-full px-5 py-3.5 bg-slate-50 border-2 border-transparent focus:border-blue-600 rounded-2xl outline-none font-mono text-sm"
+                            placeholder="https://www.youtube.com/watch?v=... or /video/course.mp4"
+                        />
+                        {formData.promo_video && (
+                            <p className="text-xs text-green-600 mt-1 font-medium">✓ Video will be shown in the course hero section</p>
+                        )}
+                    </div>
+
+                    {/* Shorts URL */}
+                    <div>
+                        <label className="block text-xs font-black uppercase text-slate-600 mb-2">YouTube Shorts URL <span className="text-slate-400 font-normal normal-case">(vertical short video)</span></label>
+                        <input
+                            name="shorts_url"
+                            value={formData.shorts_url}
+                            onChange={handleChange}
+                            className="w-full px-5 py-3.5 bg-slate-50 border-2 border-transparent focus:border-blue-600 rounded-2xl outline-none font-mono text-sm"
+                            placeholder="https://youtube.com/shorts/..."
+                        />
+                        {formData.shorts_url && (
+                            <p className="text-xs text-green-600 mt-1 font-medium">✓ Short will be embedded next to the course hero</p>
+                        )}
+                    </div>
                 </section>
 
                 {/* 4. MULTI-FIELD ARRAYS (Modules, Skills, etc.) */}
@@ -456,11 +509,11 @@ const CourseEditor = () => {
                             <div key={idx} className="grid md:grid-cols-2 gap-4 items-start p-6 bg-slate-50 rounded-3xl border border-slate-100 relative shadow-sm">
                                 <button type="button" onClick={() => removeFromArray('faqs', idx)} className="absolute top-4 right-4 text-red-500 hover:bg-red-100 p-2 rounded-xl"><Trash2 size={18} /></button>
                                 <div className="space-y-2">
-                                    <label className="text-[10px] font-black uppercase text-slate-400">Question</label>
+                                    <label className="text-[10px] font-black uppercase text-slate-600">Question</label>
                                     <input value={item.question} onChange={(e) => handleObjArrayChange('faqs', idx, 'question', e.target.value)} className="w-full px-4 py-2.5 border rounded-xl outline-none font-bold" placeholder="e.g. Is prior knowledge required?" />
                                 </div>
                                 <div className="space-y-2">
-                                    <label className="text-[10px] font-black uppercase text-slate-400">Answer</label>
+                                    <label className="text-[10px] font-black uppercase text-slate-600">Answer</label>
                                     <textarea value={item.answer} onChange={(e) => handleObjArrayChange('faqs', idx, 'answer', e.target.value)} className="w-full px-4 py-2.5 border rounded-xl outline-none resize-none h-24" placeholder="Enter detailed answer here..." />
                                 </div>
                             </div>

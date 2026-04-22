@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Save, Globe, Eye, Image as ImageIcon } from 'lucide-react';
-import { db } from '../../lib/firebase';
-import { doc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore';
 import { useUserRole } from '../../hooks/useUserRole';
 
 // Default values from the site's original hardcoded content
@@ -62,6 +60,10 @@ const SEOEditor = () => {
     const fetchSEO = async () => {
         try {
             setLoading(true);
+            const { getFirestoreDb } = await import('../../lib/firebase');
+            const { doc, getDoc } = await import('firebase/firestore');
+            const db = await getFirestoreDb();
+
             const docId = encodeURIComponent(path);
             const docRef = doc(db, 'page_seo', docId);
             const docSnap = await getDoc(docRef);
@@ -89,6 +91,10 @@ const SEOEditor = () => {
     };
 
     const resolveDefaultSEO = async () => {
+        const { getFirestoreDb } = await import('../../lib/firebase');
+        const { doc, getDoc } = await import('firebase/firestore');
+        const db = await getFirestoreDb();
+
         // Handle course pages dynamically
         if (path.startsWith('/courses/')) {
             const courseId = path.split('/').pop();
@@ -131,7 +137,7 @@ const SEOEditor = () => {
             title: defaultValues.title,
             description: defaultValues.description,
             keywords: defaultValues.keywords || '',
-            image_url: '/img/lasakedu-logo.png'
+            image_url: '/img/favicon.png'
         });
     };
 
@@ -140,6 +146,10 @@ const SEOEditor = () => {
         setSaving(true);
 
         try {
+            const { getFirestoreDb } = await import('../../lib/firebase');
+            const { doc, setDoc, serverTimestamp } = await import('firebase/firestore');
+            const db = await getFirestoreDb();
+
             const docId = encodeURIComponent(path);
             await setDoc(doc(db, 'page_seo', docId), {
                 page_path: path,

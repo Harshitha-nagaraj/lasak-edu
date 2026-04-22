@@ -2,8 +2,6 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { Lock, Mail, ArrowRight, UserPlus, AlertCircle, CheckCircle2, KeyRound, Eye, EyeOff } from 'lucide-react';
-import { auth } from '../lib/firebase';
-import { signInWithEmailAndPassword, sendPasswordResetEmail } from 'firebase/auth';
 
 const Login = () => {
     const [email, setEmail] = useState('');
@@ -23,6 +21,10 @@ const Login = () => {
         setError(null);
         setResetSuccess(false);
         try {
+            const { getFirebaseAuth } = await import('../lib/firebase');
+            const { signInWithEmailAndPassword, sendPasswordResetEmail } = await import('firebase/auth');
+            const auth = await getFirebaseAuth();
+
             const normalizedEmail = email.trim().toLowerCase();
 
             if (isForgotPassword) {
@@ -84,8 +86,8 @@ const Login = () => {
 
                 {signupSuccess && !isForgotPassword && (
                     <motion.div
-                        initial={{ opacity: 0, height: 0 }}
-                        animate={{ opacity: 1, height: 'auto' }}
+                        initial={{ opacity: 0, y: -10 }}
+                        animate={{ opacity: 1, y: 0 }}
                         className="bg-green-50 border border-green-200 text-green-700 p-4 rounded-xl mb-6 flex items-start gap-3"
                     >
                         <CheckCircle2 className="w-6 h-6 shrink-0 text-green-500" />
@@ -98,8 +100,8 @@ const Login = () => {
 
                 {resetSuccess && (
                     <motion.div
-                        initial={{ opacity: 0, height: 0 }}
-                        animate={{ opacity: 1, height: 'auto' }}
+                        initial={{ opacity: 0, y: -10 }}
+                        animate={{ opacity: 1, y: 0 }}
                         className="bg-green-50 border border-green-200 text-green-700 p-4 rounded-xl mb-6 flex items-start gap-3"
                     >
                         <CheckCircle2 className="w-6 h-6 shrink-0 text-green-500" />
@@ -112,8 +114,8 @@ const Login = () => {
 
                 {error && (
                     <motion.div
-                        initial={{ opacity: 0, height: 0 }}
-                        animate={{ opacity: 1, height: 'auto' }}
+                        initial={{ opacity: 0, y: -10 }}
+                        animate={{ opacity: 1, y: 0 }}
                         className="bg-red-50 border border-red-200 text-red-600 p-3 rounded-xl mb-6 flex items-start gap-2 text-sm"
                     >
                         <AlertCircle className="w-5 h-5 shrink-0" />

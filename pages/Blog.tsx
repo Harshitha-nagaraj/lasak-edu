@@ -1,32 +1,66 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { BLOGS } from '../constants';
+import { BLOG_SUMMARIES } from '../constants/blogSummaries';
 import { Calendar, User, ArrowRight } from 'lucide-react';
 import SEO from '../components/SEO';
-import { db } from '../lib/firebase';
-import { collection, query, orderBy, getDocs, limit } from 'firebase/firestore';
 import { fetchWithCache } from '../lib/cacheUtils';
 import { normalizeImagePath } from '../lib/imageUtils';
 
+// Topic-aware fallback: maps blog keywords to relevant existing images on disk
+const TOPIC_FALLBACK_MAP: { keywords: string[]; image: string }[] = [
+  { keywords: ['full stack', 'fullstack', 'web development', 'mern', 'react', 'node'], image: '/img/it/full-stack-development-171z.webp' },
+  { keywords: ['autocad', 'auto cad', 'cad mechanical', 'mechanical drafting'], image: '/img/mech/autocad.webp' },
+  { keywords: ['solidworks', 'solid works', 'weldment'], image: '/img/mech/solidworks-408z.webp' },
+  { keywords: ['python', 'django', 'flask'], image: '/img/it/python-267z.webp' },
+  { keywords: ['data analytics', 'data science', 'analytics', 'ai', 'machine learning'], image: '/img/it/da-013z.webp' },
+  { keywords: ['software testing', 'qa', 'automation testing'], image: '/img/it/st-291z.webp' },
+  { keywords: ['java', 'spring boot'], image: '/img/it/java-747z.webp' },
+  { keywords: ['revit', 'bim'], image: '/img/civil/revit-471z.webp' },
+  { keywords: ['civil', 'construction', 'infrastructure'], image: '/img/civil/civil-cad.webp' },
+  { keywords: ['digital marketing', 'seo', 'social media'], image: '/img/it/digital-marketing-875z.webp' },
+  { keywords: ['workshop', 'seminar', 'orientation', 'career'], image: '/img/collaboration-zones.webp' },
+  { keywords: ['placement', 'internship', 'job', 'hired'], image: '/img/design-workshops.webp' },
+];
+
+const getTopicFallbackImage = (title: string, category?: string): string => {
+  const searchText = `${title} ${category || ''}`.toLowerCase();
+  for (const entry of TOPIC_FALLBACK_MAP) {
+    if (entry.keywords.some(kw => searchText.includes(kw))) {
+      return entry.image;
+    }
+  }
+  // Generic fallback — about page image
+  return '/img/about1.webp';
+};
+
+
 const Blog = () => {
-  const [blogs, setBlogs] = useState(BLOGS); // Initialize with fallback data
+  const [blogs, setBlogs] = useState(BLOG_SUMMARIES); // Initialize with fallback data
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetchBlogs();
+    if ('requestIdleCallback' in window) {
+      (window as any).requestIdleCallback(() => fetchBlogs());
+    } else {
+      setTimeout(fetchBlogs, 1000);
+    }
   }, []);
 
   const fetchBlogs = async () => {
     console.log('🔍 [Blog.tsx] Starting to fetch blogs from Firestore...');
     setLoading(true);
     try {
+      const { getFirestoreDb } = await import('../lib/firebase');
+      const db = await getFirestoreDb();
+      const { collection, query, orderBy, limit } = await import('firebase/firestore');
+
       const blogsRef = collection(db, 'blogs');
-      const q = query(blogsRef, orderBy('createdAt', 'desc'), limit(20)); // Assuming createdAt instead of created_at
+      const q = query(blogsRef, orderBy('createdAt', 'desc'), limit(25));
       const fetchedBlogs = await fetchWithCache(
-        'cache_blogs',
+        'cache_blogs_v3',
         q,
-        24 * 60 * 60 * 1000,
+        2 * 60 * 60 * 1000,
         (data: any) => ({
           id: data.id,
           title: data.title,
@@ -37,72 +71,33 @@ const Blog = () => {
         })
       );
 
-      console.log('📊 [Blog.tsx] Query result:', {
-        dataLength: fetchedBlogs.length,
-        firstBlog: fetchedBlogs[0]?.title
+      console.log('📊 [Blog.tsx] Query result count:', fetchedBlogs.length);
+
+      // Create a map of fetched blogs by ID or Title for quick lookup
+      const fetchedMap = new Map();
+      fetchedBlogs.forEach(fb => {
+        fetchedMap.set(fb.id, fb);
+        if (fb.title) fetchedMap.set(fb.title, fb);
       });
 
-      if (fetchedBlogs.length > 0) {
-        // Merge with static data
-        const mergedBlogs = fetchedBlogs.map(fetched => {
-          const staticBlog = BLOGS.find(b => b.id === fetched.id || b.title === fetched.title);
-          if (!staticBlog) return fetched;
+      // Merge Logic:
+      // 1. Start with fetched blogs
+      // 2. Add static blogs that aren't already in the fetched list
+      const mergedBlogs = [...fetchedBlogs];
+      
+      BLOG_SUMMARIES.forEach(staticBlog => {
+        if (!fetchedMap.has(staticBlog.id) && !fetchedMap.has(staticBlog.title)) {
+          mergedBlogs.push(staticBlog);
+        }
+      });
 
-          return {
-            ...staticBlog,
-            ...fetched,
-            image: fetched.image || staticBlog.image,
-            excerpt: fetched.excerpt || staticBlog.excerpt,
-            date: fetched.date || staticBlog.date,
-            category: fetched.category || staticBlog.category
-          };
-        });
-        console.log(`✅ [Blog.tsx] Setting ${mergedBlogs.length} merged blogs to state`);
-        setBlogs(mergedBlogs);
-      } else {
-        console.log('⚠️  [Blog.tsx] No blogs returned, using fallback data');
-      }
+      console.log(`✅ [Blog.tsx] Total blogs after merge: ${mergedBlogs.length}`);
+      setBlogs(mergedBlogs);
+
     } catch (error) {
       console.error('❌ [Blog.tsx] Error fetching blogs:', error);
-      // Try again with 'created_at' if 'createdAt' fails or just use fallback
-      try {
-        const blogsRef = collection(db, 'blogs');
-        const q = query(blogsRef, orderBy('created_at', 'desc'), limit(20));
-        const fetchedBlogs = await fetchWithCache(
-          'cache_blogs_fallback',
-          q,
-          24 * 60 * 60 * 1000,
-          (data: any) => ({
-            id: data.id,
-            title: data.title,
-            excerpt: data.excerpt,
-            image: data.image,
-            category: data.category,
-            date: data.date
-          })
-        );
-
-        if (fetchedBlogs.length > 0) {
-          const mergedBlogs = fetchedBlogs.map(fetched => {
-            const staticBlog = BLOGS.find(b => b.id === fetched.id || b.title === fetched.title);
-            if (!staticBlog) return fetched;
-
-            return {
-              ...staticBlog,
-              ...fetched,
-              image: fetched.image || staticBlog.image,
-              excerpt: fetched.excerpt || staticBlog.excerpt,
-              date: fetched.date || staticBlog.date,
-              category: fetched.category || staticBlog.category
-            };
-          });
-          setBlogs(mergedBlogs);
-        }
-      } catch (innerError) {
-        console.error('❌ [Blog.tsx] Second attempt failed:', innerError);
-      }
+      // Fallback: stay with static BLOGS (already set as initial state)
     } finally {
-      console.log('🏁 [Blog.tsx] Setting loading to false');
       setLoading(false);
     }
   };
@@ -172,14 +167,26 @@ const Blog = () => {
           "
                 >
                   {/* Image */}
-                  <div className="relative bg-slate-100 h-64 overflow-hidden">
+                  <div className="relative bg-slate-200 h-64 overflow-hidden">
                     <img
-                      src={normalizeImagePath(post.image)}
+                      src={
+                        post.image && normalizeImagePath(post.image)
+                          ? normalizeImagePath(post.image)
+                          : normalizeImagePath(getTopicFallbackImage(post.title, post.category))
+                      }
                       alt={post.title}
                       className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                       loading="lazy"
                       onError={(e) => {
-                        (e.target as HTMLImageElement).src = `https://placehold.co/600x400/1e3a8a/ffffff?text=${encodeURIComponent(post.title)}`;
+                        const target = e.target as HTMLImageElement;
+                        if (!target.dataset.fallback) {
+                          target.dataset.fallback = '1';
+                          target.src = normalizeImagePath(getTopicFallbackImage(post.title, post.category));
+                        } else if (!target.dataset.fallback2) {
+                          // Last-resort: generic Unsplash image
+                          target.dataset.fallback2 = '1';
+                          target.src = 'https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=800&auto=format&fit=crop&q=60';
+                        }
                       }}
                     />
 
@@ -192,7 +199,7 @@ const Blog = () => {
                   {/* Content */}
                   <div className="p-6 md:p-8 flex flex-col flex-grow">
                     {/* Meta */}
-                    <div className="flex items-center gap-4 text-xs text-slate-400 mb-4 font-semibold uppercase tracking-wider">
+                    <div className="flex items-center gap-4 text-xs text-slate-600 mb-4 font-semibold uppercase tracking-wider">
                       <span className="flex items-center gap-1">
                         <Calendar size={12} /> {post.date}
                       </span>
@@ -202,9 +209,9 @@ const Blog = () => {
                     </div>
 
                     {/* Title */}
-                    <h3 className="text-xl font-bold mb-3 text-slate-900 group-hover:text-blue-600 transition-colors">
+                    <h2 className="text-xl font-bold mb-3 text-slate-900 group-hover:text-blue-600 transition-colors">
                       {post.title}
-                    </h3>
+                    </h2>
 
                     {/* Excerpt */}
                     <p className="text-slate-500 text-sm leading-relaxed flex-grow">

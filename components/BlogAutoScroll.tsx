@@ -1,14 +1,12 @@
-import { useRef, useEffect, useState } from "react";
+import React, { useRef, useEffect, useState } from "react";
+import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
-import { BLOGS } from "../constants";
+import { BLOG_SUMMARIES as BLOGS } from '../constants/blogSummaries';
 import { Calendar, User, ArrowRight } from "lucide-react";
-import { db } from "../lib/firebase";
-import { collection, query, orderBy, getDocs } from "firebase/firestore";
 import { normalizeImagePath } from "../lib/imageUtils";
 import { fetchWithCache } from "../lib/cacheUtils";
 
 const BlogAutoScroll = () => {
-  const scrollRef = useRef<HTMLDivElement>(null);
   const [blogs, setBlogs] = useState(BLOGS); // Initialize with fallback
   const [loading, setLoading] = useState(true);
 
@@ -16,6 +14,9 @@ const BlogAutoScroll = () => {
   useEffect(() => {
     const fetchBlogs = async () => {
       try {
+        const { getFirestoreDb } = await import('../lib/firebase');
+        const { collection, query, orderBy } = await import('firebase/firestore');
+        const db = await getFirestoreDb();
         const q = query(collection(db, 'blogs'), orderBy('created_at', 'desc'));
         const fetchedBlogs = await fetchWithCache('cache_home_blogs', q);
 
@@ -33,29 +34,6 @@ const BlogAutoScroll = () => {
     fetchBlogs();
   }, []);
 
-  // Auto-scroll effect — runs whenever blogs change (both on load and after fetch)
-  useEffect(() => {
-    const slider = scrollRef.current;
-    if (!slider) return;
-
-    let scrollSpeed = 0.8;
-    let position = 0;
-    let rafId: number;
-
-    const scroll = () => {
-      position += scrollSpeed;
-      slider.scrollLeft = position;
-
-      if (position >= slider.scrollWidth - slider.clientWidth) {
-        position = 0;
-      }
-
-      rafId = requestAnimationFrame(scroll);
-    };
-
-    rafId = requestAnimationFrame(scroll);
-    return () => cancelAnimationFrame(rafId);
-  }, [blogs]);
 
   return (
     <section className="py-24 bg-gradient-to-b from-white to-slate-50 border-t border-slate-100">
@@ -78,11 +56,15 @@ const BlogAutoScroll = () => {
         )}
 
         {/* Auto-scroll container — always visible, shows fallback data instantly */}
-        <div ref={scrollRef} className="overflow-hidden">
-          <div className="flex gap-8 min-w-max">
-            {blogs.map(post => (
+        <div className="overflow-hidden relative">
+          <div 
+            className="flex gap-8 w-max animate-scroll-loop hover:pause"
+            style={{ '--duration': `${blogs.length * 10}s` } as React.CSSProperties}
+          >
+            {/* Double the blogs for seamless loop */}
+            {[...blogs, ...blogs].map((post, idx) => (
               <Link
-                key={post.id}
+                key={`${post.id}-${idx}`}
                 to={`/blog/${post.id}`}
                 className="w-[330px] flex-shrink-0 bg-white rounded-2xl shadow-lg border border-slate-200 hover:-translate-y-2 hover:shadow-xl transition-all duration-300"
               >
@@ -98,7 +80,7 @@ const BlogAutoScroll = () => {
                 </div>
 
                 <div className="p-6">
-                  <div className="flex items-center gap-3 text-xs text-slate-400 font-semibold uppercase mb-3">
+                  <div className="flex items-center gap-3 text-xs text-slate-600 font-semibold uppercase mb-3">
                     <span className="flex items-center gap-1">
                       <Calendar size={14} /> {post.date || 'Soon'}
                     </span>

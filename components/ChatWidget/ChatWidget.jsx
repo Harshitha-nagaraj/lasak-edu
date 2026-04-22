@@ -3,7 +3,7 @@ import { marked } from 'marked'; // Make sure to run: npm install marked
 import './style.css';
 // Assuming you move the image to your assets or public folder
 // If using Vite/Webpack, you can import it:
-import chatIcon from './chatbot-icon.png';
+const chatIcon = "/img/favicon.png";
 
 const ChatWidget = ({ isOpen, onClose }) => {
 
@@ -23,7 +23,11 @@ const ChatWidget = ({ isOpen, onClose }) => {
   // Auto-scroll to bottom when messages change
   useEffect(() => {
     if (chatBodyRef.current) {
-      chatBodyRef.current.scrollTop = chatBodyRef.current.scrollHeight;
+      requestAnimationFrame(() => {
+        if (chatBodyRef.current) {
+          chatBodyRef.current.scrollTop = chatBodyRef.current.scrollHeight;
+        }
+      });
     }
   }, [messages, isTyping, isOpen]);
 
@@ -145,7 +149,7 @@ const ChatWidget = ({ isOpen, onClose }) => {
         <div className="chat-header">
           <div className="header-top">
             <div className="window-controls">
-              <button className="icon-btn-small" onClick={onClose}>
+              <button className="icon-btn-small" onClick={onClose} aria-label="Minimize chat">
                 ↓
               </button>
 
@@ -155,14 +159,14 @@ const ChatWidget = ({ isOpen, onClose }) => {
           <div className="brand-wrapper">
             <div className="avatar-container">
               <div className="avatar-circle">
-                <img src={chatIcon} alt="Sakthi" className="avatar-img" />
+                <img src={chatIcon} alt="Sakthi" width="48" height="48" className="avatar-img" />
               </div>
 
               <div className="status-dot"></div>
             </div>
             <h2 className="brand-name">I'm Sakthi</h2>
             <p className="brand-subtitle">How can I help you today?</p>
-            <button className="learn-more-btn">
+            <button className="learn-more-btn" aria-label="Learn more about Sakthi">
 
             </button>
           </div>
@@ -179,7 +183,7 @@ const ChatWidget = ({ isOpen, onClose }) => {
               {msg.type === 'bot' && (
                 <div className="message-avatar">
                   <div className="content-avatar">
-                    <img src={chatIcon} alt="Bot" className="message-avatar-img" />
+                    <img src={chatIcon} alt="Bot" width="32" height="32" className="message-avatar-img" />
                   </div>
 
                 </div>
@@ -201,7 +205,7 @@ const ChatWidget = ({ isOpen, onClose }) => {
             <div className="message-wrapper bot">
               <div className="message-avatar">
                 <div className="content-avatar">
-                  <img src={chatIcon} alt="Typing" className="message-avatar-img" />
+                  <img src={chatIcon} alt="Typing" width="32" height="32" className="message-avatar-img" />
                 </div>
 
               </div>
@@ -230,7 +234,7 @@ const ChatWidget = ({ isOpen, onClose }) => {
             />
 
 
-            <button className="send-btn" onClick={() => handleSendMessage()}>
+            <button className="send-btn" onClick={() => handleSendMessage()} aria-label="Send message">
               ➤
             </button>
           </div>

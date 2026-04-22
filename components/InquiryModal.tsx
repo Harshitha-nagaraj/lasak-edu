@@ -1,9 +1,6 @@
 import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { m, AnimatePresence } from 'framer-motion';
 import { X, Send, Sparkles, CheckCircle, ArrowRight } from 'lucide-react';
-import { auth, db } from '../lib/firebase';
-import { onAuthStateChanged } from 'firebase/auth';
-import { collection, getDocs, orderBy, query, where, addDoc, serverTimestamp } from 'firebase/firestore';
 import { useNavigate } from 'react-router-dom';
 import { fetchWithCache } from '../lib/cacheUtils';
 
@@ -59,19 +56,29 @@ const InquiryModal: React.FC<InquiryModalProps> = ({
     });
 
     React.useEffect(() => {
-        const unsubscribe = onAuthStateChanged(auth, async (user) => {
-            if (user) {
-                setUser(user);
-                setInitialData({
-                    fullName: user.displayName || '',
-                    phone: user.phoneNumber || '',
-                    email: user.email || ''
-                });
-            }
-        });
+        let unsubscribe: any;
+        const initAuth = async () => {
+            const { getFirebaseAuth } = await import('../lib/firebase');
+            const { onAuthStateChanged } = await import('firebase/auth');
+            const authInstance = await getFirebaseAuth();
+            unsubscribe = onAuthStateChanged(authInstance, async (user) => {
+                if (user) {
+                    setUser(user);
+                    setInitialData({
+                        fullName: user.displayName || '',
+                        phone: user.phoneNumber || '',
+                        email: user.email || ''
+                    });
+                }
+            });
+        };
+        initAuth();
 
         const fetchCourses = async () => {
             try {
+                const { getFirestoreDb } = await import('../lib/firebase');
+                const { query, collection, orderBy } = await import('firebase/firestore');
+                const db = await getFirestoreDb();
                 const fetchedCourses = await fetchWithCache('cache_courses_dropdown', query(collection(db, 'courses'), orderBy('title', 'asc')));
                 if (fetchedCourses) {
                     const mappedCourses = fetchedCourses.map((doc: any) => ({
@@ -86,7 +93,7 @@ const InquiryModal: React.FC<InquiryModalProps> = ({
         };
 
         fetchCourses();
-        return () => unsubscribe();
+        return () => { if (unsubscribe) unsubscribe(); };
     }, []);
 
     const [couponLoading, setCouponLoading] = useState(false);
@@ -102,6 +109,9 @@ const InquiryModal: React.FC<InquiryModalProps> = ({
 
         setCouponLoading(true);
         try {
+            const { getFirestoreDb } = await import('../lib/firebase');
+            const { collection, query, where, getDocs } = await import('firebase/firestore');
+            const db = await getFirestoreDb();
             const couponsRef = collection(db, 'coupon_codes');
             const q = query(couponsRef, where('code', '==', code), where('is_active', '==', true));
             const querySnapshot = await getDocs(q);
@@ -160,54 +170,51 @@ const InquiryModal: React.FC<InquiryModalProps> = ({
         const form = e.target as HTMLFormElement;
         const formData = new FormData(form);
 
-        // Prepare data for Google Sheets (camelCase to match Apps Script)
-        const sheetsData = {
-            fullName: formData.get('fullName'),
-            qualification: formData.get('qualification'),
-            phone: formData.get('phone'),
-            email: formData.get('email'),
-            department: formData.get('department'),
-            status: formData.get('status'),
-            preferredBranch: formData.get('branch'),
-            course: formData.get('interestedCourse'),
-            promoCode: promoCode,
-            discountAmount: discountAmount,
-            customAmount: isCustomPayment && customAmount ? Number(customAmount) : undefined
-        };
-
-        const submissionData = {
-            full_name: formData.get('fullName'),
-            qualification: formData.get('qualification'),
-            phone: formData.get('phone'),
-            email: formData.get('email'),
-            message: `Gated Enquiry for: ${courseTitle} (Branch: ${formData.get('branch')})`,
-            department: formData.get('department'),
-            status: formData.get('status'),
-            branch: formData.get('branch'),
-            source: formData.get('applyFrom'),
-            interested_course: formData.get('interestedCourse'),
-            promo_code: promoCode,
-            scholarship_discount: discountAmount,
-            user_id: user?.uid || null
-        };
-
         try {
-            // 1. Save to Firestore
-            await addDoc(collection(db, 'enquiries'), {
-                ...submissionData,
+            const { getFirestoreDb } = await import('../lib/firebase');
+            const { collection, addDoc, serverTimestamp } = await import('firebase/firestore');
+            const db = await getFirestoreDb();
+
+            // 1. Save to Firestore (Lead management)
+            const submissionData = {
+                full_name: formData.get('fullName'),
+                qualification: formData.get('qualification'),
+                phone: formData.get('phone'),
+                email: formData.get('email'),
+                message: `Gated Enquiry for: ${courseTitle} (Branch: ${formData.get('branch')})`,
+                department: formData.get('department'),
+                status: formData.get('status'),
+                branch: formData.get('branch'),
+                source: formData.get('applyFrom'),
+                interested_course: formData.get('interestedCourse'),
+                promo_code: promoCode,
+                scholarship_discount: discountAmount,
+                user_id: user?.uid || null,
                 created_at: serverTimestamp()
-            });
+            };
+            await addDoc(collection(db, 'enquiries'), submissionData);
 
-            // 2. Send to Google Sheets as JSON
-            const scriptUrl = "https://script.google.com/macros/s/AKfycbyAeBeKLK2HUY5LWdB29L0f00UDRYqa7OAkGpAeAlG1-Qzv78cOoBhP1QKJGgYvyikVfQ/exec";
+            // 2. Send to Google Sheets as JSON Payload
+            const scriptUrl = "https://script.google.com/macros/s/AKfycbyCXeBcecLMxEqsI895ypcAgNwa0v4obpE6lXMczvDolz3kaMRPf6aDxmTH9vEL5FzKsw/exec";
 
-            // Remove Content-Type header to avoid CORS preflight if possible, 
-            // but for sheets usually it's better to just try.
-            await fetch(scriptUrl, {
+            const sheetsData = {
+                fullName: submissionData.full_name,
+                qualification: submissionData.qualification,
+                phone: submissionData.phone,
+                email: submissionData.email,
+                department: submissionData.department,
+                status: submissionData.status,
+                preferredBranch: submissionData.branch,
+                course: submissionData.interested_course,
+                promoCode: submissionData.promo_code || "",
+                discountAmount: submissionData.scholarship_discount || 0
+            };
+
+            fetch(scriptUrl, {
                 method: "POST",
                 mode: 'no-cors',
-                body: JSON.stringify(sheetsData),
-            });
+                body: JSON.stringify(sheetsData)
+            }).catch(err => console.error("Google Sheets Error:", err));
 
             // 3. Handle Success
             onClose();
@@ -250,7 +257,7 @@ const InquiryModal: React.FC<InquiryModalProps> = ({
             {isOpen && (
                 <div className="fixed inset-0 z-[100] flex items-center justify-center p-2 sm:p-4 overflow-y-auto">
                     {/* Backdrop */}
-                    <motion.div
+                    <m.div
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
@@ -259,7 +266,7 @@ const InquiryModal: React.FC<InquiryModalProps> = ({
                     />
 
                     {/* Modal Content */}
-                    <motion.div
+                    <m.div
                         initial={{ scale: 0.9, opacity: 0, y: 20 }}
                         animate={{ scale: 1, opacity: 1, y: 0 }}
                         exit={{ scale: 0.9, opacity: 0, y: 20 }}
@@ -273,21 +280,22 @@ const InquiryModal: React.FC<InquiryModalProps> = ({
                             {/* Header */}
                             <div className="flex justify-between items-start mb-6 sm:mb-8">
                                 <div>
-                                    <motion.div
+                                    <m.div
                                         initial={{ opacity: 0, x: -10 }}
                                         animate={{ opacity: 1, x: 0 }}
                                         className="inline-flex items-center gap-2 px-3 py-1 bg-blue-500/10 text-cyan-400 rounded-full text-xs font-bold border border-blue-500/20 mb-4"
                                     >
                                         <Sparkles size={14} /> Quick Enquiry
-                                    </motion.div>
+                                    </m.div>
                                     <h2 className="text-xl sm:text-2xl md:text-3xl font-black text-white mb-2 leading-tight">
                                         Interested in <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500 line-clamp-2">{courseTitle}</span>?
                                     </h2>
-                                    <p className="text-slate-400 text-xs sm:text-sm">Submit your details to view modules & get expert guidance.</p>
+                                    <p className="text-slate-600 text-xs sm:text-sm">Submit your details to view modules & get expert guidance.</p>
                                 </div>
                                 <button
                                     onClick={onClose}
-                                    className="p-2 hover:bg-white/5 rounded-xl transition-colors text-slate-400 hover:text-white"
+                                    aria-label="Close modal"
+                                    className="p-2 hover:bg-white/5 rounded-xl transition-colors text-slate-300 hover:text-white"
                                 >
                                     <X size={24} />
                                 </button>
@@ -455,7 +463,7 @@ const InquiryModal: React.FC<InquiryModalProps> = ({
                                             <div className="p-5 sm:p-6 space-y-5 sm:space-y-6">
                                                 {/* Course Info */}
                                                 <div>
-                                                    <p className="text-slate-400 text-[10px] font-bold uppercase tracking-wider mb-1">Program</p>
+                                                    <p className="text-slate-600 text-[10px] font-bold uppercase tracking-wider mb-1">Program</p>
                                                     <p className="text-white font-black text-base sm:text-lg leading-tight">{courseTitle}</p>
                                                 </div>
 
@@ -464,14 +472,14 @@ const InquiryModal: React.FC<InquiryModalProps> = ({
                                                     <button
                                                         type="button"
                                                         onClick={() => setIsCustomPayment(false)}
-                                                        className={`flex-1 py-2 rounded-lg text-[10px] font-black tracking-wide transition-all ${!isCustomPayment ? 'bg-cyan-500 text-white shadow-md' : 'text-slate-400 hover:text-white'}`}
+                                                        className={`flex-1 py-2 rounded-lg text-[10px] font-black tracking-wide transition-all ${!isCustomPayment ? 'bg-cyan-500 text-white shadow-md' : 'text-slate-600 hover:text-white'}`}
                                                     >
                                                         FIXED AMOUNT
                                                     </button>
                                                     <button
                                                         type="button"
                                                         onClick={() => setIsCustomPayment(true)}
-                                                        className={`flex-1 py-2 rounded-lg text-[10px] font-black tracking-wide transition-all ${isCustomPayment ? 'bg-cyan-500 text-white shadow-md' : 'text-slate-400 hover:text-white'}`}
+                                                        className={`flex-1 py-2 rounded-lg text-[10px] font-black tracking-wide transition-all ${isCustomPayment ? 'bg-cyan-500 text-white shadow-md' : 'text-slate-600 hover:text-white'}`}
                                                     >
                                                         MANUAL AMOUNT
                                                     </button>
@@ -525,12 +533,12 @@ const InquiryModal: React.FC<InquiryModalProps> = ({
                                                 {!isCustomPayment ? (
                                                     <div className="space-y-3 pt-4 border-t border-white/10">
                                                         <div className="flex justify-between text-sm">
-                                                            <span className="text-slate-400 font-medium">Program Fees</span>
+                                                            <span className="text-slate-600 font-medium">Program Fees</span>
                                                             <span className="text-white font-bold">₹{basePrice.toLocaleString('en-IN')}</span>
                                                         </div>
                                                         {upgradePrice > 0 && (
                                                             <div className="flex justify-between text-sm items-center">
-                                                                <span className="text-slate-400 font-medium">{upgradeName || 'Upgrade'}</span>
+                                                                <span className="text-slate-600 font-medium">{upgradeName || 'Upgrade'}</span>
                                                                 <span className="text-white font-bold">₹{upgradePrice.toLocaleString('en-IN')}</span>
                                                             </div>
                                                         )}
@@ -548,7 +556,7 @@ const InquiryModal: React.FC<InquiryModalProps> = ({
 
                                                 <div className="pt-4 border-t border-white/10 flex justify-between items-end">
                                                     <p className="text-slate-100 font-black flex flex-col">
-                                                        <span className="text-xs text-slate-400 font-bold uppercase tracking-wider mb-1">Grand Total</span>
+                                                        <span className="text-xs text-slate-600 font-bold uppercase tracking-wider mb-1">Grand Total</span>
                                                         <span className="text-3xl tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-white to-slate-400">
                                                             ₹{isCustomPayment && customAmount ? Number(customAmount).toLocaleString('en-IN') : Math.max(0, basePrice + upgradePrice - discountAmount).toLocaleString('en-IN')}
                                                         </span>
@@ -566,7 +574,7 @@ const InquiryModal: React.FC<InquiryModalProps> = ({
                                 Your data is secured and will only be used for admission guidance.
                             </div>
                         </div>
-                    </motion.div>
+                    </m.div>
                 </div>
             )}
         </AnimatePresence>

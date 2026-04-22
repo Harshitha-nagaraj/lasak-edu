@@ -2,18 +2,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Plus, Trash2, Edit2, Save, X, GripVertical } from 'lucide-react';
-import { db } from '../../lib/firebase';
-import {
-    collection,
-    query,
-    orderBy,
-    getDocs,
-    doc,
-    setDoc,
-    deleteDoc,
-    updateDoc,
-    serverTimestamp
-} from 'firebase/firestore';
 import { useUserRole } from '../../hooks/useUserRole';
 
 interface Category {
@@ -27,7 +15,7 @@ const CategoryManager = () => {
     const [categories, setCategories] = useState<Category[]>([]);
     const [loading, setLoading] = useState(true);
     const [isEditing, setIsEditing] = useState<string | null>(null);
-    const [editData, setEditData] = useState({ id: '', name: '' });
+    const [editData, setEditData] = useState({ id: '', name: '', order_num: 0 });
     const [isAdding, setIsAdding] = useState(false);
     const [newData, setNewData] = useState({ id: '', name: '' });
 
@@ -37,6 +25,10 @@ const CategoryManager = () => {
 
     const fetchCategories = async () => {
         try {
+            const { getFirestoreDb } = await import('../../lib/firebase');
+            const { collection, query, orderBy, getDocs } = await import('firebase/firestore');
+            const db = await getFirestoreDb();
+
             const q = query(collection(db, 'categories'), orderBy('order_num', 'asc'));
             const snapshot = await getDocs(q);
             const data = snapshot.docs.map(doc => ({
@@ -54,6 +46,10 @@ const CategoryManager = () => {
     const handleAdd = async () => {
         if (!newData.id || !newData.name) return;
         try {
+            const { getFirestoreDb } = await import('../../lib/firebase');
+            const { doc, setDoc, serverTimestamp } = await import('firebase/firestore');
+            const db = await getFirestoreDb();
+
             const newOrderNum = categories.length > 0
                 ? Math.max(...categories.map(c => c.order_num)) + 1
                 : 0;
@@ -76,8 +72,13 @@ const CategoryManager = () => {
     const handleUpdate = async () => {
         if (!isEditing || !editData.name) return;
         try {
+            const { getFirestoreDb } = await import('../../lib/firebase');
+            const { doc, updateDoc, serverTimestamp } = await import('firebase/firestore');
+            const db = await getFirestoreDb();
+
             await updateDoc(doc(db, 'categories', isEditing), {
                 name: editData.name,
+                order_num: editData.order_num,
                 updated_at: serverTimestamp()
             });
             setIsEditing(null);
@@ -90,6 +91,10 @@ const CategoryManager = () => {
     const handleDelete = async (id: string) => {
         if (!window.confirm('Are you sure you want to delete this category? Courses using this category might be affected.')) return;
         try {
+            const { getFirestoreDb } = await import('../../lib/firebase');
+            const { doc, deleteDoc } = await import('firebase/firestore');
+            const db = await getFirestoreDb();
+
             await deleteDoc(doc(db, 'categories', id));
             fetchCategories();
         } catch (error) {
@@ -174,7 +179,17 @@ const CategoryManager = () => {
                                 className="group hover:bg-slate-50 transition-colors"
                             >
                                 <td className="px-6 py-4 text-center">
-                                    <span className="text-gray-400 font-medium">{cat.order_num}</span>
+                                    {isEditing === cat.id ? (
+                                        <input
+                                            type="number"
+                                            className="w-16 px-2 py-1.5 bg-white border border-blue-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm text-center"
+                                            value={editData.order_num}
+                                            onChange={(e) => setEditData({ ...editData, order_num: parseInt(e.target.value) || 0 })}
+                                            min={0}
+                                        />
+                                    ) : (
+                                        <span className="text-gray-400 font-medium">{cat.order_num}</span>
+                                    )}
                                 </td>
                                 <td className="px-6 py-4">
                                     <span className="font-mono text-xs bg-gray-100 px-2 py-1 rounded-md text-gray-600">{cat.id}</span>
@@ -209,7 +224,7 @@ const CategoryManager = () => {
                                                     <button
                                                         onClick={() => {
                                                             setIsEditing(cat.id);
-                                                            setEditData({ id: cat.id, name: cat.name });
+                                                            setEditData({ id: cat.id, name: cat.name, order_num: cat.order_num });
                                                         }}
                                                         className="p-2 text-blue-600 hover:bg-blue-100 rounded-lg"
                                                     >

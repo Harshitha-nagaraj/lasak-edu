@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Helmet } from "react-helmet";
 import { useLocation } from "react-router-dom";
-import { db } from "../lib/firebase";
-import { collection, query, where, getDocs, limit } from "firebase/firestore";
 import { fetchWithCache } from "../lib/cacheUtils";
 
 interface SEOProps {
@@ -17,10 +15,13 @@ const SEO: React.FC<SEOProps> = ({
   title: defaultTitle = "LASAK EDU – Training Institute in Coimbatore | IT, Mechanical & Civil Courses",
   description: defaultDescription = "LASAK EDU – Leading training institute in Coimbatore offering IT, Mechanical & Civil courses with 100% placement support.",
   keywords: defaultKeywords = "LASAK EDU, lasakedu, lasak edu, LASAK Institute, LasakEdu Coimbatore, IT training Coimbatore, Mechanical training Coimbatore, Civil training Coimbatore",
-  image: defaultImage = "/img/lasakedu-logo-v2.png",
-  url: defaultUrl = "https://lasakedu.in",
+  image: defaultImage = "/img/lasakedu-logo.png",
+  url: defaultUrlProp = "",
 }) => {
   const location = useLocation();
+  const currentUrl = typeof window !== 'undefined' ? `${window.location.origin}${location.pathname}` : "https://lasakedu.in";
+  const defaultUrl = defaultUrlProp || currentUrl;
+
   const [seoData, setSeoData] = useState({
     title: defaultTitle,
     description: defaultDescription,
@@ -31,11 +32,15 @@ const SEO: React.FC<SEOProps> = ({
 
   useEffect(() => {
     fetchDynamicSEO();
-  }, [location.pathname, defaultTitle, defaultDescription, defaultKeywords, defaultImage, defaultUrl]);
+  }, [location.pathname, defaultTitle, defaultDescription, defaultKeywords, defaultImage, defaultUrlProp]);
 
   const fetchDynamicSEO = async () => {
     try {
       const currentPath = location.pathname;
+      const { getFirestoreDb } = await import('../lib/firebase');
+      const { query, collection, where, limit } = await import('firebase/firestore');
+      const db = await getFirestoreDb();
+      
       const q = query(collection(db, 'page_seo'), where('page_path', '==', currentPath), limit(1));
       const seoData = await fetchWithCache(`cache_seo_${currentPath}`, q);
 
@@ -46,7 +51,7 @@ const SEO: React.FC<SEOProps> = ({
           description: data.description || defaultDescription,
           keywords: data.keywords || defaultKeywords,
           image_url: data.image_url || defaultImage,
-          url: window.location.href
+          url: data.url || defaultUrl
         });
       } else {
         resetToDefaults();
@@ -97,6 +102,16 @@ const SEO: React.FC<SEOProps> = ({
       {/* Favicon */}
       <link rel="icon" href="/favicon-Photoroom.png" />
 
+      {/* Preload LCP Image */}
+      {seoData.image_url && (
+        <link 
+          rel="preload" 
+          as="image" 
+          href={seoData.image_url} 
+          {...({ fetchpriority: "high" } as any)} 
+        />
+      )}
+
       {/* Structured Data */}
       <script type="application/ld+json">
         {JSON.stringify({
@@ -105,8 +120,8 @@ const SEO: React.FC<SEOProps> = ({
           "name": "LASAK EDU",
           "alternateName": ["LasakEdu", "LASAK Institute", "Lasak Edu Institute"],
           "url": "https://lasakedu.in",
-          "logo": "https://lasakedu.in/img/lasakedu-logo-v2.png",
-          "image": "https://lasakedu.in/img/lasakedu-logo-v2.png",
+          "logo": "https://lasakedu.in/img/lasakedu-logo.png",
+          "image": "https://lasakedu.in/img/lasakedu-logo.png",
           "description": "LASAK EDU is a leading training institute in Coimbatore offering industry-standard IT, Mechanical and Civil courses with placement support.",
           "address": {
             "@type": "PostalAddress",
@@ -125,6 +140,10 @@ const SEO: React.FC<SEOProps> = ({
       </script>
     </Helmet>
   );
+
+
+
+  
 };
 
 export default SEO;

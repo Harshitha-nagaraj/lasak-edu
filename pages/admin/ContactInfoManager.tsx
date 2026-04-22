@@ -1,6 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { db } from '../../lib/firebase';
-import { collection, query, orderBy, getDocs, doc, deleteDoc, updateDoc, addDoc, serverTimestamp } from 'firebase/firestore';
 import { useUserRole } from '../../hooks/useUserRole';
 import { Save, Plus, Trash2, Phone, Mail, MapPin, Globe, Edit, Facebook, Instagram, Linkedin, Twitter, Youtube } from 'lucide-react';
 
@@ -37,6 +35,10 @@ const ContactInfoManager = () => {
 
     const fetchContactInfo = async () => {
         try {
+            const { getFirestoreDb } = await import('../../lib/firebase');
+            const { collection, query, orderBy, getDocs } = await import('firebase/firestore');
+            const db = await getFirestoreDb();
+
             const snapshot = await getDocs(query(collection(db, 'contact_info'), orderBy('order_num', 'asc')));
             const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as ContactInfo));
             setContactInfo(data || []);
@@ -50,6 +52,10 @@ const ContactInfoManager = () => {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
+            const { getFirestoreDb } = await import('../../lib/firebase');
+            const { collection, addDoc, doc, updateDoc, serverTimestamp } = await import('firebase/firestore');
+            const db = await getFirestoreDb();
+
             const contactData = {
                 type: newContact.type,
                 label: newContact.label,
@@ -109,6 +115,10 @@ const ContactInfoManager = () => {
         if (!confirm('Are you sure you want to delete this contact info?')) return;
 
         try {
+            const { getFirestoreDb } = await import('../../lib/firebase');
+            const { doc, deleteDoc } = await import('firebase/firestore');
+            const db = await getFirestoreDb();
+
             await deleteDoc(doc(db, 'contact_info', id));
             fetchContactInfo();
         } catch (error: any) {
@@ -119,6 +129,10 @@ const ContactInfoManager = () => {
 
     const handleToggleActive = async (id: string, currentActive: boolean) => {
         try {
+            const { getFirestoreDb } = await import('../../lib/firebase');
+            const { doc, updateDoc } = await import('firebase/firestore');
+            const db = await getFirestoreDb();
+
             await updateDoc(doc(db, 'contact_info', id), { active: !currentActive });
             fetchContactInfo();
         } catch (error: any) {
@@ -131,6 +145,10 @@ const ContactInfoManager = () => {
         if (!confirm('This will add default contact information for Peelamedu & Gandhipuram branches plus social media links. Continue?')) return;
 
         try {
+            const { getFirestoreDb } = await import('../../lib/firebase');
+            const { collection, addDoc, serverTimestamp } = await import('firebase/firestore');
+            const db = await getFirestoreDb();
+
             const defaultContacts = [
                 { type: 'address', label: 'Peelamedu Branch', value: '11A, STV Nagar, Peelamedu, Nava India Signal, Coimbatore - 641004', icon: 'MapPin', branch: 'Peelamedu Branch', directions_url: 'https://maps.google.com/?q=LASAK+EDU+Peelamedu+Coimbatore', order_num: 0, active: true },
                 { type: 'phone', label: 'Phone Number', value: '+91 7418 734 466', icon: 'Phone', branch: 'Peelamedu Branch', directions_url: null, order_num: 1, active: true },
