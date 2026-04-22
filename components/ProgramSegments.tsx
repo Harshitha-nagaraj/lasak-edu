@@ -50,17 +50,17 @@ const ProgramSegments = ({ segments }: { segments?: any[] }) => {
                 }}
               >
                 <div 
-                  className={`w-full h-[60vh] md:h-[70vh] rounded-[24px] md:rounded-[40px] shadow-2xl overflow-hidden relative flex flex-col transition-all duration-700`}
+                  className={`w-full h-[75vh] md:h-[85vh] rounded-[24px] md:rounded-[40px] shadow-2xl overflow-hidden relative flex flex-col transition-all duration-700`}
                   style={{ 
                     backgroundColor: program.bgColor,
                     boxShadow: '0 30px 60px -12px rgba(0, 0, 0, 0.4)'
                   }}
                 >
-                  <div className="relative flex flex-col h-full p-6 md:p-12 custom-scrollbar">
-                    <div className="w-full max-w-5xl mx-auto flex-grow flex flex-col justify-center">
+                  <div className="relative flex flex-col h-full p-6 md:p-14 custom-scrollbar">
+                    <div className="w-full max-w-5xl mx-auto h-full flex flex-col">
                       
                       {/* Compact Header Area */}
-                      <div className="flex items-center gap-4 md:gap-8 mb-6 md:mb-8">
+                      <div className="flex items-center gap-4 md:gap-8 mb-6 md:mb-8 flex-shrink-0">
                         <div className="w-16 h-16 md:w-24 md:h-24 flex-shrink-0 bg-white/20 backdrop-blur-lg border border-white/30 rounded-2xl md:rounded-3xl flex items-center justify-center text-white p-4 md:p-6">
                           {typeof program.categories?.[0]?.icon === 'string' ? getIcon(program.categories[0].icon) : getIcon('star')}
                         </div>
@@ -69,48 +69,48 @@ const ProgramSegments = ({ segments }: { segments?: any[] }) => {
                           <span className="inline-block px-3 py-1 rounded-full bg-white/10 text-white text-[8px] md:text-[10px] font-black uppercase tracking-widest mb-2 border border-white/20">
                             {program.badge}
                           </span>
-                          <h2 className="text-xl md:text-4xl lg:text-5xl font-black text-white leading-tight tracking-tight">
+                          <h2 className="text-xl md:text-4xl lg:text-6xl font-black text-white leading-tight tracking-tight">
                             {program.title}
                           </h2>
                         </div>
                       </div>
 
                       {/* Description */}
-                      <p className="text-white/90 text-[10px] md:text-lg mb-8 md:mb-12 max-w-4xl leading-relaxed font-semibold opacity-95">
+                      <p className="text-white/90 text-[10px] md:text-xl mb-6 md:mb-10 max-w-4xl leading-relaxed font-semibold opacity-95 flex-shrink-0">
                         {program.description}
                       </p>
 
                       {/* Autoscrolling Courses Ticker */}
-                      <div className="w-full overflow-hidden relative py-4 mb-8">
+                      <div className="w-full overflow-hidden relative py-4 mb-6 md:mb-10 flex-shrink-0">
                         <div className="flex animate-scroll hover:pause space-x-4 md:space-x-6">
                           {[...(program.categories || []), ...(program.categories || []), ...(program.categories || [])].map((cat: any, idx: number) => (
                             <div
                               key={idx}
-                              className="flex-shrink-0 w-32 md:w-56 bg-white/10 backdrop-blur-2xl border border-white/20 p-4 md:p-6 rounded-[1.5rem] group cursor-pointer transition-all duration-500 hover:bg-white/20"
+                              className="flex-shrink-0 w-32 md:w-60 bg-white/10 backdrop-blur-2xl border border-white/20 p-4 md:p-8 rounded-[1.5rem] group cursor-pointer transition-all duration-500 hover:bg-white/20"
                             >
-                              <div className="w-8 h-8 md:w-12 md:h-12 rounded-xl bg-white/20 flex items-center justify-center text-white mb-3 group-hover:bg-white group-hover:text-slate-900 transition-all">
-                                <div className="w-5 h-5 md:w-6 md:h-6">
+                              <div className="w-8 h-8 md:w-14 md:h-14 rounded-xl bg-white/20 flex items-center justify-center text-white mb-3 md:mb-6 group-hover:bg-white group-hover:text-slate-900 transition-all">
+                                <div className="w-5 h-5 md:w-8 md:h-8">
                                   {typeof cat.icon === 'string' ? getIcon(cat.icon) : <Star className="w-full h-full" />}
                                 </div>
                               </div>
-                              <h3 className="text-[9px] md:text-sm font-black text-white leading-tight uppercase tracking-wider">{cat.name}</h3>
+                              <h3 className="text-[9px] md:text-base font-black text-white leading-tight uppercase tracking-wider">{cat.name}</h3>
                             </div>
                           ))}
                         </div>
                       </div>
 
                       {/* CTA Buttons */}
-                      <div className="flex flex-wrap gap-4 md:gap-6 mt-auto">
+                      <div className="flex flex-wrap gap-4 md:gap-8 mt-auto pb-4 flex-shrink-0">
                         <Link
                           to="/contact"
-                          className="px-8 py-3 md:px-12 md:py-4 bg-white text-slate-900 font-black text-[10px] md:text-base rounded-xl hover:shadow-xl transition-all duration-300 active:scale-95 flex items-center gap-3 group"
+                          className="px-8 py-3.5 md:px-14 md:py-6 bg-white text-slate-900 font-black text-[10px] md:text-xl rounded-xl hover:shadow-2xl transition-all duration-300 active:scale-95 flex items-center gap-3 group"
                         >
+                          <ArrowRight size={22} className="group-hover:translate-x-1 transition-transform" />
                           Register Now
-                          <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
                         </Link>
                         <Link
                           to="/courses"
-                          className="px-8 py-3 md:px-12 md:py-4 bg-transparent border-2 border-white text-white font-black text-[10px] md:text-base rounded-xl hover:bg-white/10 transition-all duration-300 active:scale-95 flex items-center gap-3 group"
+                          className="px-8 py-3.5 md:px-14 md:py-6 bg-transparent border-2 md:border-4 border-white text-white font-black text-[10px] md:text-xl rounded-xl hover:bg-white/10 transition-all duration-300 active:scale-95 flex items-center gap-3 group"
                         >
                           View Tracks
                         </Link>
