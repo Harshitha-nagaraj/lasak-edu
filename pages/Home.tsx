@@ -1117,7 +1117,7 @@ const Home = () => {
       </section>
 
 
-      {/* 10.5 Learning Benefits Grid (from skillryt.com) */}
+      {/* 10.5 Learning Benefits Grid (from lasakedu.com) */}
       <Suspense fallback={<div className="h-96 animate-pulse bg-slate-100 rounded-3xl mx-4 my-24" />}>
         <LazyLearningBenefits benefitsData={learningEcosystem} />
       </Suspense>
