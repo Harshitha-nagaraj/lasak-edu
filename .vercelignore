@@ -1,0 +1,8 @@
+dist.zip
+lasakedu-hostinger-upload.zip
+node_modules/
+.git/
+.firebase/
+build/
+dist/
+*.log

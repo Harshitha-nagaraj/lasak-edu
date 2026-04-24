@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logo Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 40px;
+            background: #f5f5f5;
+        }
+        .logo-container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        img {
+            max-width: 200px;
+            border: 2px solid #ddd;
+            padding: 10px;
+            background: white;
+        }
+        h2 {
+            color: #333;
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Logo Loading Test</h1>
+    
+    <h2>Test 1: lasakedulogo.png (used in Home.tsx)</h2>
+    <div class="logo-container">
+        <img src="/img/lasakedulogo.png" alt="Lasak Edu Logo" onerror="this.parentElement.innerHTML='<p style=color:red>❌ Failed to load: /img/lasakedulogo.png</p>'">
+        <p>Path: /img/lasakedulogo.png</p>
+    </div>
+
+    <h2>Test 2: lasakedu_logo.png</h2>
+    <div class="logo-container">
+        <img src="/img/lasakedu-logo.png" alt="Lasak Edu Logo v1" onerror="this.parentElement.innerHTML='<p style=color:red>❌ Failed to load: /img/lasakedu-logo.png</p>'">
+        <p>Path: /img/lasakedu-logo.png</p>
+    </div>
+
+    <h2>Test 3: lasakedu_logo_v2.png</h2>
+    <div class="logo-container">
+        <img src="/img/lasakedu-logo-v2.png" alt="Lasak Edu Logo v2" onerror="this.parentElement.innerHTML='<p style=color:red>❌ Failed to load: /img/lasakedu-logo-v2.png</p>'">
+        <p>Path: /img/lasakedu-logo-v2.png</p>
+    </div>
+
+    <h2>Instructions:</h2>
+    <ol>
+        <li>If all three logos appear above, the files are loading correctly</li>
+        <li>If you see red error messages, those specific files are not loading</li>
+        <li>Check the browser console (F12) for any errors</li>
+    </ol>
+</body>
+</html>
