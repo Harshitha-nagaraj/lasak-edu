@@ -60,7 +60,7 @@ const LearningBenefits = ({ benefitsData }: { benefitsData?: any[] }) => {
   const defaultBenefits = [
     {
       id: 1,
-      title: "Skillryt LMS Portal",
+      title: "Lasak LMS Portal",
       desc: "with ready-to-access 10,000+ modules and practice tests",
       image: "https://images.unsplash.com/photo-1501504905252-473c47e087f8?q=80&w=800&auto=format&fit=crop",
       size: "small"
