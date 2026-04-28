@@ -361,8 +361,8 @@ export const PARTNERS = [
 
 export const CATEGORIES = [
   { name: 'Mech', icon: () => <Settings className="w-8 h-8 text-purple-400" />, id: 'Mechanical' },
+  { name: 'CSE/IT', icon: () => <Code className="w-8 h-8 text-cyan-400" />, id: 'IT' },
   { name: 'Civil', icon: () => <Home className="w-8 h-8 text-green-400" />, id: 'Civil' },
-  { name: 'IT', icon: () => <Code className="w-8 h-8 text-cyan-400" />, id: 'IT' },
   { name: 'Arts', icon: () => <PenTool className="w-8 h-8 text-pink-400" />, id: 'Arts' },
   { name: 'Kids', icon: () => <Gamepad2 className="w-8 h-8 text-yellow-400" />, id: 'Kids' },
 ];

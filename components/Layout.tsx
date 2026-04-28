@@ -3,7 +3,7 @@ import { Link, useLocation, Outlet } from 'react-router-dom';
 import { Menu, X, ChevronDown, MapPin, Phone, Mail, ExternalLink } from 'lucide-react';
 import { m, AnimatePresence } from 'framer-motion';
 import { useNativeScrollProgress } from '../hooks/useNativeScroll';
-import { COMPANY_LOGOS } from '../constants/ui';
+import { COMPANY_LOGOS, CATEGORIES } from '../constants/ui';
 import SEO from './SEO';
 
 const CompanyTicker = React.lazy(() => import('./CompanyTicker'));
@@ -83,13 +83,10 @@ const fallbackNavLinks = [
   {
     name: 'Courses',
     path: '/courses',
-    submenu: [
-      { name: 'Mech', path: '/courses/Mechanical' },
-      { name: 'Civil', path: '/courses/Civil' },
-      { name: 'IT', path: '/courses/IT' },
-      { name: 'Arts', path: '/courses/Arts' },
-      { name: 'Kids', path: '/courses/Kids' },
-    ]
+    submenu: CATEGORIES.map(cat => ({
+      name: cat.name,
+      path: `/courses/${cat.id}`
+    }))
   },
   { name: 'Overseas Education', path: 'https://lasak.edumilestones.com/', isExternal: true },
   { name: 'Blog', path: '/blog' },
@@ -168,7 +165,28 @@ const Navbar = () => {
           const firestoreByPath = new Map(mappedLinks.map((l: any) => [l.path, l]));
           const orderedLinks = fallbackNavLinks.map(fallback => {
             const fromFirestore = firestoreByPath.get(fallback.path) as any;
-            return fromFirestore ? { ...fallback, ...fromFirestore, submenu: fromFirestore?.submenu || (fallback as any).submenu } : fallback;
+            let finalSubmenu = fromFirestore?.submenu || (fallback as any).submenu;
+            
+            // If it's the courses menu, ensure submenu follows CATEGORIES order
+            if (fallback.path === '/courses' && finalSubmenu) {
+              const predefinedOrder = CATEGORIES.map(c => `/courses/${c.id}`);
+              finalSubmenu = [...finalSubmenu].sort((a: any, b: any) => {
+                const idxA = predefinedOrder.indexOf(a.path);
+                const idxB = predefinedOrder.indexOf(b.path);
+                if (idxA === -1 && idxB === -1) return 0;
+                if (idxA === -1) return 1;
+                if (idxB === -1) return -1;
+                return idxA - idxB;
+              });
+              
+              // Also ensure names are updated to match CATEGORIES names (e.g. IT -> CSE/IT)
+              finalSubmenu = finalSubmenu.map((sub: any) => {
+                const cat = CATEGORIES.find(c => `/courses/${c.id}` === sub.path);
+                return cat ? { ...sub, name: cat.name } : sub;
+              });
+            }
+
+            return fromFirestore ? { ...fallback, ...fromFirestore, submenu: finalSubmenu } : { ...fallback, submenu: finalSubmenu };
           });
           const fallbackPaths = new Set(fallbackNavLinks.map(f => f.path));
           const extraLinks = mappedLinks.filter((l: any) => !fallbackPaths.has(l.path));

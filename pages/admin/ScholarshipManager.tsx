@@ -4,7 +4,7 @@ import { GraduationCap, Plus, Edit2, Trash2, Save, X, ToggleLeft, ToggleRight, A
 
 
 // Available categories
-const CATEGORIES = ['All', 'IT', 'Mechanical', 'Civil', 'Arts', 'Kids'];
+const CATEGORIES = ['All', 'Mechanical', 'IT', 'Civil', 'Arts', 'Kids'];
 
 interface ScholarshipRule {
     id: string;
@@ -473,7 +473,9 @@ const ScholarshipManager: React.FC = () => {
                         >
                             <option value="All">All Categories</option>
                             {CATEGORIES.filter(c => c !== 'All').map(cat => (
-                                <option key={cat} value={cat}>{cat}</option>
+                                <option key={cat} value={cat}>
+                                    {cat === 'IT' ? 'CSE/IT' : cat === 'Mechanical' ? 'Mech' : cat}
+                                </option>
                             ))}
                         </select>
                     </div>
@@ -759,7 +761,9 @@ const ScholarshipManager: React.FC = () => {
                                         className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-purple-500"
                                     >
                                         {CATEGORIES.map(cat => (
-                                            <option key={cat} value={cat}>{cat}</option>
+                                            <option key={cat} value={cat}>
+                                                {cat === 'IT' ? 'CSE/IT' : cat === 'Mechanical' ? 'Mech' : cat}
+                                            </option>
                                         ))}
                                     </select>
                                 </div>
@@ -858,7 +862,9 @@ const ScholarshipManager: React.FC = () => {
                                     }`}>
                                     <div className="flex items-center justify-between">
                                         <div>
-                                            <h3 className="font-bold text-lg">{category === 'All' ? 'Global Rules (Apply to All)' : `${category} Category`}</h3>
+                                            <h3 className="font-bold text-lg">
+                                                {category === 'All' ? 'Global Rules (Apply to All)' : `${category === 'IT' ? 'CSE/IT' : category === 'Mechanical' ? 'Mech' : category} Category`}
+                                            </h3>
                                             <p className={`text-sm ${category === 'All' ? 'text-purple-100' : 'opacity-70'}`}>
                                                 {categoryRules.length} rule{categoryRules.length !== 1 ? 's' : ''}
                                             </p>

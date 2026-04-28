@@ -4,6 +4,8 @@ import { Search, Plus, Edit2, Trash2, BookOpen, Filter } from 'lucide-react';
 import { useUserRole } from '../../hooks/useUserRole';
 import { useNavigate, Link } from 'react-router-dom';
 import { Course } from '../../types';
+import { CATEGORIES } from '../../constants/ui';
+import { invalidateAllCache } from '../../lib/cacheUtils';
 
 const CourseManager = () => {
     const navigate = useNavigate();
@@ -52,6 +54,7 @@ const CourseManager = () => {
 
             await deleteDoc(doc(db, 'courses', id));
             setCourses(courses.filter(c => c.id !== id));
+            invalidateAllCache();
         } catch (error: any) {
             alert('Error deleting course: ' + error.message);
         }
@@ -81,6 +84,7 @@ const CourseManager = () => {
             });
             
             setCourses(updatedCourses);
+            invalidateAllCache();
         } catch (error: any) {
             alert('Error updating order: ' + error.message);
         }
@@ -99,6 +103,7 @@ const CourseManager = () => {
             setCourses(courses.map(c =>
                 c.id === id ? { ...c, show_on_home: !currentValue } : c
             ));
+            invalidateAllCache();
         } catch (error: any) {
             alert('Error updating course visibility: ' + error.message);
         }
@@ -110,7 +115,8 @@ const CourseManager = () => {
         return matchesSearch && matchesCategory;
     });
 
-    const categories = ['All', ...new Set(courses.map(c => c.category).filter(Boolean))];
+    const predefinedIds = CATEGORIES.map(c => c.id);
+    const categories = ['All', ...predefinedIds];
 
     if (loading) {
         return <div className="p-8 text-center">Loading courses...</div>;
@@ -154,7 +160,10 @@ const CourseManager = () => {
                         value={categoryFilter}
                         onChange={(e) => setCategoryFilter(e.target.value)}
                     >
-                        {categories.map(cat => <option key={cat} value={cat}>{cat}</option>)}
+                        {categories.map(catId => {
+                            const catName = CATEGORIES.find(c => c.id === catId)?.name || catId;
+                            return <option key={catId} value={catId}>{catName}</option>;
+                        })}
                     </select>
                 </div>
             </div>

@@ -53,3 +53,23 @@ export const fetchWithCache = async (
         throw error;
     }
 };
+
+export const clearCache = (cacheKey: string) => {
+    try {
+        localStorage.removeItem(cacheKey);
+    } catch (error) {
+        console.warn(`Error clearing cache for key ${cacheKey}:`, error);
+    }
+};
+
+export const invalidateAllCache = () => {
+    try {
+        Object.keys(localStorage).forEach(key => {
+            if (key.startsWith('cache_')) {
+                localStorage.removeItem(key);
+            }
+        });
+    } catch (error) {
+        console.warn('Error invalidating all caches:', error);
+    }
+};

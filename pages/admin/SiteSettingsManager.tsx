@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useUserRole } from '../../hooks/useUserRole';
-import { Save, Plus, Trash2, ExternalLink, GripVertical, X } from 'lucide-react';
+import { Save, Plus, Trash2, ExternalLink, GripVertical, X, RotateCcw } from 'lucide-react';
+import { CATEGORIES } from '../../constants/ui';
 
 interface NavMenuItem {
     label: string;
@@ -38,9 +39,9 @@ const SiteSettingsManager = () => {
 
     // Contact Form Settings
     const [formSettings, setFormSettings] = useState<any>({
-        url: '',
-        title: '',
-        departments: []
+        url: 'https://script.google.com/macros/s/AKfycbyCXeBcecLMxEqsI895ypcAgNwa0v4obpE6lXMczvDolz3kaMRPf6aDxmTH9vEL5FzKsw/exec',
+        title: 'Submit Your Details',
+        departments: ['Mechanical', 'Civil', 'CSE', 'IT', 'ECE']
     });
 
     // Contact Page Text Settings
@@ -50,6 +51,47 @@ const SiteSettingsManager = () => {
         formTitle: 'Send Us a Message',
         formSubtitle: 'Have questions about our courses or placements? Reach out to us and our team will get back to you within 24 hours.'
     });
+
+    const DEFAULTS = {
+        header: [
+            { label: 'Home', path: '/' },
+            { label: 'Workshops', path: '/programs' },
+            {
+                label: 'Courses',
+                path: '/courses',
+                submenu: CATEGORIES.map(cat => ({ label: cat.name, path: `/courses/${cat.id}` }))
+            },
+            { label: 'Overseas Education', path: 'https://lasak.edumilestones.com/', external: true },
+            { label: 'Blog', path: '/blog' },
+            { label: 'News', path: '/news' },
+            { label: 'About', path: '/about' },
+            { label: 'Contact', path: '/contact' },
+        ],
+        quick_links: [
+            { label: 'Home', path: '/' },
+            { label: 'Courses', path: '/courses' },
+            { label: 'Workshops', path: '/programs' },
+            { label: 'Overseas Education', path: 'https://lasak.edumilestones.com/', external: true },
+            { label: 'Latest Blogs', path: '/blog' },
+            { label: 'Latest News', path: '/news' },
+            { label: 'Verify Certificate', path: '/verify' },
+            { label: 'About Us', path: '/about' },
+            { label: 'Contact Us', path: '/contact' }
+        ],
+        departments: [
+            { label: 'Mech', path: '/courses/Mechanical' },
+            { label: 'Civil', path: '/courses/Civil' },
+            { label: 'IT', path: '/courses/IT' },
+            { label: 'Arts', path: '/courses/Arts' },
+            { label: 'Kids', path: '/courses/Kids' }
+        ],
+        policy_links: [
+            { label: 'Privacy Policy', path: '/privacy-policy' },
+            { label: 'Terms & Conditions', path: '/terms-conditions' },
+            { label: 'Refund Policy', path: '/refund-policy' },
+            { label: 'Cancellation Policy', path: '/cancellation-policy' }
+        ]
+    };
 
     useEffect(() => {
         fetchSettings();
@@ -96,8 +138,19 @@ const SiteSettingsManager = () => {
                 const fms = settings.find(s => s.key === 'contact_form_settings');
                 if (fms) setFormSettings(fms.value);
 
-                const cp = settings.find(s => s.key === 'contact_page_content');
                 if (cp) setContactPageSettings(cp.value);
+
+                // Fallbacks if data is empty but settings were found (rare) or if settings not found
+                if (!nav) setMenuLinks(DEFAULTS.header);
+                if (!ql) setQuickLinks(DEFAULTS.quick_links);
+                if (!dep) setDepartments(DEFAULTS.departments);
+                if (!pol) setPolicyLinks(DEFAULTS.policy_links);
+            } else {
+                // Completely empty settings - use all defaults
+                setMenuLinks(DEFAULTS.header);
+                setQuickLinks(DEFAULTS.quick_links);
+                setDepartments(DEFAULTS.departments);
+                setPolicyLinks(DEFAULTS.policy_links);
             }
         } catch (error: any) {
             console.error('Error fetching settings:', error);
@@ -511,13 +564,25 @@ const SiteSettingsManager = () => {
                             <p className="text-sm text-gray-500 mt-1">Manage links for this section</p>
                         </div>
                         {canEdit && (
-                            <button
-                                onClick={addLink}
-                                className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-                            >
-                                <Plus size={18} />
-                                Add Link
-                            </button>
+                            <div className="flex gap-2">
+                                <button
+                                    onClick={addLink}
+                                    className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                                >
+                                    Add Link
+                                </button>
+                                <button
+                                    onClick={() => {
+                                        if (confirm('Reset this section to default links?')) {
+                                            setLinks(DEFAULTS[activeTab as keyof typeof DEFAULTS]);
+                                        }
+                                    }}
+                                    className="flex items-center gap-2 px-4 py-2 bg-slate-100 text-slate-600 rounded-lg hover:bg-slate-200 transition-colors"
+                                >
+                                    <RotateCcw size={18} />
+                                    Reset
+                                </button>
+                            </div>
                         )}
                     </div>
 

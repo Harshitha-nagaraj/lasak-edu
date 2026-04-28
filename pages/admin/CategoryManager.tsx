@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Plus, Trash2, Edit2, Save, X, GripVertical } from 'lucide-react';
 import { useUserRole } from '../../hooks/useUserRole';
+import { CATEGORIES } from '../../constants/ui';
 
 interface Category {
     id: string;
@@ -35,6 +36,18 @@ const CategoryManager = () => {
                 ...doc.data(),
                 id: doc.id
             } as Category));
+
+            // Sort by predefined order first, then by order_num
+            const predefinedIds = CATEGORIES.map(c => c.id);
+            data.sort((a, b) => {
+                const i = predefinedIds.indexOf(a.id);
+                const j = predefinedIds.indexOf(b.id);
+                if (i !== -1 && j !== -1) return i - j;
+                if (i !== -1) return -1;
+                if (j !== -1) return 1;
+                return (a.order_num || 0) - (b.order_num || 0);
+            });
+
             setCategories(data);
         } catch (error) {
             console.error('Error fetching categories:', error);
@@ -204,7 +217,16 @@ const CategoryManager = () => {
                                             autoFocus
                                         />
                                     ) : (
-                                        <span className="font-semibold text-gray-800">{cat.name}</span>
+                                        <div className="flex items-center gap-3">
+                                            {(() => {
+                                                const catInfo = CATEGORIES.find(c => c.id === cat.id);
+                                                if (catInfo && typeof catInfo.icon === 'function') {
+                                                    return <div className="text-blue-600 scale-75">{catInfo.icon()}</div>;
+                                                }
+                                                return null;
+                                            })()}
+                                            <span className="font-semibold text-gray-800">{cat.name}</span>
+                                        </div>
                                     )}
                                 </td>
                                 {canEdit && (

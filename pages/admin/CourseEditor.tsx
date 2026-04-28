@@ -9,6 +9,7 @@ import {
 import { CATEGORIES } from '../../constants/ui';
 
 import ImageUploader from '../../components/admin/ImageUploader';
+import { invalidateAllCache } from '../../lib/cacheUtils';
 
 const CourseEditor = () => {
     const { id } = useParams();
@@ -225,6 +226,7 @@ const CourseEditor = () => {
             }
 
             alert('Course saved successfully!');
+            invalidateAllCache();
             navigate('/admin/courses');
         } catch (error: any) {
             console.error('Error saving course:', error);
