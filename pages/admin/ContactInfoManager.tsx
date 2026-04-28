@@ -60,8 +60,21 @@ const ContactInfoManager = () => {
 
             // Fetch social links
             try {
-                const socialSnap = await getDocs(query(collection(db, 'contact_social'), orderBy('order_num', 'asc')));
-                setSocialLinks(socialSnap.docs.map(doc => ({ id: doc.id, ...doc.data() } as SocialLink)));
+                // Social links are stored in `contact_info` as type `social_media` / `social`
+                // (same source used by the Footer). Keep `contact_social` legacy out of the loop.
+                const socialSnap = await getDocs(query(collection(db, 'contact_info'), orderBy('order_num', 'asc')));
+                const all = socialSnap.docs.map(doc => ({ id: doc.id, ...doc.data() } as any));
+                const socials = all
+                    .filter((d: any) => d && (d.type === 'social_media' || d.type === 'social'))
+                    .map((d: any) => ({
+                        id: d.id,
+                        label: d.label || '',
+                        url: d.value || d.url || '',
+                        icon: d.icon || '',
+                        active: d.active !== false,
+                        order_num: typeof d.order_num === 'number' ? d.order_num : 0
+                    } as SocialLink));
+                setSocialLinks(socials);
             } catch {
                 setSocialLinks([]);
             }
@@ -190,13 +203,21 @@ const ContactInfoManager = () => {
             const { getFirestoreDb } = await import('../../lib/firebase');
             const { collection, addDoc, doc, setDoc, serverTimestamp } = await import('firebase/firestore');
             const db = await getFirestoreDb();
-            const data = { label: socialForm.label, url: socialForm.url, icon: socialForm.icon, active: true, order_num: socialLinks.length, updated_at: serverTimestamp() };
+            const data = {
+                type: 'social_media',
+                label: socialForm.label,
+                value: socialForm.url,
+                icon: socialForm.icon,
+                active: true,
+                order_num: socialLinks.length,
+                updated_at: serverTimestamp()
+            };
             if (socialForm.id) {
-                await setDoc(doc(db, 'contact_social', socialForm.id), { ...data, created_at: serverTimestamp() }, { merge: true });
-                setSocialLinks(prev => prev.map(l => l.id === socialForm.id ? { ...l, ...data } : l));
+                await setDoc(doc(db, 'contact_info', socialForm.id), { ...data, created_at: serverTimestamp() }, { merge: true });
+                setSocialLinks(prev => prev.map(l => l.id === socialForm.id ? { ...l, url: socialForm.url, label: socialForm.label, icon: socialForm.icon, active: true } : l));
             } else {
-                const docRef = await addDoc(collection(db, 'contact_social'), { ...data, created_at: serverTimestamp() });
-                setSocialLinks(prev => [...prev, { id: docRef.id, ...data }]);
+                const docRef = await addDoc(collection(db, 'contact_info'), { ...data, created_at: serverTimestamp() });
+                setSocialLinks(prev => [...prev, { id: docRef.id, label: socialForm.label, url: socialForm.url, icon: socialForm.icon, active: true, order_num: socialLinks.length }]);
             }
             setIsAddingSocial(false);
             setSocialForm({ id: '', label: '', url: '', icon: '' });
@@ -209,7 +230,7 @@ const ContactInfoManager = () => {
             const { getFirestoreDb } = await import('../../lib/firebase');
             const { doc, deleteDoc } = await import('firebase/firestore');
             const db = await getFirestoreDb();
-            await deleteDoc(doc(db, 'contact_social', id));
+            await deleteDoc(doc(db, 'contact_info', id));
             setSocialLinks(prev => prev.filter(l => l.id !== id));
             clearCache('cache_contact_info');
         } catch (e: any) { alert('Error deleting social link: ' + e.message); }
