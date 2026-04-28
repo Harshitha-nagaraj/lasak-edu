@@ -48,11 +48,24 @@ const Contact = () => {
       const { getFirestoreDb } = await import('../lib/firebase');
       const { collection, query, orderBy, where, getDocs } = await import('firebase/firestore');
       const db = await getFirestoreDb();
-      const snap = await getDocs(
-        query(collection(db, 'contact_branches'), where('active', '==', true), orderBy('order_num', 'asc'))
-      );
+
+      // Some Firestore projects require a composite index for
+      // `where(active == true) + orderBy(order_num)`. If that index is missing,
+      // the query throws and the page would incorrectly fall back to defaults.
+      // So we try the indexed query first, then fall back to filtering client-side.
+      let snap;
+      try {
+        snap = await getDocs(
+          query(collection(db, 'contact_branches'), where('active', '==', true), orderBy('order_num', 'asc'))
+        );
+      } catch (e) {
+        console.warn('Indexed branch query failed; falling back to client-side filter.', e);
+        snap = await getDocs(query(collection(db, 'contact_branches'), orderBy('order_num', 'asc')));
+      }
       if (!snap.empty) {
-        setBranches(snap.docs.map(doc => ({ id: doc.id, ...doc.data() } as Branch)));
+        const all = snap.docs.map(doc => ({ id: doc.id, ...doc.data() } as any));
+        const active = all.filter(b => b?.active !== false);
+        if (active.length > 0) setBranches(active as Branch[]);
       }
       // else keep defaultBranches already set
     } catch (error) {
