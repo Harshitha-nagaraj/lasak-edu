@@ -163,6 +163,19 @@ const ContactInfoManager = () => {
         }
     };
 
+    const startEdit = (branch: BranchCard) => {
+        if (!canEdit) return;
+        setEditingBranch(branch);
+        setFormData({
+            name: branch.name || '',
+            address: branch.address || '',
+            phone: branch.phone || '',
+            email: branch.email || '',
+            directions_url: branch.directions_url || ''
+        });
+        setIsAddingBranch(true);
+    };
+
 
     // Social link CRUD
     const [socialForm, setSocialForm] = useState({ id: '', label: '', url: '', icon: '' });
