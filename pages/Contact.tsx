@@ -19,6 +19,14 @@ const defaultBranches: Branch[] = [
     phone: '+91 7418 734 466',
     email: 'info@lasakedu.in',
     directions_url: 'https://maps.google.com/?q=LASAK+EDU+Peelamedu+Coimbatore'
+  },
+  {
+    id: 'branch',
+    name: 'Branch Office',
+    address: 'No.655 F Shri Paaththaa avenue 1st floor above Cheran tarpaulin Near Gp signal Gandhipuram -12',
+    phone: '+91 74187 32525',
+    email: 'info@lasakedu.in',
+    directions_url: 'https://maps.google.com/?q=LASAK+EDU+Gandhipuram+Coimbatore'
   }
 ];
 

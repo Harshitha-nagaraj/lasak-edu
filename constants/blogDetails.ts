@@ -501,15 +501,15 @@ This initiative aimed to equip students with **job-ready skills** and boost thei
   },
   {
     id: 'b8',
-    title: 'Empowering Mechanical Engineers — LASAK Techno Institute Seminar at Hindusthan College of Engineering and Technology',
-    excerpt: 'LASAK Techno Institute conducted a seminar at Hindusthan College of Engineering and Technology, guiding mechanical engineering students on future career paths, industry skills, and technological trends.',
+    title: 'Empowering Mechanical Engineers — LasakEdu Coimbatore Seminar at Hindusthan College of Engineering and Technology',
+    excerpt: 'LasakEdu Coimbatore conducted a seminar at Hindusthan College of Engineering and Technology, guiding mechanical engineering students on future career paths, industry skills, and technological trends.',
     date: 'Aug 2024',
     category: 'Seminar',
     image: '/img/hindustan.webp',
     content: `
-**LASAK Techno Institute**, Coimbatore, recently conducted an inspiring seminar at **Hindusthan College of Engineering and Technology**, designed to empower aspiring **mechanical engineers** with career insights and industry knowledge. The session focused on helping students understand how engineering skills can be applied in real-world industries and how to build a strong professional future.
+**LasakEdu Coimbatore**, recently conducted an inspiring seminar at **Hindusthan College of Engineering and Technology**, designed to empower aspiring **mechanical engineers** with career insights and industry knowledge. The session focused on helping students understand how engineering skills can be applied in real-world industries and how to build a strong professional future.
 
-![LASAK Techno Institute Seminar at Hindusthan College of Engineering and Technology](/img/hindustan.webp)
+![LasakEdu Coimbatore Seminar at Hindusthan College of Engineering and Technology](/img/hindustan.webp)
 
 ---
 
@@ -540,7 +540,7 @@ The session helped students:
 
 ## Our Mission
 
-At **LASAK Techno Institute**, we are committed to **bridging the gap between academia and industry**. Through seminars, workshops, and skill-development programs, we equip students with the **right skills, exposure, and mindset** to become **future-ready engineering professionals**.
+At **LasakEdu Coimbatore**, we are committed to **bridging the gap between academia and industry**. Through seminars, workshops, and skill-development programs, we equip students with the **right skills, exposure, and mindset** to become **future-ready engineering professionals**.
 
 *We extend our sincere thanks to the management and faculty of **Hindusthan College of Engineering and Technology** for their support and collaboration in making this seminar impactful.*
 `
@@ -548,7 +548,7 @@ At **LASAK Techno Institute**, we are committed to **bridging the gap between ac
   {
     id: 'b9',
     title: 'Career Guidance Program for Mechanical Engineers – Sengunthar College, Erode',
-    excerpt: 'LASAK Techno Institute conducted a Career Guidance Program at Sengunthar College, Erode, guiding mechanical engineering students on future career paths, industry skills, and technological trends.',
+    excerpt: 'LasakEdu Coimbatore conducted a Career Guidance Program at Sengunthar College, Erode, guiding mechanical engineering students on future career paths, industry skills, and technological trends.',
     date: 'Aug 2024',
     category: 'Career Guidance',
     image: '/img/erodemech1.webp',
@@ -591,20 +591,20 @@ Students also learned how to connect classroom learning with **industry requirem
 
 ## Our Mission
 
-At **LASAK Techno Institute**, we are committed to **bridging the gap between academia and industry**. Through **seminars, workshops, and skill-development programs**, we equip students with the **right skills, exposure, and mindset** to become **future-ready engineering professionals**.
+At **LasakEdu Coimbatore**, we are committed to **bridging the gap between academia and industry**. Through **seminars, workshops, and skill-development programs**, we equip students with the **right skills, exposure, and mindset** to become **future-ready engineering professionals**.
 
 *We sincerely thank the management and faculty of **Sengunthar College, Erode** for their support and collaboration in making this program meaningful and impactful.*
 `
   },
   {
     id: 'b10',
-    title: 'Empowering Polytechnic Students with Practical Skills — LASAK Techno Institute’s Value Added Courses at Sri Ramakrishna Mission Vidyalaya',
-    excerpt: 'LASAK Techno Institute conducted a seminar at Sri Ramakrishna Mission Vidyalaya Polytechnic College, guiding mechanical engineering students on future career paths, industry skills, and technological trends.',
+    title: 'Empowering Polytechnic Students with Practical Skills — LasakEdu Coimbatore’s Value Added Courses at Sri Ramakrishna Mission Vidyalaya',
+    excerpt: 'LasakEdu Coimbatore conducted a seminar at Sri Ramakrishna Mission Vidyalaya Polytechnic College, guiding mechanical engineering students on future career paths, industry skills, and technological trends.',
     date: 'Aug 2024',
     category: 'Seminar',
     image: '/img/empoweringpolytechnic.webp',
     content: `
-At **LASAK Techno Institute** and **E-CADD Center**, we believe in **bridging the gap between academic learning and industry requirements**.  
+At **LasakEdu Coimbatore** and **E-CADD Center**, we believe in **bridging the gap between academic learning and industry requirements**.  
 
 As part of this mission, we conducted **Value Added Courses** at **Sri Ramakrishna Mission Vidyalaya Polytechnic College, Coimbatore**, to equip students with the **technical and practical skills needed for a successful engineering career**.
 
@@ -637,7 +637,7 @@ The session helped students:
 ## Our Mission
 ![Our Mission](/img/polytechnic1.webp)
 
-At **LASAK Techno Institute**, we are committed to **bridging the gap between academia and industry**.  
+At **LasakEdu Coimbatore**, we are committed to **bridging the gap between academia and industry**.  
 
 Through **seminars, workshops, and skill-development programs**, we equip students with the **right skills, exposure, and mindset** to become **future-ready engineering professionals**.
 
@@ -647,14 +647,14 @@ Through **seminars, workshops, and skill-development programs**, we equip studen
 
   {
     id: 'b11',
-    title: 'Hands-On Learning in SolidWorks — LASAK Techno Institute Conducts a Seminar on Weldments for KGISL Mechanical Students',
+    title: 'Hands-On Learning in SolidWorks — LasakEdu Coimbatore Conducts a Seminar on Weldments for KGISL Mechanical Students',
     excerpt:
-      'LASAK Techno Institute conducted a hands-on SolidWorks Weldments seminar at KGISL Institute of Technology, helping mechanical students gain industry-ready CAD and design skills.',
+      'LasakEdu Coimbatore conducted a hands-on SolidWorks Weldments seminar at KGISL Institute of Technology, helping mechanical students gain industry-ready CAD and design skills.',
     date: 'Aug 2024',
     category: 'Seminar',
     image: '/img/kgisl-mechanical-students.webp',
     content: `
-At **LASAK Techno Institute and E-CADD Center, Coimbatore**, we are committed to empowering engineering students with **industry-relevant, career-focused training**. As part of our continuous academic–industry initiatives, we successfully conducted a **one-day hands-on seminar on Weldments in SolidWorks** for **Mechanical Engineering students** at **KGISL Institute of Technology**.
+At **LasakEdu Coimbatore and E-CADD Center, Coimbatore**, we are committed to empowering engineering students with **industry-relevant, career-focused training**. As part of our continuous academic–industry initiatives, we successfully conducted a **one-day hands-on seminar on Weldments in SolidWorks** for **Mechanical Engineering students** at **KGISL Institute of Technology**.
 
 
 ---
@@ -733,14 +733,14 @@ By the end of the seminar, participants gained:
 
 ## Our Mission
 
-At **LASAK Techno Institute**, our mission is to **bridge the gap between academia and industry**. Through **seminars, workshops, and advanced skill-development programs**, we equip students with the **right skills, exposure, and mindset** to become **future-ready engineering professionals**.
+At **LasakEdu Coimbatore**, our mission is to **bridge the gap between academia and industry**. Through **seminars, workshops, and advanced skill-development programs**, we equip students with the **right skills, exposure, and mindset** to become **future-ready engineering professionals**.
 
 We extend our sincere thanks to the **management and faculty of Hindusthan College of Engineering and Technology** for their support and collaboration in making this seminar **successful and impactful**.
 
 ---
 
 *Interested in conducting similar workshops or industrial training programs?  
-Connect with **LASAK Techno Institute** to empower students with industry-ready skills.*
+Connect with **LasakEdu Coimbatore** to empower students with industry-ready skills.*
 `
   }
 ];

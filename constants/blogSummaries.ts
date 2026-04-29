@@ -60,8 +60,8 @@ export const BLOG_SUMMARIES: BlogSummary[] = [
   },
   {
     id: 'b8',
-    title: 'Empowering Mechanical Engineers — LASAK Techno Institute Seminar at Hindusthan College of Engineering and Technology',
-    excerpt: 'LASAK Techno Institute conducted a seminar at Hindusthan College of Engineering and Technology, guiding mechanical engineering students on future career paths, industry skills, and technological trends.',
+    title: 'Empowering Mechanical Engineers — LasakEdu Coimbatore Seminar at Hindusthan College of Engineering and Technology',
+    excerpt: 'LasakEdu Coimbatore conducted a seminar at Hindusthan College of Engineering and Technology, guiding mechanical engineering students on future career paths, industry skills, and technological trends.',
     date: 'Aug 2024',
     category: 'Seminar',
     image: '/img/hindustan.webp'
@@ -69,23 +69,23 @@ export const BLOG_SUMMARIES: BlogSummary[] = [
   {
     id: 'b9',
     title: 'Career Guidance Program for Mechanical Engineers – Sengunthar College, Erode',
-    excerpt: 'LASAK Techno Institute conducted a Career Guidance Program at Sengunthar College, Erode, guiding mechanical engineering students on future career paths, industry skills, and technological trends.',
+    excerpt: 'LasakEdu Coimbatore conducted a Career Guidance Program at Sengunthar College, Erode, guiding mechanical engineering students on future career paths, industry skills, and technological trends.',
     date: 'Aug 2024',
     category: 'Career Guidance',
     image: '/img/erodemech1.webp'
   },
   {
     id: 'b10',
-    title: 'Empowering Polytechnic Students with Practical Skills — LASAK Techno Institute’s Value Added Courses at Sri Ramakrishna Mission Vidyalaya',
-    excerpt: 'LASAK Techno Institute conducted a seminar at Sri Ramakrishna Mission Vidyalaya Polytechnic College, guiding mechanical engineering students on future career paths, industry skills, and technological trends.',
+    title: 'Empowering Polytechnic Students with Practical Skills — LasakEdu Coimbatore’s Value Added Courses at Sri Ramakrishna Mission Vidyalaya',
+    excerpt: 'LasakEdu Coimbatore conducted a seminar at Sri Ramakrishna Mission Vidyalaya Polytechnic College, guiding mechanical engineering students on future career paths, industry skills, and technological trends.',
     date: 'Aug 2024',
     category: 'Seminar',
     image: '/img/empoweringpolytechnic.webp'
   },
   {
     id: 'b11',
-    title: 'Hands-On Learning in SolidWorks — LASAK Techno Institute Conducts a Seminar on Weldments for KGISL Mechanical Students',
-    excerpt: 'LASAK Techno Institute conducted a hands-on SolidWorks Weldments seminar at KGISL Institute of Technology, helping mechanical students gain industry-ready CAD and design skills.',
+    title: 'Hands-On Learning in SolidWorks — LasakEdu Coimbatore Conducts a Seminar on Weldments for KGISL Mechanical Students',
+    excerpt: 'LasakEdu Coimbatore conducted a hands-on SolidWorks Weldments seminar at KGISL Institute of Technology, helping mechanical students gain industry-ready CAD and design skills.',
     date: 'Aug 2024',
     category: 'Seminar',
     image: '/img/kgisl-mechanical-students.webp'

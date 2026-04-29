@@ -1,5 +1,5 @@
-/**
- * Firebase Seeder for LasakEdu — REST API Version
+﻿/**
+ * Firebase Seeder for LasakEdu â€” REST API Version
  * Run: node scripts/seed-firebase.mjs
  *
  * Uses the Firestore REST API for maximum Node.js compatibility.
@@ -12,9 +12,9 @@ import { readFileSync } from 'fs';
 import { fileURLToPath } from 'url';
 import { dirname, resolve } from 'path';
 
-// ─────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // Load .env.local manually
-// ─────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const __dir = dirname(fileURLToPath(import.meta.url));
 const envFile = resolve(__dir, '../.env.local');
 const envText = readFileSync(envFile, 'utf8');
@@ -34,17 +34,17 @@ const PROJECT_ID = env.VITE_FIREBASE_PROJECT_ID;
 const BASE_URL = `https://firestore.googleapis.com/v1/projects/${PROJECT_ID}/databases/(default)/documents`;
 
 if (!API_KEY || !PROJECT_ID) {
-    console.error('❌ Missing VITE_FIREBASE_API_KEY or VITE_FIREBASE_PROJECT_ID in .env.local');
+    console.error('âŒ Missing VITE_FIREBASE_API_KEY or VITE_FIREBASE_PROJECT_ID in .env.local');
     process.exit(1);
 }
 
-console.log(`\n🔥 Firebase Seeder — LasakEdu`);
-console.log(`📂 Project: ${PROJECT_ID}`);
-console.log('─'.repeat(40));
+console.log(`\nðŸ”¥ Firebase Seeder â€” LasakEdu`);
+console.log(`ðŸ“‚ Project: ${PROJECT_ID}`);
+console.log('â”€'.repeat(40));
 
-// ─────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // REST API Helper
-// ─────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 // Convert JS value to Firestore REST document field type
 function toFirestoreValue(val) {
@@ -86,7 +86,7 @@ async function signIn(email, password) {
     const data = await res.json();
     if (!res.ok) throw new Error(`Auth failed: ${data.error?.message}`);
     ID_TOKEN = data.idToken;
-    console.log(`🔐 Signed in as ${email}`);
+    console.log(`ðŸ” Signed in as ${email}`);
 }
 
 async function writeDoc(collectionName, docId, data) {
@@ -127,12 +127,12 @@ async function seedCollection(collectionName, records, idFn) {
         count++;
         process.stdout.write(`\r  Writing ${collectionName}... ${count}/${records.length}`);
     }
-    console.log(`\n✅ ${collectionName}: ${count} documents pushed`);
+    console.log(`\nâœ… ${collectionName}: ${count} documents pushed`);
 }
 
-// ─────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // DATA
-// ─────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 const PARTNERS = [
     { name: 'Creo', logo: '/img/ptccreo.webp', type: 'training', created_at: new Date() },
@@ -319,7 +319,7 @@ const BLOGS = [
 
 ![Workshop Overview](/img/mwerodegov.webp)
 
-The workshop was designed to provide students with **hands-on exposure to core mechanical engineering concepts**, along with insights into how these concepts are applied in real-world industrial environments. The session focused on strengthening students’ technical foundations while aligning their academic knowledge with **current industry requirements**.
+The workshop was designed to provide students with **hands-on exposure to core mechanical engineering concepts**, along with insights into how these concepts are applied in real-world industrial environments. The session focused on strengthening studentsâ€™ technical foundations while aligning their academic knowledge with **current industry requirements**.
 
 Students actively participated in discussions, demonstrations, and problem-solving activities, making the session both **engaging and informative**.
 
@@ -367,7 +367,7 @@ Along with technical training, the workshop also provided valuable **career guid
 - Maintenance Engineer  
 - R&D Engineer  
 
-They also gained awareness about the importance of learning **industry-relevant tools and technologies** to stay competitive in today’s job market.
+They also gained awareness about the importance of learning **industry-relevant tools and technologies** to stay competitive in todayâ€™s job market.
 
  ---
 
@@ -424,10 +424,10 @@ Connect with **Lasak Edu** to equip students with industry-ready skills.*`
 
 The MoU aims to provide students with **specialized training programs** in:
 
-- **Textile CAD** – empowering students with advanced textile design and digital tools  
-- **Tally Prime** – enhancing accounting, finance, and business management skills
+- **Textile CAD** â€“ empowering students with advanced textile design and digital tools  
+- **Tally Prime** â€“ enhancing accounting, finance, and business management skills
 
-Through this collaboration, students will gain **hands-on experience, practical insights, and expert guidance** from Lasak Edu’s professional trainers, preparing them for **real-world industry challenges**.
+Through this collaboration, students will gain **hands-on experience, practical insights, and expert guidance** from Lasak Eduâ€™s professional trainers, preparing them for **real-world industry challenges**.
 
  ---
 
@@ -450,7 +450,7 @@ Students will have the opportunity to **create and simulate professional textile
 
 The **Tally Prime course** is designed to:
 
-- Strengthen students’ **accounting and financial management skills**  
+- Strengthen studentsâ€™ **accounting and financial management skills**  
 - Provide practical experience with **real-world financial operations**  
 - Improve understanding of **business management and reporting tools**  
 - Enhance employability in accounting, finance, and business roles
@@ -462,7 +462,7 @@ By the end of the course, students will be equipped to **efficiently manage acco
 ## Significance of the MoU
 
 ![Significance of the MoU](/img/moubishop.webp )
-This partnership reflects Lasak Edu’s **commitment to bridging the gap between academics and industry requirements**. Through structured training programs, students will:
+This partnership reflects Lasak Eduâ€™s **commitment to bridging the gap between academics and industry requirements**. Through structured training programs, students will:
 
 - Gain **practical skills aligned with industry standards**  
 - Enhance employability and career readiness  
@@ -656,10 +656,10 @@ Through these free CSR programs, we aim to:
 
 Students benefit from:
 
-- ✔ **Free skill development courses**  
-- ✔ **Expert trainers with industry experience**  
-- ✔ **Focus on career growth and employability**  
-- ✔ **Convenient learning environment in Coimbatore**
+- âœ” **Free skill development courses**  
+- âœ” **Expert trainers with industry experience**  
+- âœ” **Focus on career growth and employability**  
+- âœ” **Convenient learning environment in Coimbatore**
 
  ---
 
@@ -776,14 +776,14 @@ This initiative aimed to equip students with **job-ready skills** and boost thei
     },
     {
         id: 'b8',
-        title: 'Empowering Mechanical Engineers — LASAK Techno Institute Seminar at Hindusthan College of Engineering and Technology',
-        excerpt: 'LASAK Techno Institute conducted a seminar at Hindusthan College of Engineering and Technology, guiding mechanical engineering students on future career paths, industry skills, and technological trends.',
+        title: 'Empowering Mechanical Engineers â€” LasakEdu Coimbatore Seminar at Hindusthan College of Engineering and Technology',
+        excerpt: 'LasakEdu Coimbatore conducted a seminar at Hindusthan College of Engineering and Technology, guiding mechanical engineering students on future career paths, industry skills, and technological trends.',
         date: 'Aug 2024',
         category: 'Seminar',
         image: '/img/hindustan.webp',
-        content: `**LASAK Techno Institute**, Coimbatore, recently conducted an inspiring seminar at **Hindusthan College of Engineering and Technology**, designed to empower aspiring **mechanical engineers** with career insights and industry knowledge. The session focused on helping students understand how engineering skills can be applied in real-world industries and how to build a strong professional future.
+        content: `**LasakEdu Coimbatore**, recently conducted an inspiring seminar at **Hindusthan College of Engineering and Technology**, designed to empower aspiring **mechanical engineers** with career insights and industry knowledge. The session focused on helping students understand how engineering skills can be applied in real-world industries and how to build a strong professional future.
 
-![LASAK Techno Institute Seminar at Hindusthan College of Engineering and Technology](/img/hindustan.webp)
+![LasakEdu Coimbatore Seminar at Hindusthan College of Engineering and Technology](/img/hindustan.webp)
 
  ---
 
@@ -814,14 +814,14 @@ The session helped students:
 
 ## Our Mission
 
-At **LASAK Techno Institute**, we are committed to **bridging the gap between academia and industry**. Through seminars, workshops, and skill-development programs, we equip students with the **right skills, exposure, and mindset** to become **future-ready engineering professionals**.
+At **LasakEdu Coimbatore**, we are committed to **bridging the gap between academia and industry**. Through seminars, workshops, and skill-development programs, we equip students with the **right skills, exposure, and mindset** to become **future-ready engineering professionals**.
 
 *We extend our sincere thanks to the management and faculty of **Hindusthan College of Engineering and Technology** for their support and collaboration in making this seminar impactful.*`
     },
     {
         id: 'b9',
-        title: 'Career Guidance Program for Mechanical Engineers – Sengunthar College, Erode',
-        excerpt: 'LASAK Techno Institute conducted a Career Guidance Program at Sengunthar College, Erode, guiding mechanical engineering students on future career paths, industry skills, and technological trends.',
+        title: 'Career Guidance Program for Mechanical Engineers â€“ Sengunthar College, Erode',
+        excerpt: 'LasakEdu Coimbatore conducted a Career Guidance Program at Sengunthar College, Erode, guiding mechanical engineering students on future career paths, industry skills, and technological trends.',
         date: 'Aug 2024',
         category: 'Career Guidance',
         image: '/img/erodemech1.webp',
@@ -835,7 +835,7 @@ Recently, we organized a **Career Guidance Program for Mechanical Engineering st
 
 ## Program Overview
 
-The program helped students **explore diverse career opportunities, understand industry trends, and develop the right mindset** to succeed in today’s competitive job market.  
+The program helped students **explore diverse career opportunities, understand industry trends, and develop the right mindset** to succeed in todayâ€™s competitive job market.  
 ![Program Overview](/img/erodemech1.webp)
 
 By engaging with **expert trainers and industry professionals**, students gained valuable insights into potential career pathways in:
@@ -863,18 +863,18 @@ Students also learned how to connect classroom learning with **industry requirem
 
 ## Our Mission
 
-At **LASAK Techno Institute**, we are committed to **bridging the gap between academia and industry**. Through **seminars, workshops, and skill-development programs**, we equip students with the **right skills, exposure, and mindset** to become **future-ready engineering professionals**.
+At **LasakEdu Coimbatore**, we are committed to **bridging the gap between academia and industry**. Through **seminars, workshops, and skill-development programs**, we equip students with the **right skills, exposure, and mindset** to become **future-ready engineering professionals**.
 
 *We sincerely thank the management and faculty of **Sengunthar College, Erode** for their support and collaboration in making this program meaningful and impactful.*`
     },
     {
         id: 'b10',
-        title: 'Empowering Polytechnic Students with Practical Skills — LASAK Techno Institute’s Value Added Courses at Sri Ramakrishna Mission Vidyalaya',
-        excerpt: 'LASAK Techno Institute conducted a seminar at Sri Ramakrishna Mission Vidyalaya Polytechnic College, guiding mechanical engineering students on future career paths, industry skills, and technological trends.',
+        title: 'Empowering Polytechnic Students with Practical Skills â€” LasakEdu Coimbatoreâ€™s Value Added Courses at Sri Ramakrishna Mission Vidyalaya',
+        excerpt: 'LasakEdu Coimbatore conducted a seminar at Sri Ramakrishna Mission Vidyalaya Polytechnic College, guiding mechanical engineering students on future career paths, industry skills, and technological trends.',
         date: 'Aug 2024',
         category: 'Seminar',
         image: '/img/empoweringpolytechnic.webp',
-        content: `At **LASAK Techno Institute** and **E-CADD Center**, we believe in **bridging the gap between academic learning and industry requirements**.  
+        content: `At **LasakEdu Coimbatore** and **E-CADD Center**, we believe in **bridging the gap between academic learning and industry requirements**.  
 
 As part of this mission, we conducted **Value Added Courses** at **Sri Ramakrishna Mission Vidyalaya Polytechnic College, Coimbatore**, to equip students with the **technical and practical skills needed for a successful engineering career**.
 
@@ -883,9 +883,9 @@ As part of this mission, we conducted **Value Added Courses** at **Sri Ramakrish
 ## Program Overview
 ![Program Overview](/img/empoweringpolytechnic.webp)
 
-The program focused on **enhancing students’ knowledge in key engineering domains**, offering **hands-on training and real-world applications**.  
+The program focused on **enhancing studentsâ€™ knowledge in key engineering domains**, offering **hands-on training and real-world applications**.  
 
-Through **interactive sessions and guided projects**, students gained deeper insights into **modern tools and technologies** shaping today’s industries.  
+Through **interactive sessions and guided projects**, students gained deeper insights into **modern tools and technologies** shaping todayâ€™s industries.  
 
 Participating in these courses allowed students to **strengthen their technical foundation**, improve **employability**, and boost **career readiness**.
 
@@ -906,7 +906,7 @@ The session helped students:
 ## Our Mission
 ![Our Mission](/img/polytechnic1.webp)
 
-At **LASAK Techno Institute**, we are committed to **bridging the gap between academia and industry**.  
+At **LasakEdu Coimbatore**, we are committed to **bridging the gap between academia and industry**.  
 
 Through **seminars, workshops, and skill-development programs**, we equip students with the **right skills, exposure, and mindset** to become **future-ready engineering professionals**.
 
@@ -914,12 +914,12 @@ Through **seminars, workshops, and skill-development programs**, we equip studen
     },
     {
         id: 'b11',
-        title: 'Hands-On Learning in SolidWorks — LASAK Techno Institute Conducts a Seminar on Weldments for KGISL Mechanical Students',
-        excerpt: 'LASAK Techno Institute conducted a hands-on SolidWorks Weldments seminar at KGISL Institute of Technology, helping mechanical students gain industry-ready CAD and design skills.',
+        title: 'Hands-On Learning in SolidWorks â€” LasakEdu Coimbatore Conducts a Seminar on Weldments for KGISL Mechanical Students',
+        excerpt: 'LasakEdu Coimbatore conducted a hands-on SolidWorks Weldments seminar at KGISL Institute of Technology, helping mechanical students gain industry-ready CAD and design skills.',
         date: 'Aug 2024',
         category: 'Seminar',
         image: '/img/kgisl-mechanical-students.webp',
-        content: `At **LASAK Techno Institute and E-CADD Center, Coimbatore**, we are committed to empowering engineering students with **industry-relevant, career-focused training**. As part of our continuous academic–industry initiatives, we successfully conducted a **one-day hands-on seminar on Weldments in SolidWorks** for **Mechanical Engineering students** at **KGISL Institute of Technology**.
+        content: `At **LasakEdu Coimbatore and E-CADD Center, Coimbatore**, we are committed to empowering engineering students with **industry-relevant, career-focused training**. As part of our continuous academicâ€“industry initiatives, we successfully conducted a **one-day hands-on seminar on Weldments in SolidWorks** for **Mechanical Engineering students** at **KGISL Institute of Technology**.
 
  ---
 
@@ -996,31 +996,31 @@ By the end of the seminar, participants gained:
 
 ## Our Mission
 
-At **LASAK Techno Institute**, our mission is to **bridge the gap between academia and industry**. Through **seminars, workshops, and advanced skill-development programs**, we equip students with the **right skills, exposure, and mindset** to become **future-ready engineering professionals**.
+At **LasakEdu Coimbatore**, our mission is to **bridge the gap between academia and industry**. Through **seminars, workshops, and advanced skill-development programs**, we equip students with the **right skills, exposure, and mindset** to become **future-ready engineering professionals**.
 
 We sincerely thank the **management and faculty of Hindusthan College of Engineering and Technology** for their support and collaboration in making this seminar **successful and impactful**.
 
  ---
 
 *Interested in conducting similar workshops or industrial training programs?  
-Connect with **LASAK Techno Institute** to empower students with industry-ready skills.*`
+Connect with **LasakEdu Coimbatore** to empower students with industry-ready skills.*`
     }
 ];
 
 const COURSES = [
-    { id: 'mech1', title: 'AutoCAD Mechanical', slug: 'autocad-mechanical', category: 'Mechanical', price: '5999', old_price: '9000', duration: '1 – 1.5 Months', image: '/img/Mech/Autocad.webp', description: 'Master AutoCAD Mechanical and accelerate your career growth with expert-led training.', enroll_link: 'https://forms.gle/6sVSvE1schYRYfse7', phone: '+91 74187 32525' },
-    { id: 'mech2', title: 'SolidWorks Masterclass', slug: 'solidworks-masterclass', category: 'Mechanical', price: '14999', old_price: '25000', duration: '1.5 – 2 Months', image: '/img/Mech/Solidworks.408Z.webp', description: 'Master SolidWorks and accelerate your career growth with expert-led training.', enroll_link: 'https://forms.gle/6sVSvE1schYRYfse7', phone: '+91 74187 32525' },
-    { id: 'mech3', title: 'Creo Parametric Course', slug: 'creo-parametric', category: 'Mechanical', price: '14999', old_price: '25000', duration: '1.5 – 2 Months', image: '/img/Mech/Creo.688Z.webp', description: 'Master Creo Parametric and accelerate your career growth with expert-led training.', enroll_link: 'https://forms.gle/6sVSvE1schYRYfse7', phone: '+91 74187 32525' },
-    { id: 'mech4', title: 'CATIA V5 Course', slug: 'catia-v5', category: 'Mechanical', price: '17999', old_price: '30000', duration: '1.5 – 3 Months', image: '/img/Mech/Catia.118Z.webp', description: 'Master CATIA V5 and accelerate your career growth.', enroll_link: 'https://forms.gle/6sVSvE1schYRYfse7', phone: '+91 74187 32525' },
-    { id: 'mech5', title: 'ANSYS Simulation Course', slug: 'ansys-simulation', category: 'Mechanical', price: '17999', old_price: '30000', duration: '2 – 3 Months', image: '/img/Mech/Ansys.670Z.webp', description: 'Master ANSYS Simulation and accelerate your career growth.', enroll_link: 'https://forms.gle/6sVSvE1schYRYfse7', phone: '+91 74187 32525' },
-    { id: 'mech6', title: 'HyperMesh Course', slug: 'hypermesh', category: 'Mechanical', price: '19999', old_price: '40000', duration: '1.5 – 3 Months', image: '/img/Mech/Hypermesh.631Z.webp', description: 'Master HyperMesh and accelerate your career growth.', enroll_link: 'https://forms.gle/6sVSvE1schYRYfse7', phone: '+91 74187 32525' },
-    { id: 'mech7', title: 'ANSA Pre-Processing Course', slug: 'ansa-pre-processing', category: 'Mechanical', price: '14999', old_price: '25000', duration: '1.5 – 3 Months', image: '/img/Mech/Ansa.062Z.webp', description: 'Master ANSA Pre-Processing and accelerate your career growth.', enroll_link: 'https://forms.gle/6sVSvE1schYRYfse7', phone: '+91 74187 32525' },
-    { id: 'it1', title: 'Full Stack Web Development', slug: 'full-stack-web-development', category: 'IT', price: '18999', old_price: '35000', duration: '3 – 4 Months', image: '/img/fullstack.webp', description: 'Master Full Stack Development and launch your web career.', enroll_link: 'https://forms.gle/6sVSvE1schYRYfse7', phone: '+91 74187 32525' },
-    { id: 'it2', title: 'Python Programming', slug: 'python-programming', category: 'IT', price: '10999', old_price: '20000', duration: '2 – 3 Months', image: '/img/python.webp', description: 'Master Python and accelerate your career growth.', enroll_link: 'https://forms.gle/6sVSvE1schYRYfse7', phone: '+91 74187 32525' },
-    { id: 'it3', title: 'Data Analytics', slug: 'data-analytics', category: 'IT', price: '14999', old_price: '28000', duration: '2 – 3 Months', image: '/img/dataanalytics.webp', description: 'Master Data Analytics and accelerate your career growth.', enroll_link: 'https://forms.gle/6sVSvE1schYRYfse7', phone: '+91 74187 32525' },
-    { id: 'civil1', title: 'AutoCAD Civil', slug: 'autocad-civil', category: 'Civil', price: '7999', old_price: '15000', duration: '1 – 2 Months', image: '/img/civil/autocadcivil.webp', description: 'Master Civil AutoCAD and drive your construction career forward.', enroll_link: 'https://forms.gle/6sVSvE1schYRYfse7', phone: '+91 74187 32525' },
-    { id: 'civil2', title: 'Revit Architecture', slug: 'revit-architecture', category: 'Civil', price: '12999', old_price: '25000', duration: '1.5 – 2 Months', image: '/img/civil/revit.webp', description: 'Master Revit Architecture for BIM-based design.', enroll_link: 'https://forms.gle/6sVSvE1schYRYfse7', phone: '+91 74187 32525' },
-    { id: 'arts1', title: 'Graphic Design', slug: 'graphic-design', category: 'Arts', price: '9999', old_price: '18000', duration: '1.5 – 2 Months', image: '/img/arts/graphic.webp', description: 'Master Graphic Design and build your creative career.', enroll_link: 'https://forms.gle/6sVSvE1schYRYfse7', phone: '+91 74187 32525' },
+    { id: 'mech1', title: 'AutoCAD Mechanical', slug: 'autocad-mechanical', category: 'Mechanical', price: '5999', old_price: '9000', duration: '1 â€“ 1.5 Months', image: '/img/Mech/Autocad.webp', description: 'Master AutoCAD Mechanical and accelerate your career growth with expert-led training.', enroll_link: 'https://forms.gle/6sVSvE1schYRYfse7', phone: '+91 74187 32525' },
+    { id: 'mech2', title: 'SolidWorks Masterclass', slug: 'solidworks-masterclass', category: 'Mechanical', price: '14999', old_price: '25000', duration: '1.5 â€“ 2 Months', image: '/img/Mech/Solidworks.408Z.webp', description: 'Master SolidWorks and accelerate your career growth with expert-led training.', enroll_link: 'https://forms.gle/6sVSvE1schYRYfse7', phone: '+91 74187 32525' },
+    { id: 'mech3', title: 'Creo Parametric Course', slug: 'creo-parametric', category: 'Mechanical', price: '14999', old_price: '25000', duration: '1.5 â€“ 2 Months', image: '/img/Mech/Creo.688Z.webp', description: 'Master Creo Parametric and accelerate your career growth with expert-led training.', enroll_link: 'https://forms.gle/6sVSvE1schYRYfse7', phone: '+91 74187 32525' },
+    { id: 'mech4', title: 'CATIA V5 Course', slug: 'catia-v5', category: 'Mechanical', price: '17999', old_price: '30000', duration: '1.5 â€“ 3 Months', image: '/img/Mech/Catia.118Z.webp', description: 'Master CATIA V5 and accelerate your career growth.', enroll_link: 'https://forms.gle/6sVSvE1schYRYfse7', phone: '+91 74187 32525' },
+    { id: 'mech5', title: 'ANSYS Simulation Course', slug: 'ansys-simulation', category: 'Mechanical', price: '17999', old_price: '30000', duration: '2 â€“ 3 Months', image: '/img/Mech/Ansys.670Z.webp', description: 'Master ANSYS Simulation and accelerate your career growth.', enroll_link: 'https://forms.gle/6sVSvE1schYRYfse7', phone: '+91 74187 32525' },
+    { id: 'mech6', title: 'HyperMesh Course', slug: 'hypermesh', category: 'Mechanical', price: '19999', old_price: '40000', duration: '1.5 â€“ 3 Months', image: '/img/Mech/Hypermesh.631Z.webp', description: 'Master HyperMesh and accelerate your career growth.', enroll_link: 'https://forms.gle/6sVSvE1schYRYfse7', phone: '+91 74187 32525' },
+    { id: 'mech7', title: 'ANSA Pre-Processing Course', slug: 'ansa-pre-processing', category: 'Mechanical', price: '14999', old_price: '25000', duration: '1.5 â€“ 3 Months', image: '/img/Mech/Ansa.062Z.webp', description: 'Master ANSA Pre-Processing and accelerate your career growth.', enroll_link: 'https://forms.gle/6sVSvE1schYRYfse7', phone: '+91 74187 32525' },
+    { id: 'it1', title: 'Full Stack Web Development', slug: 'full-stack-web-development', category: 'IT', price: '18999', old_price: '35000', duration: '3 â€“ 4 Months', image: '/img/fullstack.webp', description: 'Master Full Stack Development and launch your web career.', enroll_link: 'https://forms.gle/6sVSvE1schYRYfse7', phone: '+91 74187 32525' },
+    { id: 'it2', title: 'Python Programming', slug: 'python-programming', category: 'IT', price: '10999', old_price: '20000', duration: '2 â€“ 3 Months', image: '/img/python.webp', description: 'Master Python and accelerate your career growth.', enroll_link: 'https://forms.gle/6sVSvE1schYRYfse7', phone: '+91 74187 32525' },
+    { id: 'it3', title: 'Data Analytics', slug: 'data-analytics', category: 'IT', price: '14999', old_price: '28000', duration: '2 â€“ 3 Months', image: '/img/dataanalytics.webp', description: 'Master Data Analytics and accelerate your career growth.', enroll_link: 'https://forms.gle/6sVSvE1schYRYfse7', phone: '+91 74187 32525' },
+    { id: 'civil1', title: 'AutoCAD Civil', slug: 'autocad-civil', category: 'Civil', price: '7999', old_price: '15000', duration: '1 â€“ 2 Months', image: '/img/civil/autocadcivil.webp', description: 'Master Civil AutoCAD and drive your construction career forward.', enroll_link: 'https://forms.gle/6sVSvE1schYRYfse7', phone: '+91 74187 32525' },
+    { id: 'civil2', title: 'Revit Architecture', slug: 'revit-architecture', category: 'Civil', price: '12999', old_price: '25000', duration: '1.5 â€“ 2 Months', image: '/img/civil/revit.webp', description: 'Master Revit Architecture for BIM-based design.', enroll_link: 'https://forms.gle/6sVSvE1schYRYfse7', phone: '+91 74187 32525' },
+    { id: 'arts1', title: 'Graphic Design', slug: 'graphic-design', category: 'Arts', price: '9999', old_price: '18000', duration: '1.5 â€“ 2 Months', image: '/img/arts/graphic.webp', description: 'Master Graphic Design and build your creative career.', enroll_link: 'https://forms.gle/6sVSvE1schYRYfse7', phone: '+91 74187 32525' },
 ];
 
 const SITE_SETTINGS = {
@@ -1029,9 +1029,9 @@ const SITE_SETTINGS = {
     popup_settings: { enabled: true, title: 'Special Offer!', subtitle: 'Apply for Scholarship', delay_ms: 5000, features: ['Free Demo Classes', 'Internship Included', 'Scholarship Available'], button_text: 'Apply Now' },
 };
 
-// ─────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // MAIN
-// ─────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 async function main() {
     try {
@@ -1052,14 +1052,14 @@ async function main() {
         for (const [key, value] of Object.entries(SITE_SETTINGS)) {
             await writeDoc('site_settings', key, { value });
         }
-        console.log(`✅ site_settings: ${Object.keys(SITE_SETTINGS).length} documents pushed`);
+        console.log(`âœ… site_settings: ${Object.keys(SITE_SETTINGS).length} documents pushed`);
 
-        console.log('\n' + '─'.repeat(40));
-        console.log('🎉 All data pushed to Firebase Firestore!');
-        console.log('⚠️  Videos are NOT in Firebase — place .mp4 files in public/videos/');
+        console.log('\n' + 'â”€'.repeat(40));
+        console.log('ðŸŽ‰ All data pushed to Firebase Firestore!');
+        console.log('âš ï¸  Videos are NOT in Firebase â€” place .mp4 files in public/videos/');
         process.exit(0);
     } catch (err) {
-        console.error('\n❌ Seeder failed:', err.message);
+        console.error('\nâŒ Seeder failed:', err.message);
         process.exit(1);
     }
 }
