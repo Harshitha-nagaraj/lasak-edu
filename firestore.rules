@@ -59,6 +59,8 @@ service cloud.firestore {
     match /scholarship_rules/{id} { allow read: if true; allow write: if request.auth != null; }
     match /scholarship_settings/{id} { allow read: if true; allow write: if request.auth != null; }
     match /coupons/{id} { allow read: if true; allow write: if request.auth != null; }
+    match /learning_ecosystem/{id} { allow read: if true; allow write: if request.auth != null; }
+    match /program_segments/{id} { allow read: if true; allow write: if request.auth != null; }
     
     // User Management
     match /user_roles/{userId} {

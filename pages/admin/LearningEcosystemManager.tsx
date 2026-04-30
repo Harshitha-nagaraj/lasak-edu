@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Plus, Trash2, Edit2, Save, X, GripVertical, Image as ImageIcon, Download } from 'lucide-react';
 import { useUserRole } from '../../hooks/useUserRole';
+import { clearCache } from '../../lib/cacheUtils';
 
 interface EcosystemItem {
     id: string;
@@ -107,6 +108,7 @@ const LearningEcosystemManager = () => {
                 created_at: serverTimestamp()
             });
 
+            clearCache('cache_home_learning_ecosystem');
             setIsAdding(false);
             setNewData({ title: '', desc: '', image: '', size: 'small', order_num: 0 });
             fetchItems();
@@ -128,6 +130,7 @@ const LearningEcosystemManager = () => {
                 ...updatePayload,
                 updated_at: serverTimestamp()
             });
+            clearCache('cache_home_learning_ecosystem');
             setIsEditing(null);
             fetchItems();
         } catch (error) {
@@ -143,6 +146,7 @@ const LearningEcosystemManager = () => {
             const db = await getFirestoreDb();
 
             await deleteDoc(doc(db, 'learning_ecosystem', id));
+            clearCache('cache_home_learning_ecosystem');
             fetchItems();
         } catch (error) {
             console.error('Error deleting item:', error);
@@ -175,6 +179,7 @@ const LearningEcosystemManager = () => {
                 });
             }
 
+            clearCache('cache_home_learning_ecosystem');
             alert(`Successfully added ${toAdd.length} default card(s) to Firestore!`);
             fetchItems();
         } catch (error) {
