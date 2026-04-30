@@ -1,5 +1,4 @@
 import React from 'react';
-import { m, AnimatePresence } from 'framer-motion';
 import { X, Check, Building2, Phone, ArrowRight, ArrowLeft, BookOpen } from 'lucide-react';
 import { Course } from '../types';
 import { COMPANY_LOGOS } from '../constants/ui';
@@ -57,25 +56,17 @@ const CourseDetailsModal: React.FC<CourseDetailsModalProps> = ({ course, isOpen,
     };
 
     return (
-        <AnimatePresence>
+        <>
             {isOpen && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6">
                     {/* Backdrop */}
-                    <m.div
-                        variants={overlayVariants}
-                        initial="hidden"
-                        animate="visible"
-                        exit="hidden"
+                    <div
                         onClick={onClose}
                         className="absolute inset-0 bg-black/60 backdrop-blur-sm"
                     />
 
                     {/* Modal Container */}
-                    <m.div
-                        variants={modalVariants}
-                        initial="hidden"
-                        animate="visible"
-                        exit="exit"
+                    <div
                         className="relative w-full max-w-5xl bg-white rounded-3xl shadow-2xl overflow-hidden max-h-[90vh] flex flex-col"
                     >
                         {/* Header / Hero Section */}
@@ -238,10 +229,10 @@ const CourseDetailsModal: React.FC<CourseDetailsModalProps> = ({ course, isOpen,
                             </div>
                         </div>
 
-                    </m.div>
+                    </div>
                 </div>
             )}
-        </AnimatePresence>
+        </>
     );
 };
 

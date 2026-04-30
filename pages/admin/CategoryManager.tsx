@@ -1,6 +1,5 @@
 
 import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
 import { Plus, Trash2, Edit2, Save, X, GripVertical } from 'lucide-react';
 import { useUserRole } from '../../hooks/useUserRole';
 import { CATEGORIES } from '../../constants/ui';
@@ -186,7 +185,7 @@ const CategoryManager = () => {
                         )}
 
                         {categories.map((cat, idx) => (
-                            <motion.tr
+                            <tr
                                 key={cat.id}
                                 layout
                                 className="group hover:bg-slate-50 transition-colors"
@@ -263,7 +262,7 @@ const CategoryManager = () => {
                                         </div>
                                     </td>
                                 )}
-                            </motion.tr>
+                            </tr>
                         ))}
                     </tbody>
                 </table>

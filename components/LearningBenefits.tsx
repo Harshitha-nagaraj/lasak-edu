@@ -1,6 +1,5 @@
 
 import React, { ReactNode } from 'react';
-import { m } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
 import { useNativeInView } from '../hooks/useNativeInView';
 
@@ -21,12 +20,9 @@ const ScrollReveal = React.memo(({ children, delay = 0, active = true }: { child
   );
 });
 
-const BenefitCard = ({ item, className = "" }: { item: any, className?: string }) => {
+const BenefitCard: React.FC<{ item: any, className?: string }> = ({ item, className = "" }) => {
   return (
-    <m.div
-      whileHover={{ y: -8, scale: 1.02 }}
-      whileTap={{ scale: 0.98 }}
-      transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1] }}
+    <div
       className={`relative rounded-3xl overflow-hidden group shadow-xl cursor-pointer bg-slate-900 ${item.size === "large" ? "h-full" : "h-[280px]"} ${className}`}
     >
       <img
@@ -52,7 +48,7 @@ const BenefitCard = ({ item, className = "" }: { item: any, className?: string }
           <ArrowRight size={20} />
         </div>
       </div>
-    </m.div>
+    </div>
   );
 };
 

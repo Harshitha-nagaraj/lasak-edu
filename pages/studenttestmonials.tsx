@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { m, AnimatePresence } from "framer-motion";
 import { Play, X } from "lucide-react";
 
 /* ---------------- DATA ---------------- */
@@ -72,10 +71,8 @@ const StudentTestimonials = ({ videos = [] }: { videos?: any[] }) => {
               ? [...displayVideos, ...displayVideos]
               : displayVideos
             ).map((v, i) => (
-              <m.div
+              <div
                 key={`${v.id || 'fallback'}-${i}`}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.97 }}
                 onClick={() => {
                   const ytId = getYoutubeId(v.video_url);
                   const driveId = getGoogleDriveId(v.video_url);
@@ -144,7 +141,7 @@ const StudentTestimonials = ({ videos = [] }: { videos?: any[] }) => {
                     </p>
                   )}
                 </div>
-              </m.div>
+              </div>
             ))}
           </div>
         </div>
@@ -155,12 +152,9 @@ const StudentTestimonials = ({ videos = [] }: { videos?: any[] }) => {
       </div>
 
       {/* ---------------- MODAL VIDEO ---------------- */}
-      <AnimatePresence>
+      
         {activeVideo && (
-          <m.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
+          <div
             className="
               fixed inset-0 z-[9999]
               bg-black/80 backdrop-blur-sm
@@ -168,11 +162,7 @@ const StudentTestimonials = ({ videos = [] }: { videos?: any[] }) => {
               px-4
             "
           >
-            <m.div
-              initial={{ scale: 0.9, y: 30 }}
-              animate={{ scale: 1, y: 0 }}
-              exit={{ scale: 0.9, y: 30 }}
-              transition={{ duration: 0.3 }}
+            <div
               className="
                 relative w-full max-w-4xl
                 bg-black rounded-xl
@@ -223,10 +213,10 @@ const StudentTestimonials = ({ videos = [] }: { videos?: any[] }) => {
                   />
                 )}
               </div>
-            </m.div>
-          </m.div>
+            </div>
+          </div>
         )}
-      </AnimatePresence>
+      
     </section>
   );
 };

@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { motion, useScroll } from 'framer-motion';
 import { Calendar, User, ArrowLeft, Tag } from 'lucide-react';
 import { BLOGS } from '../constants/blogDetails';
 import SEO from '../components/SEO';
@@ -14,7 +13,7 @@ const BlogDetails = () => {
   const [post, setPost] = useState(BLOGS.find((b) => b.id === id) || null);
   const [loading, setLoading] = useState(!BLOGS.find((b) => b.id === id));
 
-  const { scrollYProgress } = useScroll();
+  
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -70,9 +69,8 @@ const BlogDetails = () => {
           description="Read complete blog details including insights on IT, Mechanical, Civil, Data Analytics, career tips, and professional growth."
           keywords="blog details, LasakEdu blog, tech insights, career tips"
         />
-        <motion.div
+        <div
           className="fixed top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-blue-600 via-cyan-500 to-indigo-600 z-50"
-          style={{ scaleX: scrollYProgress }}
         />
         <h2 className="text-3xl font-black text-slate-900 mb-4">Article Not Found</h2>
         <p className="text-slate-500 mb-8">
@@ -123,13 +121,11 @@ const BlogDetails = () => {
               {post.category}
             </span>
 
-            <motion.h1
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
+            <h1
               className="text-3xl md:text-5xl font-black font-tech leading-tight mb-4"
             >
               {post.title}
-            </motion.h1>
+            </h1>
 
             <div className="flex items-center gap-6 text-sm text-slate-200">
               <span className="flex items-center gap-2">
@@ -164,10 +160,7 @@ const BlogDetails = () => {
           </div>
         )}
 
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
+        <div
           className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-2xl border border-slate-200 p-8 md:p-12"
         >
           <div
@@ -226,7 +219,7 @@ const BlogDetails = () => {
               {post.content}
             </ReactMarkdown>
           </div>
-        </motion.div>
+        </div>
 
         {/* Tags */}
         <div className="mt-16 pt-8 border-t border-slate-100 flex items-center gap-3">

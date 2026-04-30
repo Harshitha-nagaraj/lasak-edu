@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { motion } from "framer-motion";
 import { Mail, Phone, MapPin } from "lucide-react";
 
 const TermsConditions = () => {
@@ -34,10 +33,7 @@ const TermsConditions = () => {
         <div className="absolute bottom-0 left-0 w-64 h-64 bg-cyan-50 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2 opacity-50"></div>
 
         <div className="container mx-auto px-4 relative z-10 text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
+          <div
           >
             <span className="px-4 py-1.5 bg-blue-100 text-blue-700 rounded-full text-xs font-black uppercase tracking-widest mb-6 inline-block">
               Legal & Compliance
@@ -46,7 +42,7 @@ const TermsConditions = () => {
             <div className="flex items-center justify-center gap-4 text-slate-500 font-bold text-sm">
               <span>Lasakedu Institution</span>
             </div>
-          </motion.div>
+          </div>
         </div>
       </header>
 

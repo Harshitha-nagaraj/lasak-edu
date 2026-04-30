@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { BLOG_SUMMARIES } from '../constants/blogSummaries';
 import { Calendar, User, ArrowRight } from 'lucide-react';
@@ -120,16 +119,13 @@ const Blog = () => {
 
       {/* Hero */}
       <div className="bg-white py-24 px-4 text-center border-b border-slate-200">
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
+        <div
         >
           <h1 className="text-4xl md:text-6xl font-black font-tech mb-4 text-slate-900">Learning Insights</h1>
           <p className="text-slate-500 max-w-2xl mx-auto text-lg">
             Perfect for articles about skill development and industry trends.
           </p>
-        </motion.div>
+        </div>
       </div>
 
       {/* Blog Grid */}
@@ -143,16 +139,7 @@ const Blog = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {blogs.map((post, i) => (
               <Link to={`/blog/${post.id}`} key={post.id} className="group">
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  whileTap={{ scale: 0.97 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: i * 0.1 }}
-                  whileHover={{
-                    y: -6,
-                    boxShadow: "0 20px 40px -10px rgba(59,130,246,0.18)",
-                  }}
+                <div
                   className="
             bg-white
             rounded-2xl
@@ -223,7 +210,7 @@ const Blog = () => {
                       Read Article <ArrowRight size={14} />
                     </div>
                   </div>
-                </motion.div>
+                </div>
               </Link>
             ))}
           </div>

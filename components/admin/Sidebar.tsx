@@ -2,8 +2,6 @@ import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { LayoutDashboard, FileText, Image, Users, Award, Briefcase, MessageSquare, Settings, LogOut, Shield, Youtube, Menu, X, BookOpen, Layers, Phone, Info, Video, HelpCircle, FileCheck, Globe, PenTool, GraduationCap, Newspaper, Tag, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useUserRole } from '../../hooks/useUserRole';
-import { motion, AnimatePresence } from 'framer-motion';
-
 const Sidebar = () => {
     const [isOpen, setIsOpen] = useState(true);
     const navigate = useNavigate();
@@ -81,9 +79,7 @@ const Sidebar = () => {
             )}
 
             {/* Sidebar */}
-            <motion.div
-                animate={{ width: isOpen ? 260 : 0, opacity: isOpen ? 1 : 0 }}
-                transition={{ duration: 0.25, ease: 'easeInOut' }}
+            <div
                 className="fixed md:static inset-y-0 left-0 bg-white border-r border-gray-200 z-40 overflow-hidden flex flex-col h-screen shadow-xl md:shadow-none flex-shrink-0"
             >
                 {/* Logo Area */}
@@ -111,10 +107,8 @@ const Sidebar = () => {
                                 </div>
                                 <span className="font-medium whitespace-nowrap">{item.label}</span>
                                 {isActive(item.path) && (
-                                    <motion.div
-                                        layoutId="active-pill"
+                                    <div
                                         className="ml-auto w-1.5 h-1.5 bg-white rounded-full flex-shrink-0"
-                                        transition={{ type: 'spring', stiffness: 300, damping: 30 }}
                                     />
                                 )}
                             </button>
@@ -141,7 +135,7 @@ const Sidebar = () => {
                         Sign Out
                     </button>
                 </div>
-            </motion.div>
+            </div>
         </>
     );
 };

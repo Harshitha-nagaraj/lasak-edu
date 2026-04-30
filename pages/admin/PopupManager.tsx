@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
 import { Save, Upload, Trash2, Plus, Eye, Clock, Link as LinkIcon, Image as ImageIcon } from 'lucide-react';
 import { useUserRole } from '../../hooks/useUserRole';
 
@@ -352,14 +351,12 @@ const PopupManager = () => {
 
             {/* Success/Error Message */}
             {message && (
-                <motion.div
-                    initial={{ opacity: 0, y: -20 }}
-                    animate={{ opacity: 1, y: 0 }}
+                <div
                     className={`mb-6 p-4 rounded-lg ${message.type === 'success' ? 'bg-green-50 text-green-800' : 'bg-red-50 text-red-800'
                         }`}
                 >
                     {message.text}
-                </motion.div>
+                </div>
             )}
 
             {/* Settings Card */}
@@ -562,10 +559,8 @@ const PopupManager = () => {
                 ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         {slides.map((slide) => (
-                            <motion.div
+                            <div
                                 key={slide.id}
-                                initial={{ opacity: 0, scale: 0.9 }}
-                                animate={{ opacity: 1, scale: 1 }}
                                 className="border border-gray-200 rounded-lg p-4 hover:shadow-lg transition-shadow"
                             >
                                 {/* Slide Image */}
@@ -672,7 +667,7 @@ const PopupManager = () => {
                                         </div>
                                     )}
                                 </div>
-                            </motion.div>
+                            </div>
                         ))}
                     </div>
                 )}

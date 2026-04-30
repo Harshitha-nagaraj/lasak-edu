@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation, Outlet } from 'react-router-dom';
 import { Menu, X, ChevronDown, MapPin, Phone, Mail, ExternalLink } from 'lucide-react';
-import { m, AnimatePresence } from 'framer-motion';
 import { useNativeScrollProgress } from '../hooks/useNativeScroll';
 import { COMPANY_LOGOS, CATEGORIES } from '../constants/ui';
 import SEO from './SEO';
@@ -302,9 +301,9 @@ const Navbar = () => {
           </div>
         </div>
       </div>
-      <AnimatePresence>
+      
         {isOpen && (
-          <m.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="lg:hidden bg-white border-b border-gray-200 overflow-hidden shadow-2xl max-h-[calc(100vh-80px)] overflow-y-auto overscroll-contain">
+          <div className="lg:hidden bg-white border-b border-gray-200 overflow-hidden shadow-2xl max-h-[calc(100vh-80px)] overflow-y-auto overscroll-contain">
             <div className="px-4 pt-2 pb-6 space-y-1">
               {navLinks.map((link, idx) => (
                 <div key={`${link.name}-${idx}`}>
@@ -313,15 +312,15 @@ const Navbar = () => {
                   ) : link.submenu ? (
                     <div>
                       <button onClick={() => setMobileSubmenuOpen(mobileSubmenuOpen === link.name ? null : link.name)} className="w-full text-left px-3 py-3 rounded-md text-lg font-semibold text-slate-700 hover:bg-slate-50 flex items-center justify-between">{link.name} <ChevronDown size={16} className={`transform transition-transform ${mobileSubmenuOpen === link.name ? 'rotate-180' : ''}`} /></button>
-                      <AnimatePresence>
+                      
                         {mobileSubmenuOpen === link.name && (
-                          <m.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="pl-4 space-y-1 bg-slate-50 rounded-lg mt-1">
+                          <div className="pl-4 space-y-1 bg-slate-50 rounded-lg mt-1">
                             {link.submenu.map((subItem: any) => (
                               <Link key={subItem.name} to={subItem.path} onClick={() => setIsOpen(false)} className="block px-3 py-3 rounded-md text-base font-medium text-slate-600 hover:text-blue-600">{subItem.name}</Link>
                             ))}
-                          </m.div>
+                          </div>
                         )}
-                      </AnimatePresence>
+                      
                     </div>
                   ) : (
                     <Link to={link.path} onClick={() => setIsOpen(false)} className="block px-3 py-3 rounded-md text-lg font-semibold text-slate-700 hover:bg-slate-50">{link.name}</Link>
@@ -339,9 +338,9 @@ const Navbar = () => {
                 </div>
               )}
             </div>
-          </m.div>
+          </div>
         )}
-      </AnimatePresence>
+      
     </header>
   );
 };

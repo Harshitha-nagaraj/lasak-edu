@@ -2,7 +2,7 @@ import path from 'path'
 import { defineConfig, loadEnv } from 'vite'
 import react from '@vitejs/plugin-react'
 import { ViteImageOptimizer } from 'vite-plugin-image-optimizer'
-
+import viteCompression from 'vite-plugin-compression'
 
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '')
@@ -16,6 +16,8 @@ export default defineConfig(({ mode }) => {
 
     plugins: [
       react(),
+      viteCompression({ algorithm: 'gzip', ext: '.gz' }),
+      viteCompression({ algorithm: 'brotliCompress', ext: '.br' }),
       ViteImageOptimizer({
         test: /\.(jpe?g|png|gif|tiff|webp|svg|avif)$/i,
         exclude: undefined,

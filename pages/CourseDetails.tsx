@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { m, AnimatePresence } from 'framer-motion';
 import {
     Check, Building2, Phone, ArrowRight, ArrowLeft, BookOpen,
     X, Wrench, Star, Users, Brain, GraduationCap,
@@ -636,7 +635,7 @@ const CourseDetails = () => {
                     </div>
 
                     <div className="grid lg:grid-cols-2 gap-12 items-center">
-                        <m.div initial={false} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.5 }}>
+                        <div>
                             <span className="inline-block px-4 py-1.5 bg-blue-600/10 text-blue-600 rounded-full text-sm font-bold mb-6 tracking-wide uppercase">
                                 {course.category} • {course.duration}
                             </span>
@@ -713,10 +712,10 @@ const CourseDetails = () => {
                                     Apply Scholarship
                                 </button>
                             </div>
-                        </m.div>
+                        </div>
 
                         {/* Right Column: Promo Video or Image */}
-                        <m.div initial={false} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.5 }} className="relative">
+                        <div className="relative">
                             {course.promo_video ? (
                                 // Show promo video (YouTube embed or raw video)
                                 <div className="rounded-3xl overflow-hidden shadow-2xl border-8 border-white bg-black">
@@ -762,7 +761,7 @@ const CourseDetails = () => {
                                     </div>
                                 </div>
                             </div>
-                        </m.div>
+                        </div>
                     </div>
                 </div>
             </section>
@@ -1029,12 +1028,8 @@ const CourseDetails = () => {
                                     text: "Best place to learn advanced software. The trainers are highly experienced and provide personal attention to every student.",
                                 }
                             ].map((review, idx) => (
-                                <m.div
+                                <div
                                     key={idx}
-                                    initial={{ opacity: 0, y: 20 }}
-                                    whileInView={{ opacity: 1, y: 0 }}
-                                    viewport={{ once: true }}
-                                    transition={{ delay: idx * 0.1 }}
                                     className="min-w-[280px] md:min-w-[450px] bg-white p-6 md:p-10 rounded-3xl md:rounded-[2.5rem] shadow-xl shadow-slate-200/50 border border-slate-100 snap-center flex flex-col"
                                 >
                                     <div className="flex items-center gap-5 mb-8">
@@ -1060,7 +1055,7 @@ const CourseDetails = () => {
                                             Read Full Review
                                         </a>
                                     </div>
-                                </m.div>
+                                </div>
                             ))}
                         </div>
 
@@ -1116,15 +1111,15 @@ const CourseDetails = () => {
                                     <span className="font-bold text-slate-800">{faq.question}</span>
                                     <ChevronDown className={`text-slate-600 transition-transform ${activeAccordion === idx ? 'rotate-180' : ''}`} />
                                 </button>
-                                <AnimatePresence>
+                                
                                     {activeAccordion === idx && (
-                                        <m.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="overflow-hidden">
+                                        <div className="overflow-hidden">
                                             <div className="p-6 pt-0 text-slate-600 leading-relaxed border-t border-slate-50">
                                                 {faq.answer}
                                             </div>
-                                        </m.div>
+                                        </div>
                                     )}
-                                </AnimatePresence>
+                                
                             </div>
                         ))}
                     </div>
@@ -1561,11 +1556,11 @@ const CourseDetails = () => {
             </section>
 
             {/* Scholarship Modal */}
-            <AnimatePresence>
+            
                 {showScholarshipModal && (
                     <div className="fixed inset-0 z-[100000] overflow-y-auto bg-black/60 backdrop-blur-sm" onClick={() => setShowScholarshipModal(false)}>
                         <div className="flex min-h-full items-start justify-center p-4 pt-24 md:pt-36 text-center">
-                            <m.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="relative w-full max-w-3xl transform shadow-xl transition-all" onClick={(e) => e.stopPropagation()}>
+                            <div className="relative w-full max-w-3xl transform shadow-xl transition-all" onClick={(e) => e.stopPropagation()}>
                                 <ScholarshipCalculator
                                     coursePrice={parsePrice(course.price)}
                                     courseName={course.title}
@@ -1574,11 +1569,11 @@ const CourseDetails = () => {
                                     onCalculate={handleScholarshipCalculation}
                                     onClose={() => setShowScholarshipModal(false)}
                                 />
-                            </m.div>
+                            </div>
                         </div>
                     </div>
                 )}
-            </AnimatePresence>
+            
 
             <React.Suspense fallback={null}>
                 <InquiryModal

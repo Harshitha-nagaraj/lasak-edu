@@ -1,6 +1,5 @@
 
 import React, { useEffect, useState, useRef, ReactNode, lazy, Suspense } from 'react';
-import { m, AnimatePresence } from 'framer-motion';
 import { useNativeInView } from '../hooks/useNativeInView';
 import { Link, useNavigate } from 'react-router-dom';
 import { ArrowRight, CheckCircle, Award, Users, Star, ExternalLink, ChevronLeft, ChevronRight, Play, Megaphone, Sparkles, Bot, X, Calendar, Clock, Check, Code, Settings, Home as HomeIcon, PenTool, Gamepad2, Briefcase, Globe } from 'lucide-react';
@@ -85,11 +84,9 @@ const CourseCard: React.FC<{
   const isEager = index < 3;
 
   return (
-    <m.div
+    <div
       ref={cardRef}
       onClick={() => navigate("/courses")}
-      whileHover={{ y: -10 }}
-      whileTap={{ scale: 0.98 }}
       style={{
         opacity: priority === "high" || isCardInView ? 1 : 0,
         transform: priority === "high" || isCardInView ? 'scale(1)' : 'scale(0.95)',
@@ -196,7 +193,7 @@ const CourseCard: React.FC<{
           </div>
         </div>
       </div>
-    </m.div>
+    </div>
   );
 };
 
@@ -288,42 +285,9 @@ const Home = () => {
   const [courses, setCourses] = useState<Course[]>(getInitialCourses());
 
   useEffect(() => {
-    fetchData();
-
-    let unsubscribe: any;
-    const initAuth = async () => {
-      try {
-        const { getFirebaseAuth } = await import('../lib/firebase');
-        const { onAuthStateChanged } = await import('firebase/auth');
-        const auth = await getFirebaseAuth();
-        unsubscribe = onAuthStateChanged(auth, (u: any) => {
-          setUser(u);
-          if (u) {
-            checkInquiryStatus(u.email || undefined);
-          } else {
-            setHasSubmittedInquiry(false);
-          }
-        });
-      } catch (err) {
-        console.error('Auth initialization error:', err);
-      }
-    };
-    initAuth();
-    getPopupData();
-
-    return () => { if (unsubscribe) unsubscribe(); };
+    fetchData(); 
+    getPopupData(); 
   }, []);
-
-  const checkInquiryStatus = async (email: string | undefined) => {
-    if (!email) return;
-    try {
-      const { checkUserInquiryStatus } = await import('../lib/homeData');
-      const hasInquiry = await checkUserInquiryStatus(email);
-      setHasSubmittedInquiry(hasInquiry);
-    } catch (error) {
-      console.error('Error checking inquiry status:', error);
-    }
-  };
 
   const fetchData = async () => {
     try {
@@ -584,7 +548,7 @@ const Home = () => {
       />
 
       {/* --- PROMO POPUP POSTER --- */}
-      <AnimatePresence>
+      
         {showPromoPopup && popupEnabled && promoSlides.length > 0 && (
           <div
             className="
@@ -594,10 +558,7 @@ const Home = () => {
       "
           >
             {/* Background Overlay */}
-            <m.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
+            <div
               onClick={() => setShowPromoPopup(false)}
               className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"
             />
@@ -624,10 +585,7 @@ const Home = () => {
             </button>
 
             {/* Popup Content Container */}
-            <m.div
-              initial={{ scale: 0.9, opacity: 0, y: 20 }}
-              animate={{ scale: 1, opacity: 1, y: 0 }}
-              exit={{ scale: 0.9, opacity: 0, y: 20 }}
+            <div
               className={`
                 relative
                 bg-white
@@ -644,7 +602,7 @@ const Home = () => {
               <div className={`
                    ${promoSlides[currentPromoSlide]?.style === 'image_only' ? 'w-full h-auto rounded-2xl overflow-hidden' : 'w-full md:w-1/2 bg-blue-600 overflow-hidden'}
                 `}>
-                <AnimatePresence mode="wait">
+                
                   {promoSlides[currentPromoSlide]?.clickable ? (
                     // First 2 images with link
                     <a href={formUrl}
@@ -653,33 +611,25 @@ const Home = () => {
                       onClick={() => setShowPromoPopup(false)}
                       className="block w-full h-full relative group"
                     >
-                      <m.img
+                      <img
                         key={currentPromoSlide}
                         src={promoSlides[currentPromoSlide]?.image}
                         alt="Special Offer"
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        transition={{ duration: 0.8 }}
                         className="w-full h-full object-contain cursor-pointer"
                       />
                     </a>
                   ) : (
                     // Last 2 images without link
                     <div className="relative w-full h-full">
-                      <m.img
+                      <img
                         key={currentPromoSlide}
                         src={promoSlides[currentPromoSlide]?.image}
                         alt="Special Offer"
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        transition={{ duration: 0.8 }}
                         className="w-full h-full object-contain"
                       />
                     </div>
                   )}
-                </AnimatePresence>
+                
               </div>
 
 
@@ -718,22 +668,18 @@ const Home = () => {
                   </a>
                 </div>
               )}
-            </m.div>
+            </div>
           </div>
         )}
-      </AnimatePresence>
+      
 
       {/* 1. Hero Section */}
       <section className="relative h-[90vh] flex items-center justify-center overflow-hidden group bg-white">
 
         {/* Slider Background */}
-        < AnimatePresence >
-          <m.div
+        <>
+          <div
             key={currentSlide}
-            initial={currentSlide === 0 ? false : { opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: currentSlide === 0 ? 0 : 1.5 }}
             className="absolute inset-0 z-0"
           >
             <img
@@ -751,19 +697,15 @@ const Home = () => {
             {/* Dark overlay without blur – image stays sharp */}
 
             <div className="absolute inset-0 bg-black/70"></div>
-          </m.div>
-        </AnimatePresence >
+          </div>
+        </>
 
         {/* Animated Blobs */}
         < div className="absolute inset-0 overflow-hidden pointer-events-none z-0" >
-          <m.div
-            animate={{ x: [0, 100, 0], y: [0, -50, 0] }}
-            transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
+          <div
             className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-blue-500/10 rounded-full blur-[100px]"
           />
-          <m.div
-            animate={{ x: [0, -100, 0], y: [0, 50, 0] }}
-            transition={{ duration: 12, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+          <div
             className="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] bg-indigo-500/10 rounded-full blur-[100px]"
           />
         </div >
@@ -784,18 +726,12 @@ const Home = () => {
 
         {/* Content */}
         <div className="relative z-10 container mx-auto px-4 text-center">
-          <m.div
+          <div
             key={currentSlide}
-            initial={currentSlide === 0 ? false : { opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
           >
             <h1 className="text-3xl xs:text-5xl md:text-7xl lg:text-8xl font-tech font-black mb-4 md:mb-6 tracking-tighter leading-tight drop-shadow-[0_4px_20px_rgba(0,0,0,0.7)]">
-              <m.span
+              <span
                 key={heroSlides[currentSlide]?.title}
-                initial={{ scale: 0.8, opacity: 0, filter: 'blur(20px)' }}
-                animate={{ scale: 1, opacity: 1, filter: 'blur(0px)' }}
-                transition={{ duration: 0.8, ease: "circOut" }}
                 className="block"
               >
                 {heroSlides[currentSlide]?.title.split(" ").map((word, i) => (
@@ -806,7 +742,7 @@ const Home = () => {
                     {word}{" "}
                   </span>
                 ))}
-              </m.span>
+              </span>
             </h1>
 
             <p className="text-lg md:text-2xl lg:text-3xl text-white/90 drop-shadow-[0_3px_12px_rgba(0,0,0,0.7)] font-sans font-medium tracking-wide max-w-4xl mx-auto mb-8 md:mb-12 leading-relaxed min-h-[3em] flex items-center justify-center px-4">
@@ -814,9 +750,7 @@ const Home = () => {
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <m.div
-                animate={{ y: [0, -6, 0] }}
-                transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+              <div
               >
                 <Link
                   to={heroSlides[currentSlide]?.cta_link}
@@ -825,11 +759,9 @@ const Home = () => {
                   {heroSlides[currentSlide]?.cta_text}
                   <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
                 </Link>
-              </m.div>
+              </div>
 
-              <m.div
-                animate={{ y: [0, -6, 0] }}
-                transition={{ duration: 4, repeat: Infinity, ease: "easeInOut", delay: 3 }}
+              <div
               >
                 <Link
                   to="/contact"
@@ -837,9 +769,9 @@ const Home = () => {
                 >
                   Contact Us
                 </Link>
-              </m.div>
+              </div>
             </div>
-          </m.div>
+          </div>
         </div>
       </section >
 
@@ -924,8 +856,7 @@ const Home = () => {
       {/* 4. Internship + Vendor (White) */}
       < section className="py-24 px-4 bg-white relative overflow-hidden" >
         <ScrollReveal>
-          <m.div
-            whileHover={{ y: -5 }}
+          <div
             className="max-w-6xl mx-auto bg-slate-50 rounded-3xl p-10 md:p-16 relative z-10 border border-slate-200 shadow-2xl transition-all flex flex-col md:flex-row items-center gap-10 h-auto md:h-[700px] overflow-hidden"
           >
             {/* Left Content */}
@@ -978,7 +909,7 @@ const Home = () => {
                 </div>
               </div>
             </div>
-          </m.div>
+          </div>
         </ScrollReveal>
       </section >
 
@@ -1158,13 +1089,9 @@ const Home = () => {
 
               {/* Review Carousel Container */}
               <div className="overflow-hidden px-2 py-4">
-                <AnimatePresence mode='wait'>
-                  <m.div
+                
+                  <div
                     key={reviewIndex} // Key change triggers animation
-                    initial={{ opacity: 0, x: 50 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: -50 }}
-                    transition={{ duration: 0.5, ease: "easeOut" }}
                     className="grid grid-cols-1 md:grid-cols-2 gap-6"
                   >
                     {/* Display 2 items at a time */}
@@ -1199,8 +1126,8 @@ const Home = () => {
                         </div>
                       );
                     })}
-                  </m.div>
-                </AnimatePresence>
+                  </div>
+                
               </div>
 
               {/* Navigation Arrows (Floating on Sides) */}

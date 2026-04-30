@@ -2,8 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Plus, Search, Edit2, Trash2, Award, AlertCircle } from 'lucide-react';
 import { useUserRole } from '../../hooks/useUserRole';
-import { motion } from 'framer-motion';
-
 interface Certificate {
     id: string;
     cert_id: string;
@@ -198,10 +196,8 @@ const CertificateManager = () => {
                                 </tr>
                             ) : (
                                 filteredCertificates.map((cert) => (
-                                    <motion.tr
+                                    <tr
                                         key={cert.id}
-                                        initial={{ opacity: 0 }}
-                                        animate={{ opacity: 1 }}
                                         className="hover:bg-gray-50 transition-colors"
                                     >
                                         <td className="px-6 py-4">
@@ -251,7 +247,7 @@ const CertificateManager = () => {
                                                 )}
                                             </div>
                                         </td>
-                                    </motion.tr>
+                                    </tr>
                                 ))
                             )}
                         </tbody>
@@ -262,9 +258,7 @@ const CertificateManager = () => {
             {/* Delete Confirmation Modal */}
             {deleteModal.show && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                    <motion.div
-                        initial={{ opacity: 0, scale: 0.9 }}
-                        animate={{ opacity: 1, scale: 1 }}
+                    <div
                         className="bg-white rounded-lg shadow-xl p-6 max-w-md w-full mx-4"
                     >
                         <div className="flex items-center gap-3 mb-4">
@@ -293,7 +287,7 @@ const CertificateManager = () => {
                                 Delete
                             </button>
                         </div>
-                    </motion.div>
+                    </div>
                 </div>
             )}
         </div>

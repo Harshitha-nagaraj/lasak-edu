@@ -1,6 +1,5 @@
 
 import React, { useEffect, useState, useRef, ReactNode } from 'react';
-import { m } from 'framer-motion';
 import { useNativeInView } from '../hooks/useNativeInView';
 import { Play, ExternalLink, Sparkles } from 'lucide-react';
 
@@ -32,9 +31,8 @@ export const StatCounter = React.memo(({ end, label }: { end: number, label: str
   }, [isInView, end]);
 
   return (
-    <m.div
+    <div
       ref={ref}
-      whileHover={{ y: -5 }}
       className="text-center p-6 bg-white/90 border border-slate-100 shadow-sm rounded-2xl relative overflow-hidden group"
     >
       <div className="absolute top-0 right-0 p-4 opacity-0 group-hover:opacity-10 transition-opacity">
@@ -44,7 +42,7 @@ export const StatCounter = React.memo(({ end, label }: { end: number, label: str
         {count}+
       </h3>
       <p className="text-slate-600 font-bold uppercase tracking-wider text-xs md:text-sm">{label}</p>
-    </m.div>
+    </div>
   );
 });
 
@@ -62,9 +60,7 @@ const VideoCard: React.FC<{ videoId: string; title?: string; thumbnail: string }
       aria-label={`Watch ${title} on YouTube`}
       className="block"
     >
-      <m.div
-        whileHover={{ scale: 1.05, y: -5 }}
-        whileTap={{ scale: 0.98 }}
+      <div
         className="w-[140px] xs:w-[180px] md:w-[400px] flex-shrink-0 bg-white rounded-2xl overflow-hidden border border-slate-200 shadow-lg group transition-all duration-300"
       >
         <div className="aspect-video bg-black relative">
@@ -86,7 +82,7 @@ const VideoCard: React.FC<{ videoId: string; title?: string; thumbnail: string }
             Watch on YouTube <ExternalLink size={14} />
           </p>
         </div>
-      </m.div>
+      </div>
     </a>
   );
 };

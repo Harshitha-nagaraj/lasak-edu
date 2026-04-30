@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
 import { AlertCircle, CheckCircle, Award, Search, ShieldCheck, FileText, HelpCircle, PhoneCall, ChevronDown } from 'lucide-react';
 import type { CertificateData } from '../types';
 import SEO from '../components/SEO';
@@ -263,13 +262,11 @@ const Verification = () => {
       <div className="relative z-10 w-full max-w-4xl">
         {/* Hero Section */}
         <div className="text-center mb-12">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
+          <div
             className="inline-flex items-center gap-2 px-4 py-1.5 bg-blue-50 text-blue-700 rounded-full text-sm font-bold border border-blue-100 mb-6"
           >
             <ShieldCheck size={16} /> Official Verification Portal
-          </motion.div>
+          </div>
           <h1 className="text-3xl md:text-5xl font-black text-slate-900 mb-6">Verify Your Credentials</h1>
           <p className="text-slate-500 max-w-xl mx-auto text-base md:text-lg">
             Enter your unique Certification Number to instantly validate the authenticity of your LasakEdu records.
@@ -313,9 +310,7 @@ const Verification = () => {
           {/* Result Area */}
           <div className="mt-6 min-h-[100px]">
             {formatError && (
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
+              <div
                 className="bg-orange-50 border border-orange-200 text-orange-700 p-5 rounded-2xl flex items-center gap-3 shadow"
               >
                 <AlertCircle className="shrink-0" size={22} />
@@ -323,24 +318,20 @@ const Verification = () => {
                   <p className="font-bold">Invalid Certificate ID Format</p>
                   <p className="text-sm mt-0.5">Please enter in the format: <span className="font-mono font-bold">TN/CBE/069/LTIEC0119</span></p>
                 </div>
-              </motion.div>
+              </div>
             )}
 
             {error && (
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
+              <div
                 className="bg-red-50 border border-red-100 text-red-600 p-6 rounded-2xl flex items-center justify-center gap-3 shadow-lg"
               >
                 <AlertCircle className="shrink-0" />
                 <span className="font-semibold">Record not found. Please double-check the Certificate ID.</span>
-              </motion.div>
+              </div>
             )}
 
             {result && (
-              <motion.div
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
+              <div
                 className="bg-white p-8 md:p-12 rounded-[2rem] shadow-2xl border-t-8 border-green-500 text-left relative overflow-hidden"
               >
                 <div className="absolute top-0 right-0 p-8 opacity-5">
@@ -399,7 +390,7 @@ const Verification = () => {
                   <div className="text-xs italic font-medium">Verify again at: lasakedu.in/verify</div>
                   <Award size={40} className="text-yellow-400 opacity-20" />
                 </div>
-              </motion.div>
+              </div>
             )}
           </div>
         </div>
@@ -460,8 +451,7 @@ const Verification = () => {
                 </ul>
               </div>
               <div className="lg:w-1/2">
-                <motion.div
-                  whileHover={{ rotate: -2, scale: 1.05 }}
+                <div
                   className="bg-white/5 p-4 rounded-3xl border border-white/10 backdrop-blur-sm"
                 >
                   <img
@@ -469,7 +459,7 @@ const Verification = () => {
                     alt="Sample Certificate"
                     className="rounded-2xl shadow-2xl"
                   />
-                </motion.div>
+                </div>
               </div>
             </div>
           </section>

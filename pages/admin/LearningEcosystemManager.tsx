@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
 import { Plus, Trash2, Edit2, Save, X, GripVertical, Image as ImageIcon, Download } from 'lucide-react';
 import { useUserRole } from '../../hooks/useUserRole';
 
@@ -303,7 +302,7 @@ const LearningEcosystemManager = () => {
                                 {isEditing === item.id ? (
                                     renderFormRow(editData, setEditData, handleUpdate, () => setIsEditing(null), false)
                                 ) : (
-                                    <motion.tr layout className="group hover:bg-slate-50 transition-colors">
+                                    <tr layout className="group hover:bg-slate-50 transition-colors">
                                         <td className="px-4 py-4 text-center">
                                             <span className="text-gray-400 font-medium">{item.order_num}</span>
                                         </td>
@@ -344,7 +343,7 @@ const LearningEcosystemManager = () => {
                                                 </div>
                                             </td>
                                         )}
-                                    </motion.tr>
+                                    </tr>
                                 )}
                             </React.Fragment>
                         ))}

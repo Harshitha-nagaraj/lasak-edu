@@ -1,7 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import { m, AnimatePresence, Variants } from 'framer-motion';
 import { Download, Check, Gamepad2, Rocket, Bot, ArrowRight } from 'lucide-react';
 import { COURSE_SUMMARIES } from '../constants/courseSummaries';
 import { CATEGORIES } from '../constants/ui';
@@ -179,32 +178,7 @@ const Courses = () => {
 
   const filterTabs = ['All', ...dbCatIds];
 
-  // Animation variants
-  const bounceVariant: Variants = {
-    hover: {
-      y: [-10, 0, -10],
-      transition: {
-        duration: 1,
-        repeat: Infinity,
-        ease: "easeInOut"
-      }
-    }
-  };
 
-  const containerVariants: Variants = {
-    hidden: { opacity: 0 },
-    show: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.05 // Sped up from 0.1
-      }
-    }
-  };
-
-  const itemVariants: Variants = {
-    hidden: { opacity: 0, y: 10 },
-    show: { opacity: 1, y: 0, transition: { type: "tween", duration: 0.2, ease: "easeOut" } }
-  };
 
   return (
     <div className="min-h-screen pb-20 bg-gradient-to-b from-slate-50 to-white">
@@ -249,12 +223,9 @@ const Courses = () => {
       </div>
 
       {/* Kids Zone Header (Conditional) */}
-      <AnimatePresence>
+      
         {activeCategory === 'Kids' && (
-          <m.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.95 }}
+          <div
             className="overflow-hidden"
           >
             <div className="container mx-auto px-4 pt-8">
@@ -263,45 +234,28 @@ const Courses = () => {
                   <div className="absolute inset-0 bg-gradient-to-b from-yellow-50/30 to-transparent pointer-events-none"></div>
                   
                   {/* Floating Elements for "Wow" factor */}
-                  <m.div 
-                    animate={{ 
-                      y: [0, -20, 0],
-                      rotate: [0, 10, 0]
-                    }} 
-                    transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+                  <div
                     className="absolute top-4 left-10 text-yellow-500 opacity-60 hidden md:block z-10"
                   >
                     <Gamepad2 size={64} />
-                  </m.div>
-                  <m.div 
-                    animate={{ 
-                      y: [0, 20, 0],
-                      scale: [1, 1.1, 1]
-                    }} 
-                    transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+                  </div>
+                  <div
                     className="absolute top-10 right-20 text-blue-500 opacity-60 hidden md:block z-10"
                   >
                     <Rocket size={64} />
-                  </m.div>
-                  <m.div 
-                    animate={{ 
-                      x: [-10, 10, -10],
-                      rotate: [0, -10, 0]
-                    }} 
-                    transition={{ duration: 3, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
+                  </div>
+                  <div
                     className="absolute bottom-4 left-1/4 text-purple-500 opacity-60 hidden md:block z-10"
                   >
                     <Bot size={64} />
-                  </m.div>
+                  </div>
 
                   <div className="relative z-10">
-                    <m.span 
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
+                    <span
                       className="inline-block px-4 py-1.5 rounded-full bg-yellow-100 text-yellow-700 text-xs font-black uppercase tracking-widest mb-6"
                     >
                       Future Creators
-                    </m.span>
+                    </span>
                     <h2 className="text-5xl md:text-8xl font-black text-transparent bg-clip-text bg-gradient-to-r from-yellow-500 via-orange-500 to-red-600 mb-6 font-tech drop-shadow-sm leading-tight tracking-tighter">
                       KIDS ZONE
                     </h2>
@@ -313,9 +267,9 @@ const Courses = () => {
                 </div>
               </div>
             </div>
-          </m.div>
+          </div>
         )}
-      </AnimatePresence>
+      
 
       {/* Course Grid */}
       <div className="container mx-auto px-4 py-12">
@@ -326,18 +280,12 @@ const Courses = () => {
         ) : (
           <>
             <h2 className="sr-only">{activeCategory === 'All' ? 'All Courses' : `${activeCategory} Courses`}</h2>
-            <m.div
-            variants={containerVariants}
-            initial="hidden"
-            animate="show"
+            <div
             key={activeCategory} // Forces re-render of staggered animation on category change
             className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
           >
             {filteredCourses.slice(0, visibleCount).map((course, index) => (
-              <m.div
-                variants={itemVariants}
-                whileTap={{ scale: 0.98, boxShadow: "0 0 30px rgba(37, 99, 235, 0.4)" }} // Lighting shadow
-                whileHover={{ y: -10 }}
+              <div // Lighting shadow
                 key={course.id}
                 onClick={() => navigate(`/course/${course.id}`)}
                 className={`bg-white rounded-2xl overflow-hidden border flex flex-col h-full group transition-all duration-300 hover:-translate-y-2 cursor-pointer ${course.category === 'Kids' ? 'border-yellow-200 hover:shadow-yellow-100 hover:shadow-2xl' : 'border-slate-200 hover:shadow-2xl'
@@ -484,9 +432,9 @@ const Courses = () => {
                     </div>
                   </div>
                 </div>
-              </m.div>
+              </div>
             ))}
-          </m.div>
+          </div>
 
           {/* Load More button */}
           {visibleCount < filteredCourses.length && (

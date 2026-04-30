@@ -1,6 +1,6 @@
 import React, { lazy, Suspense, ReactNode, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
-import { AnimatePresence, LazyMotion, domAnimation, m } from 'framer-motion';
+// Framer motion removed to optimize performance
 
 // Legal & Policy Pages
 const TermsConditions = lazy(() => import("./pages/TermsConditions"));
@@ -49,14 +49,9 @@ const ScrollToTop = () => {
 };
 
 const PageWrapper = ({ children }: { children?: ReactNode }) => (
-  <m.div
-    initial={{ opacity: 0, y: 10 }}
-    animate={{ opacity: 1, y: 0 }}
-    exit={{ opacity: 0, y: -10 }}
-    transition={{ duration: 0.2 }}
-  >
+  <div className="animate-fade-in-up">
     {children}
-  </m.div>
+  </div>
 );
 
 const ProtectedRoute = ({ children }: { children: ReactNode }) => {
@@ -87,46 +82,44 @@ const ProtectedRoute = ({ children }: { children: ReactNode }) => {
 const AnimatedRoutes = () => {
   const location = useLocation();
   return (
-    <AnimatePresence mode="wait">
-      <Routes location={location}>
-        {IS_MAINTENANCE_MODE && !location.pathname.startsWith('/admin') && (
-          <Route path="*" element={<Maintenance />} />
-        )}
+    <Routes location={location}>
+      {IS_MAINTENANCE_MODE && !location.pathname.startsWith('/admin') && (
+        <Route path="*" element={<Maintenance />} />
+      )}
 
-        {/* Admin Section */}
-        <Route path="/admin/login" element={<AdminLogin />} />
-        <Route path="/admin/update-password" element={<UpdatePassword />} />
-        <Route path="/admin/*" element={<ProtectedRoute><AdminRoutes /></ProtectedRoute>} />
+      {/* Admin Section */}
+      <Route path="/admin/login" element={<AdminLogin />} />
+      <Route path="/admin/update-password" element={<UpdatePassword />} />
+      <Route path="/admin/*" element={<ProtectedRoute><AdminRoutes /></ProtectedRoute>} />
 
-        {/* Public Section */}
-        <Route element={<Layout />}>
-          <Route path="/" element={<Home />} />
-          <Route path="/login" element={<Navigate to="/" replace />} />
-          <Route path="/signup" element={<Navigate to="/" replace />} />
-          <Route path="/programs" element={<PageWrapper><Programs /></PageWrapper>} />
-          <Route path="/courses" element={<PageWrapper><Courses /></PageWrapper>} />
-          <Route path="/courses/:category" element={<PageWrapper><Courses /></PageWrapper>} />
-          <Route path="/courses/:category/:slug" element={<PageWrapper><CourseDetails /></PageWrapper>} />
-          <Route path="/course/:id" element={<PageWrapper><CourseDetails /></PageWrapper>} />
-          <Route path="/verify" element={<PageWrapper><Verification /></PageWrapper>} />
-          <Route path="/contact" element={<PageWrapper><Contact /></PageWrapper>} />
-          <Route path="/about" element={<PageWrapper><About /></PageWrapper>} />
-          <Route path="/blog" element={<PageWrapper><Blog /></PageWrapper>} />
-          <Route path="/blog/:id" element={<PageWrapper><BlogDetails /></PageWrapper>} />
-          <Route path="/news" element={<PageWrapper><News /></PageWrapper>} />
-          <Route path="/placements" element={<Placements />} />
-          <Route path="/student-testimonials" element={<PageWrapper><StudentTestimonials /></PageWrapper>} />
-          <Route path="/scholarship" element={<ScholarshipPage />} />
-          <Route path="/terms-conditions" element={<TermsConditions />} />
-          <Route path="/refund-policy" element={<RefundPolicy />} />
-          <Route path="/cancellation-policy" element={<CancellationPolicy />} />
-          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-          <Route path="/internship" element={<Navigate to="/contact" replace />} />
-        </Route>
+      {/* Public Section */}
+      <Route element={<Layout />}>
+        <Route path="/" element={<Home />} />
+        <Route path="/login" element={<Navigate to="/" replace />} />
+        <Route path="/signup" element={<Navigate to="/" replace />} />
+        <Route path="/programs" element={<PageWrapper><Programs /></PageWrapper>} />
+        <Route path="/courses" element={<PageWrapper><Courses /></PageWrapper>} />
+        <Route path="/courses/:category" element={<PageWrapper><Courses /></PageWrapper>} />
+        <Route path="/courses/:category/:slug" element={<PageWrapper><CourseDetails /></PageWrapper>} />
+        <Route path="/course/:id" element={<PageWrapper><CourseDetails /></PageWrapper>} />
+        <Route path="/verify" element={<PageWrapper><Verification /></PageWrapper>} />
+        <Route path="/contact" element={<PageWrapper><Contact /></PageWrapper>} />
+        <Route path="/about" element={<PageWrapper><About /></PageWrapper>} />
+        <Route path="/blog" element={<PageWrapper><Blog /></PageWrapper>} />
+        <Route path="/blog/:id" element={<PageWrapper><BlogDetails /></PageWrapper>} />
+        <Route path="/news" element={<PageWrapper><News /></PageWrapper>} />
+        <Route path="/placements" element={<Placements />} />
+        <Route path="/student-testimonials" element={<PageWrapper><StudentTestimonials /></PageWrapper>} />
+        <Route path="/scholarship" element={<ScholarshipPage />} />
+        <Route path="/terms-conditions" element={<TermsConditions />} />
+        <Route path="/refund-policy" element={<RefundPolicy />} />
+        <Route path="/cancellation-policy" element={<CancellationPolicy />} />
+        <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+        <Route path="/internship" element={<Navigate to="/contact" replace />} />
+      </Route>
 
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
-    </AnimatePresence>
+      <Route path="*" element={<Navigate to="/" replace />} />
+    </Routes>
   );
 };
 
@@ -134,11 +127,9 @@ const App = () => {
   return (
     <Router>
       <ScrollToTop />
-      <LazyMotion features={domAnimation} strict>
-        <Suspense fallback={<Loader />}>
-          <AnimatedRoutes />
-        </Suspense>
-      </LazyMotion>
+      <Suspense fallback={<Loader />}>
+        <AnimatedRoutes />
+      </Suspense>
     </Router>
   );
 };

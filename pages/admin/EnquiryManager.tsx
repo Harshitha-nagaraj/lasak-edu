@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
 import { Search, Mail, Phone, Calendar, User, Trash2, X, CheckCircle, Clock } from 'lucide-react';
 import { useUserRole } from '../../hooks/useUserRole';
 
@@ -222,18 +221,14 @@ const EnquiryManager = () => {
             </div>
 
             {/* Detail Modal */}
-            <AnimatePresence>
+            
                 {selectedEnquiry && (
                     <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
-                        <motion.div
-                            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+                        <div
                             className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"
                             onClick={() => setSelectedEnquiry(null)}
                         />
-                        <motion.div
-                            initial={{ scale: 0.95, opacity: 0, y: 20 }}
-                            animate={{ scale: 1, opacity: 1, y: 0 }}
-                            exit={{ scale: 0.95, opacity: 0, y: 20 }}
+                        <div
                             className="relative bg-white rounded-2xl shadow-2xl w-full max-w-2xl overflow-hidden"
                         >
                             <header className="px-8 py-6 bg-gray-50 border-b border-gray-100 flex justify-between items-center">
@@ -315,10 +310,10 @@ const EnquiryManager = () => {
                                     )}
                                 </footer>
                             </div>
-                        </motion.div>
+                        </div>
                     </div>
                 )}
-            </AnimatePresence>
+            
         </div>
     );
 };

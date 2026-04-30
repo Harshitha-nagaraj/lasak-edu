@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
 import { GraduationCap, Percent, BookOpen, AlertCircle, CheckCircle2, X, Sparkles, Info, Phone, Camera } from 'lucide-react';
 import { fetchWithCache } from '../lib/cacheUtils';
 
@@ -282,9 +281,7 @@ const ScholarshipCalculator: React.FC<ScholarshipCalculatorProps> = ({
   return (
     <>
       {compact ? (
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
+        <div
           className="bg-purple-50 rounded-2xl p-4 border border-purple-100"
         >
           <div className="flex items-center gap-2 mb-3">
@@ -302,11 +299,9 @@ const ScholarshipCalculator: React.FC<ScholarshipCalculatorProps> = ({
               {loading || submitting ? "Processing..." : "Calculate"}
             </button>
           </div>
-        </motion.div>
+        </div>
       ) : (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
+        <div
           className="bg-white rounded-3xl shadow-xl border border-slate-100 overflow-hidden"
         >
           <div className="bg-gradient-to-r from-purple-600 to-blue-600 p-2.5 md:p-6 relative">
@@ -386,16 +381,13 @@ const ScholarshipCalculator: React.FC<ScholarshipCalculatorProps> = ({
               </div>
             </div>
           </div>
-        </motion.div>
+        </div>
       )}
 
-      <AnimatePresence>
+      
         {showPopup && result && (
           <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm" onClick={() => setShowPopup(false)}>
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9, y: 20 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+            <div
               className="relative w-full max-w-4xl bg-white rounded-3xl overflow-hidden shadow-2xl cursor-default"
               onClick={(e) => e.stopPropagation()}
             >
@@ -520,10 +512,10 @@ const ScholarshipCalculator: React.FC<ScholarshipCalculatorProps> = ({
                   </div>
                 )}
               </div>
-            </motion.div>
+            </div>
           </div>
         )}
-      </AnimatePresence>
+      
     </>
   );
 };

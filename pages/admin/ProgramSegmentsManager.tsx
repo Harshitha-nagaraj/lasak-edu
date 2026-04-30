@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
 import { Plus, Trash2, Edit2, Save, X, GripVertical, PlusCircle, Download } from 'lucide-react';
 import { useUserRole } from '../../hooks/useUserRole';
 

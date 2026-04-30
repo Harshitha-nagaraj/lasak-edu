@@ -1,7 +1,6 @@
 
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
 import { BookOpen, Users, FileText, TrendingUp, ArrowUpRight, Video as VideoIcon, PlaySquare as VideoText } from 'lucide-react';
 import { COURSES } from '../../constants/courseDetails';
 import { BLOGS } from '../../constants/blogDetails';
@@ -9,8 +8,7 @@ import { TESTIMONIALS } from '../../constants/testimonials';
 import { useUserRole } from '../../hooks/useUserRole';
 
 const StatCard = ({ title, value, icon: Icon, color, trend }: any) => (
-    <motion.div
-        whileHover={{ y: -5 }}
+    <div
         className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100"
     >
         <div className="flex justify-between items-start">
@@ -28,7 +26,7 @@ const StatCard = ({ title, value, icon: Icon, color, trend }: any) => (
             </span>
             <span className="text-gray-400">vs last month</span>
         </div>
-    </motion.div>
+    </div>
 );
 
 const Dashboard = () => {

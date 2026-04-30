@@ -1,6 +1,5 @@
 
 import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
 import { Plus, Trash2, Edit2, Save, X, Upload, Image as ImageIcon } from 'lucide-react';
 import ImageUploader from '../../components/admin/ImageUploader';
 import { useUserRole } from '../../hooks/useUserRole';
@@ -124,9 +123,7 @@ const AccreditationManager = () => {
             </div>
 
             {(isAdding || isEditing) && (
-                <motion.div
-                    initial={{ opacity: 0, y: -20 }}
-                    animate={{ opacity: 1, y: 0 }}
+                <div
                     className="bg-white p-6 rounded-2xl shadow-sm border border-blue-100 mb-8 space-y-4"
                 >
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -172,12 +169,12 @@ const AccreditationManager = () => {
                             />
                         </div>
                     </div>
-                </motion.div>
+                </div>
             )}
 
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                 {accreditations.map((acc) => (
-                    <motion.div
+                    <div
                         key={acc.id}
                         layout
                         className="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 group relative overflow-hidden flex flex-col items-center justify-center h-48"
@@ -205,7 +202,7 @@ const AccreditationManager = () => {
                                 </button>
                             </div>
                         )}
-                    </motion.div>
+                    </div>
                 ))}
             </div>
 

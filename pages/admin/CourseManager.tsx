@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
 import { Search, Plus, Edit2, Trash2, BookOpen, Filter } from 'lucide-react';
 import { useUserRole } from '../../hooks/useUserRole';
 import { useNavigate, Link } from 'react-router-dom';

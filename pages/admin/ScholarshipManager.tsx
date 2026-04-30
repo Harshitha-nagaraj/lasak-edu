@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
 import { GraduationCap, Plus, Edit2, Trash2, Save, X, ToggleLeft, ToggleRight, ArrowUp, ArrowDown, Filter, Tag, Copy } from 'lucide-react';
 
 
@@ -514,13 +513,11 @@ const ScholarshipManager: React.FC = () => {
 
             {/* Message Banner */}
             {message && (
-                <motion.div
-                    initial={{ opacity: 0, y: -10 }}
-                    animate={{ opacity: 1, y: 0 }}
+                <div
                     className={`p-4 rounded-lg ${message.type === 'success' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}
                 >
                     {message.text}
-                </motion.div>
+                </div>
             )}
 
             {activeTab === 'coupons' ? (
@@ -538,7 +535,7 @@ const ScholarshipManager: React.FC = () => {
 
                     {/* Add Coupon Form */}
                     {isAddingCoupon && (
-                        <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}
+                        <div
                             className="bg-green-50 border border-green-200 rounded-xl p-6 space-y-4"
                         >
                             <h3 className="font-bold text-green-800">New Coupon Code</h3>
@@ -603,7 +600,7 @@ const ScholarshipManager: React.FC = () => {
                                     className="flex items-center gap-2 px-4 py-2 bg-slate-100 text-slate-700 rounded-lg font-medium hover:bg-slate-200"
                                 ><X size={16} />Cancel</button>
                             </div>
-                        </motion.div>
+                        </div>
                     )}
 
                     {/* Coupons Table */}
@@ -746,9 +743,7 @@ const ScholarshipManager: React.FC = () => {
                 <>
                     {/* Add New Rule Form */}
                     {isAdding && (
-                        <motion.div
-                            initial={{ opacity: 0, y: -10 }}
-                            animate={{ opacity: 1, y: 0 }}
+                        <div
                             className="bg-white rounded-xl p-6 shadow-lg border border-purple-200"
                         >
                             <h3 className="font-bold text-slate-800 mb-4">Add New Scholarship Rule</h3>
@@ -840,7 +835,7 @@ const ScholarshipManager: React.FC = () => {
                                     Cancel
                                 </button>
                             </div>
-                        </motion.div>
+                        </div>
                     )}
 
                     {/* Rules by Category */}

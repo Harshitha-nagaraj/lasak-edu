@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
 import { Briefcase, CheckCircle, Send, Sparkles } from 'lucide-react';
 
 const EnquirySegment = () => {
@@ -72,14 +71,11 @@ const EnquirySegment = () => {
 
                     {/* Left Content */}
                     <div className="lg:w-1/2 relative z-10">
-                        <motion.div
-                            initial={{ opacity: 0, scale: 0.9 }}
-                            whileInView={{ opacity: 1, scale: 1 }}
-                            viewport={{ once: true }}
+                        <div
                             className="inline-flex items-center gap-2 px-4 py-2 bg-blue-500/10 text-cyan-400 rounded-full text-sm font-bold border border-blue-500/20 mb-8"
                         >
                             <Sparkles size={16} /> Fast-Track Your Career
-                        </motion.div>
+                        </div>
 
                         <h2 className="text-4xl md:text-6xl font-black mb-8 leading-tight">
                             Take Your <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">First Step</span> Toward Success
@@ -113,10 +109,7 @@ const EnquirySegment = () => {
 
                     {/* Right Form */}
                     <div className="lg:w-1/2 w-full relative z-10">
-                        <motion.div
-                            initial={{ opacity: 0, y: 20 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            viewport={{ once: true }}
+                        <div
                             className="bg-white/5 backdrop-blur-xl border border-white/10 p-8 md:p-10 rounded-[2.5rem] shadow-2xl"
                         >
                             <h3 className="text-2xl font-bold mb-8 text-white flex items-center gap-3">
@@ -218,7 +211,7 @@ const EnquirySegment = () => {
                                     )}
                                 </button>
                             </form>
-                        </motion.div>
+                        </div>
                     </div>
                 </div>
             </div>

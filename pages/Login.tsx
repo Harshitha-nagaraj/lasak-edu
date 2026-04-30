@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { Lock, Mail, ArrowRight, UserPlus, AlertCircle, CheckCircle2, KeyRound, Eye, EyeOff } from 'lucide-react';
 
@@ -69,10 +68,7 @@ const Login = () => {
                 <div className="absolute top-0 -right-4 w-96 h-96 bg-purple-400 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000"></div>
             </div>
 
-            <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5 }}
+            <div
                 className="bg-white/80 backdrop-blur-xl p-8 rounded-2xl shadow-xl w-full max-w-md z-10 border border-white/50"
             >
                 <div className="text-center mb-8">
@@ -85,9 +81,7 @@ const Login = () => {
                 </div>
 
                 {signupSuccess && !isForgotPassword && (
-                    <motion.div
-                        initial={{ opacity: 0, y: -10 }}
-                        animate={{ opacity: 1, y: 0 }}
+                    <div
                         className="bg-green-50 border border-green-200 text-green-700 p-4 rounded-xl mb-6 flex items-start gap-3"
                     >
                         <CheckCircle2 className="w-6 h-6 shrink-0 text-green-500" />
@@ -95,13 +89,11 @@ const Login = () => {
                             <p className="font-bold">Account Created Successfully!</p>
                             <p className="text-sm">Please login with your email and password to continue.</p>
                         </div>
-                    </motion.div>
+                    </div>
                 )}
 
                 {resetSuccess && (
-                    <motion.div
-                        initial={{ opacity: 0, y: -10 }}
-                        animate={{ opacity: 1, y: 0 }}
+                    <div
                         className="bg-green-50 border border-green-200 text-green-700 p-4 rounded-xl mb-6 flex items-start gap-3"
                     >
                         <CheckCircle2 className="w-6 h-6 shrink-0 text-green-500" />
@@ -109,18 +101,16 @@ const Login = () => {
                             <p className="font-bold">Reset Link Sent!</p>
                             <p className="text-sm">Please check your email inbox (and spam folder) for the password reset link.</p>
                         </div>
-                    </motion.div>
+                    </div>
                 )}
 
                 {error && (
-                    <motion.div
-                        initial={{ opacity: 0, y: -10 }}
-                        animate={{ opacity: 1, y: 0 }}
+                    <div
                         className="bg-red-50 border border-red-200 text-red-600 p-3 rounded-xl mb-6 flex items-start gap-2 text-sm"
                     >
                         <AlertCircle className="w-5 h-5 shrink-0" />
                         <span>{error}</span>
-                    </motion.div>
+                    </div>
                 )}
 
                 <form onSubmit={handleLogin} className="space-y-6">
@@ -173,9 +163,7 @@ const Login = () => {
                         </div>
                     )}
 
-                    <motion.button
-                        whileHover={{ scale: 1.02 }}
-                        whileTap={{ scale: 0.98 }}
+                    <button
                         disabled={loading}
                         className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 rounded-xl font-semibold shadow-lg shadow-blue-500/30 flex items-center justify-center gap-2 disabled:opacity-70"
                     >
@@ -190,7 +178,7 @@ const Login = () => {
                                 )}
                             </>
                         )}
-                    </motion.button>
+                    </button>
 
                     <div className="text-center mt-6 space-y-4">
                         {isForgotPassword ? (
@@ -211,7 +199,7 @@ const Login = () => {
                         )}
                     </div>
                 </form>
-            </motion.div>
+            </div>
         </div>
     );
 };

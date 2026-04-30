@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
 import { Search, Globe, ChevronRight, Layout, BookOpen, Info, Mail, Plus, X } from 'lucide-react';
 
 interface SEOStatus {
@@ -261,9 +260,7 @@ const SEOManager = () => {
             {/* Add Custom Page Modal */}
             {isAddModalOpen && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-                    <motion.div
-                        initial={{ opacity: 0, scale: 0.95 }}
-                        animate={{ opacity: 1, scale: 1 }}
+                    <div
                         className="bg-white rounded-2xl p-6 shadow-xl w-full max-w-md"
                     >
                         <div className="flex items-center justify-between mb-6">
@@ -304,7 +301,7 @@ const SEOManager = () => {
                                 </button>
                             </div>
                         </div>
-                    </motion.div>
+                    </div>
                 </div>
             )}
         </div>

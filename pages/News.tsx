@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
 import { Calendar, ArrowRight, Newspaper, Bell, ExternalLink } from 'lucide-react';
 import { fetchWithCache } from '../lib/cacheUtils';
 import SEO from '../components/SEO';
@@ -79,9 +78,7 @@ const News = () => {
             {/* Hero Section */}
             <section className="bg-white pt-32 pb-16 px-4 border-b border-slate-200">
                 <div className="container mx-auto max-w-6xl">
-                    <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
+                    <div
                         className="text-center"
                     >
                         <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-50 text-blue-600 rounded-full text-sm font-bold mb-6">
@@ -94,7 +91,7 @@ const News = () => {
                         <p className="text-slate-600 text-lg max-w-2xl mx-auto leading-relaxed">
                             Discover the latest happenings, upcoming events, and success stories from the heart of LasakEdu.
                         </p>
-                    </motion.div>
+                    </div>
                 </div>
             </section>
 
@@ -109,12 +106,8 @@ const News = () => {
                     {(
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                             {news.map((item, idx) => (
-                                <motion.article
+                                <article
                                     key={item.id}
-                                    initial={{ opacity: 0, y: 30 }}
-                                    whileInView={{ opacity: 1, y: 0 }}
-                                    viewport={{ once: true }}
-                                    transition={{ delay: idx * 0.1 }}
                                     className="group bg-white rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 border border-slate-100 flex flex-col md:flex-row h-full"
                                 >
                                     {/* Image Section */}
@@ -147,15 +140,13 @@ const News = () => {
                                             {item.excerpt}
                                         </p>
                                     </div>
-                                </motion.article>
+                                </article>
                             ))}
                         </div>
                     )}
 
                     {/* Load More / Newsletter Call to Action */}
-                    <motion.div
-                        initial={{ opacity: 0 }}
-                        whileInView={{ opacity: 1 }}
+                    <div
                         className="mt-20 p-10 md:p-16 bg-gradient-to-br from-blue-600 to-indigo-700 rounded-[3rem] text-center text-white relative overflow-hidden shadow-2xl"
                     >
                         {/* Design Elements */}
@@ -182,7 +173,7 @@ const News = () => {
                                 </button>
                             </div>
                         </div>
-                    </motion.div>
+                    </div>
                 </div>
             </section>
 

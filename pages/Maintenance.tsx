@@ -1,5 +1,4 @@
 import React from 'react';
-import { motion } from 'framer-motion';
 import { Construction, Clock, Mail, Phone, Globe } from 'lucide-react';
 import './Maintenance.css';
 
@@ -8,36 +7,24 @@ const Maintenance = () => {
     <div className="maintenance-container">
       <div className="maintenance-overlay"></div>
       
-      <motion.div 
+      <div 
         className="maintenance-content"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8 }}
       >
         <div className="logo-section">
-          <motion.img 
+          <img 
             src="/img/logo.png" 
             alt="lasakedu Logo" 
             className="maintenance-logo"
-            initial={{ scale: 0.8 }}
-            animate={{ scale: 1 }}
-            transition={{ 
-              duration: 2,
-              repeat: Infinity,
-              repeatType: "reverse"
-            }}
           />
           <h1 className="company-name">LASAK EDU</h1>
         </div>
 
         <div className="main-message">
-          <motion.div
-            animate={{ rotate: [0, 10, -10, 0] }}
-            transition={{ duration: 4, repeat: Infinity }}
+          <div
             className="icon-wrapper"
           >
             <Construction size={64} className="maintenance-icon" />
-          </motion.div>
+          </div>
           <h2 className="title">Under Service</h2>
           <p className="subtitle">
             We're currently making some exciting changes to improve your experience. 
@@ -73,7 +60,7 @@ const Maintenance = () => {
         <footer className="maintenance-footer">
           <p>&copy; {new Date().getFullYear()} LASAK EDU. All rights reserved.</p>
         </footer>
-      </motion.div>
+      </div>
 
       {/* Animated Background Shapes */}
       <div className="bg-shape shape-1"></div>

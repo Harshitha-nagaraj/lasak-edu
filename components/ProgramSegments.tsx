@@ -1,6 +1,5 @@
 
 import React from 'react';
-import { m } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { ArrowRight, Bot, Code, Star, Users, Settings, Megaphone, Briefcase, CheckCircle, Globe, PenTool } from 'lucide-react';
 import { IMPORTANT_PROGRAM_BLOCKS } from '../constants/ui';

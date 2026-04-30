@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { Lock, User, ArrowRight, Eye, EyeOff } from 'lucide-react';
 
@@ -74,10 +73,7 @@ const AdminLogin = () => {
                 <div className="absolute top-0 -right-4 w-96 h-96 bg-purple-400 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000"></div>
             </div>
 
-            <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5 }}
+            <div
                 className="bg-white/80 backdrop-blur-xl p-8 rounded-2xl shadow-xl w-full max-w-md z-10 border border-white/50"
             >
                 <div className="text-center mb-8">
@@ -130,9 +126,7 @@ const AdminLogin = () => {
                         </div>
                     )}
 
-                    <motion.button
-                        whileHover={{ scale: 1.02 }}
-                        whileTap={{ scale: 0.98 }}
+                    <button
                         disabled={loading}
                         className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 rounded-xl font-semibold shadow-lg shadow-blue-500/30 flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
                     >
@@ -144,7 +138,7 @@ const AdminLogin = () => {
                                 <ArrowRight className="w-5 h-5" />
                             </>
                         )}
-                    </motion.button>
+                    </button>
 
                     <div className="text-center mt-4 space-y-3">
                         {!isForgotPassword && (
@@ -174,7 +168,7 @@ const AdminLogin = () => {
                         </button>
                     </div>
                 </form>
-            </motion.div>
+            </div>
         </div>
     );
 };

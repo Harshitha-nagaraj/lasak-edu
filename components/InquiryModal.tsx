@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { m, AnimatePresence } from 'framer-motion';
 import { X, Send, Sparkles, CheckCircle, ArrowRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { fetchWithCache } from '../lib/cacheUtils';
@@ -253,23 +252,17 @@ const InquiryModal: React.FC<InquiryModalProps> = ({
     };
 
     return (
-        <AnimatePresence>
+        <>
             {isOpen && (
                 <div className="fixed inset-0 z-[100] flex items-center justify-center p-2 sm:p-4 overflow-y-auto">
                     {/* Backdrop */}
-                    <m.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
+                    <div
                         onClick={onClose}
                         className="absolute inset-0 bg-slate-900/80 backdrop-blur-md"
                     />
 
                     {/* Modal Content */}
-                    <m.div
-                        initial={{ scale: 0.9, opacity: 0, y: 20 }}
-                        animate={{ scale: 1, opacity: 1, y: 0 }}
-                        exit={{ scale: 0.9, opacity: 0, y: 20 }}
+                    <div
                         className="relative w-full max-w-4xl bg-[#0a0f1e] rounded-[1.2rem] sm:rounded-[2.5rem] border border-white/10 shadow-2xl overflow-hidden my-auto mx-2"
                     >
                         {/* Design Elements */}
@@ -280,13 +273,11 @@ const InquiryModal: React.FC<InquiryModalProps> = ({
                             {/* Header */}
                             <div className="flex justify-between items-start mb-6 sm:mb-8">
                                 <div>
-                                    <m.div
-                                        initial={{ opacity: 0, x: -10 }}
-                                        animate={{ opacity: 1, x: 0 }}
+                                    <div
                                         className="inline-flex items-center gap-2 px-3 py-1 bg-blue-500/10 text-cyan-400 rounded-full text-xs font-bold border border-blue-500/20 mb-4"
                                     >
                                         <Sparkles size={14} /> Quick Enquiry
-                                    </m.div>
+                                    </div>
                                     <h2 className="text-xl sm:text-2xl md:text-3xl font-black text-white mb-2 leading-tight">
                                         Interested in <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500 line-clamp-2">{courseTitle}</span>?
                                     </h2>
@@ -574,10 +565,10 @@ const InquiryModal: React.FC<InquiryModalProps> = ({
                                 Your data is secured and will only be used for admission guidance.
                             </div>
                         </div>
-                    </m.div>
+                    </div>
                 </div>
             )}
-        </AnimatePresence>
+        </>
     );
 };
 

@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { m } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { CheckCircle, Award, Target, ArrowRight, Zap, Briefcase, BookOpen, MapPin, Settings, Percent, Flame, Calendar, Clock } from 'lucide-react';
 import { fetchWithCache } from '../lib/cacheUtils';
@@ -114,9 +113,7 @@ const Programs = () => {
                 fetchPriority="high"
               />
               {/* Floating Badge */}
-              <m.div
-                animate={{ y: [0, -10, 0] }}
-                transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+              <div
                 className="absolute -bottom-10 -left-10 bg-white p-6 rounded-2xl shadow-xl border border-slate-100 z-20 hidden md:block"
               >
                 <div className="flex items-center gap-3">
@@ -128,7 +125,7 @@ const Programs = () => {
                     <div className="text-slate-500 text-sm font-semibold">Placement Rate</div>
                   </div>
                 </div>
-              </m.div>
+              </div>
             </div>
           </div>
         </div>
@@ -187,9 +184,8 @@ const Programs = () => {
               /* Fallback if no data */
               <div className="text-slate-500 italic p-4">No active workshops at the moment. Check back soon!</div>
             ) : workshops.map((item) => (
-              <m.div
+              <div
                 key={item.id}
-                whileHover={{ y: -5 }}
                 className={`min-w-[320px] md:min-w-[380px] rounded-2xl p-6 border shadow-xl snap-center flex flex-col relative overflow-hidden group 
                      ${item.type === 'offer' ? 'bg-gradient-to-br from-blue-900 to-slate-900 border-blue-500/30' : 'bg-slate-800 border-slate-700'}`}
               >
@@ -259,7 +255,7 @@ const Programs = () => {
                     )}
                   </div>
                 </div>
-              </m.div>
+              </div>
             ))}
           </div>
         </div>
@@ -288,9 +284,8 @@ const Programs = () => {
                 </div>
               ))
             ) : programFeatures.map((feature, i) => (
-              <m.div
+              <div
                 key={i}
-                whileHover={{ y: -10, boxShadow: "0 20px 40px -10px rgba(59, 130, 246, 0.15)" }}
                 className="bg-slate-50 p-6 xs:p-8 rounded-2xl border border-slate-100 hover:shadow-xl transition-all group cursor-pointer"
               >
                 <div className={`w-14 h-14 bg-white rounded-xl shadow-sm flex items-center justify-center mb-6 group-hover:scale-110 transition-transform`}>
@@ -304,7 +299,7 @@ const Programs = () => {
                 </div>
                 <h3 className="text-xl font-bold text-slate-900 mb-3">{feature.title}</h3>
                 <p className="text-slate-500 leading-relaxed text-sm">{feature.description}</p>
-              </m.div>
+              </div>
             ))}
           </div>
         </div>
@@ -320,8 +315,7 @@ const Programs = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {/* IT Programs */}
-            <m.div
-              whileHover={{ y: -10, boxShadow: "0 20px 40px -10px rgba(37, 99, 235, 0.2)" }}
+            <div
               className="bg-white rounded-2xl p-6 xs:p-8 border border-slate-200 shadow-lg hover:shadow-xl transition-all relative overflow-hidden cursor-pointer"
             >
               <div className="absolute top-0 right-0 p-4 opacity-10">
@@ -350,11 +344,10 @@ const Programs = () => {
               <Link to="/courses/IT" className="text-blue-600 font-bold flex items-center gap-2 hover:gap-3 transition-all">
                 Explore IT Courses <ArrowRight size={16} />
               </Link>
-            </m.div>
+            </div>
 
             {/* Mechanical Programs */}
-            <m.div
-              whileHover={{ y: -10, boxShadow: "0 20px 40px -10px rgba(147, 51, 234, 0.2)" }}
+            <div
               className="bg-white rounded-2xl p-6 xs:p-8 border border-slate-200 shadow-lg hover:shadow-xl transition-all relative overflow-hidden cursor-pointer"
             >
               <div className="absolute top-0 right-0 p-4 opacity-10">
@@ -383,11 +376,10 @@ const Programs = () => {
               <Link to="/courses/Mechanical" className="text-purple-600 font-bold flex items-center gap-2 hover:gap-3 transition-all">
                 Explore Mechanical Courses <ArrowRight size={16} />
               </Link>
-            </m.div>
+            </div>
 
             {/* Civil Programs */}
-            <m.div
-              whileHover={{ y: -10, boxShadow: "0 20px 40px -10px rgba(22, 163, 74, 0.2)" }}
+            <div
               className="bg-white rounded-2xl p-6 xs:p-8 border border-slate-200 shadow-lg hover:shadow-xl transition-all relative overflow-hidden cursor-pointer"
             >
               <div className="absolute top-0 right-0 p-4 opacity-10">
@@ -416,7 +408,7 @@ const Programs = () => {
               <Link to="/courses/Civil" className="text-green-600 font-bold flex items-center gap-2 hover:gap-3 transition-all">
                 Explore Civil Courses <ArrowRight size={16} />
               </Link>
-            </m.div>
+            </div>
           </div>
         </div>
       </section>

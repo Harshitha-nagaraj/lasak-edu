@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
 import { GraduationCap, Award, HelpCircle, ChevronDown, ChevronUp, BookOpen } from 'lucide-react';
 import { Course } from '../types';
 import { fetchWithCache } from '../lib/cacheUtils';
@@ -106,9 +105,7 @@ const ScholarshipPage: React.FC = () => {
                 </div>
 
                 <div className="container mx-auto px-4 relative z-10">
-                    <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
+                    <div
                         className="text-center max-w-3xl mx-auto"
                     >
                         <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-sm rounded-full text-purple-200 text-sm font-medium mb-6">
@@ -124,7 +121,7 @@ const ScholarshipPage: React.FC = () => {
                         <p className="text-lg text-purple-200 max-w-2xl mx-auto">
                             We believe in rewarding hard work. Get up to 30% scholarship on any course based on your academic performance.
                         </p>
-                    </motion.div>
+                    </div>
                 </div>
             </div>
 
@@ -133,10 +130,7 @@ const ScholarshipPage: React.FC = () => {
                 <div className="grid lg:grid-cols-2 gap-12 items-start">
                     {/* Calculator Section */}
                     <div>
-                        <motion.div
-                            initial={{ opacity: 0, x: -20 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            transition={{ delay: 0.2 }}
+                        <div
                         >
                             {/* Course Selection */}
                             <div className="bg-white rounded-2xl p-6 shadow-lg border border-slate-100 mb-6">
@@ -166,16 +160,13 @@ const ScholarshipPage: React.FC = () => {
                                 coursePrice={selectedCourse ? parsePrice(selectedCourse.price) : 15000}
                                 courseName={selectedCourse?.title || 'Sample Course'}
                             />
-                        </motion.div>
+                        </div>
                     </div>
 
                     {/* Info Section */}
                     <div className="space-y-8">
                         {/* Scholarship Tiers Card */}
-                        <motion.div
-                            initial={{ opacity: 0, x: 20 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            transition={{ delay: 0.3 }}
+                        <div
                             className="bg-white rounded-3xl p-8 shadow-lg border border-slate-100"
                         >
                             <div className="flex items-center gap-3 mb-6">
@@ -187,11 +178,8 @@ const ScholarshipPage: React.FC = () => {
 
                             <div className="space-y-4">
                                 {rules.map((rule, index) => (
-                                    <motion.div
+                                    <div
                                         key={rule.id}
-                                        initial={{ opacity: 0, y: 10 }}
-                                        animate={{ opacity: 1, y: 0 }}
-                                        transition={{ delay: 0.4 + index * 0.1 }}
                                         className="relative overflow-hidden rounded-2xl border border-slate-100 p-4 hover:shadow-md transition-all"
                                     >
                                         <div className={`absolute top-0 left-0 w-1 h-full ${index === 0 ? 'bg-gradient-to-b from-yellow-400 to-orange-500' :
@@ -215,16 +203,13 @@ const ScholarshipPage: React.FC = () => {
                                                 Academic Score: {rule.min_percentage}% - {rule.max_percentage}%
                                             </p>
                                         </div>
-                                    </motion.div>
+                                    </div>
                                 ))}
                             </div>
-                        </motion.div>
+                        </div>
 
                         {/* FAQs */}
-                        <motion.div
-                            initial={{ opacity: 0, x: 20 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            transition={{ delay: 0.5 }}
+                        <div
                             className="bg-white rounded-3xl p-8 shadow-lg border border-slate-100"
                         >
                             <div className="flex items-center gap-3 mb-6">
@@ -252,18 +237,16 @@ const ScholarshipPage: React.FC = () => {
                                             )}
                                         </button>
                                         {expandedFAQ === index && (
-                                            <motion.div
-                                                initial={{ opacity: 0, y: -10 }}
-                                                animate={{ opacity: 1, y: 0 }}
+                                            <div
                                                 className="px-4 pb-4"
                                             >
                                                 <p className="text-slate-600 text-sm leading-relaxed">{faq.answer}</p>
-                                            </motion.div>
+                                            </div>
                                         )}
                                     </div>
                                 ))}
                             </div>
-                        </motion.div>
+                        </div>
                     </div>
                 </div>
             </div>

@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import {
   Target, Eye, CheckCircle, Users, Monitor, BookOpen, Clock, Heart, ArrowRight,
@@ -43,35 +42,31 @@ const cleanPath = (url: string) => {
 const GlassWaveBackground = () => (
   <div className="absolute inset-0 -z-10 overflow-hidden pointer-events-none">
     {/* Top Blue Wave */}
-    <motion.svg
+    <svg
       className="absolute top-0 left-0 w-full h-[35vh]"
       viewBox="0 0 1440 320"
       preserveAspectRatio="none"
-      animate={{ x: [0, -40, 0] }}
-      transition={{ duration: 20, repeat: Infinity, ease: "easeInOut" }}
     >
       <path
         fill="rgba(59,130,246,0.18)"
         d="M0,160L48,170C96,180,192,200,288,186.7C384,173,480,127,576,122.7C672,117,768,149,864,160C960,171,1056,160,1152,138.7C1248,117,1344,85,1392,69.3L1440,53L1440,0L0,0Z"
       />
-    </motion.svg>
+    </svg>
 
     {/* Soft Glow Layer (NOT blur) */}
     <div className="absolute inset-0 bg-gradient-to-b from-blue-100/30 via-white/40 to-white" />
 
     {/* Bottom Blue Wave */}
-    <motion.svg
+    <svg
       className="absolute bottom-0 left-0 w-full h-[35vh]"
       viewBox="0 0 1440 320"
       preserveAspectRatio="none"
-      animate={{ x: [0, 40, 0] }}
-      transition={{ duration: 22, repeat: Infinity, ease: "easeInOut" }}
     >
       <path
         fill="rgba(56,189,248,0.18)"
         d="M0,64L48,85.3C96,107,192,149,288,170.7C384,192,480,192,576,170.7C672,149,768,107,864,96C960,85,1056,107,1152,128C1248,149,1344,171,1392,181.3L1440,192L1440,320L0,320Z"
       />
-    </motion.svg>
+    </svg>
   </div>
 );
 
@@ -316,23 +311,18 @@ const About = () => {
   relative
 ">
 
-            <motion.h1
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0 }}
+            <h1
               className="text-3xl md:text-5xl font-bold font-tech text-white drop-shadow-lg mb-6 leading-tight">
               {introHero.title}
-            </motion.h1>
+            </h1>
 
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.2 }}
+            <div
               className="space-y-6 text-lg text-blue-100 leading-relaxed drop-shadow-sm whitespace-pre-wrap"
             >
               <p>
                 {introHero.description}
               </p>
-            </motion.div>
+            </div>
 
           </div>
         </div>
@@ -344,11 +334,7 @@ const About = () => {
         <div className="max-w-7xl mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
 
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              whileHover={{ y: -6 }}
+            <div
               className="bg-gradient-to-br from-blue-50 to-white p-10 rounded-3xl border border-blue-100 shadow-lg"
             >
               <div className="flex items-center gap-3 mb-4">
@@ -370,13 +356,9 @@ const About = () => {
                   (e.target as HTMLImageElement).src = '/img/about1.webp'; // Double fallback
                 }}
               />
-            </motion.div>
+            </div>
 
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              whileHover={{ y: -6 }}
+            <div
               className="bg-gradient-to-br from-slate-50 to-white p-10 rounded-3xl border border-slate-200 shadow-lg"
             >
               <div className="flex items-center gap-3 mb-4">
@@ -398,7 +380,7 @@ const About = () => {
                   (e.target as HTMLImageElement).src = '/img/about4.webp';
                 }}
               />
-            </motion.div>
+            </div>
 
           </div>
         </div>
@@ -413,7 +395,7 @@ const About = () => {
             {journey?.title}
           </h2>
           {/* Image */}
-          <motion.img
+          <img
             src={cleanPath((journey as any).image || "/img/journyabout.webp")}
             alt="Our Journey"
             width={1200}
@@ -427,10 +409,6 @@ const About = () => {
         object-cover
       "
             loading="lazy"
-            initial={{ opacity: 0, scale: 0.95, y: 20 }}
-            whileInView={{ opacity: 1, scale: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, ease: "easeOut" }}
             onError={(e) => {
               (e.target as HTMLImageElement).src = '/img/journyabout.webp';
             }}
@@ -448,14 +426,11 @@ const About = () => {
       {mous.length > 0 && (
         <section className="py-20 bg-gradient-to-br from-blue-50/50 via-white to-indigo-50/50 overflow-hidden">
           <div className="max-w-7xl mx-auto px-4 mb-16 text-center">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
+            <div
               className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-100 text-blue-600 text-sm font-bold mb-4"
             >
               <Briefcase size={16} /> OUR PARTNERSHIPS
-            </motion.div>
+            </div>
             <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-4 px-2">MOUs with Prestigious Colleges</h2>
             <p className="text-slate-600 max-w-2xl mx-auto px-4">
               We have signed several Memorandums of Understanding (MOUs) with leading educational institutions to bridge the gap between academia and industry.
@@ -512,13 +487,8 @@ const About = () => {
             <div className="max-w-7xl mx-auto px-4">
               <div className="flex flex-wrap gap-8 justify-center">
                 {mous.map((mou, idx) => (
-                  <motion.div
+                  <div
                     key={mou.id}
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: idx * 0.1 }}
-                    whileHover={{ y: -10 }}
                     className={`
                       bg-white rounded-3xl overflow-hidden shadow-xl shadow-blue-900/5 
                       border border-slate-100 group w-full 
@@ -560,7 +530,7 @@ const About = () => {
                         </div>
                       </div>
                     </div>
-                  </motion.div>
+                  </div>
                 ))}
               </div>
             </div>
@@ -584,9 +554,8 @@ const About = () => {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 place-items-center">
             {Array.isArray(whyChooseUs?.items) && whyChooseUs.items.map((item: any, idx: number) => (
-              <motion.div
+              <div
                 key={idx}
-                whileHover={{ y: -8 }}
                 className="
             bg-white p-8 rounded-2xl
             border border-slate-200
@@ -606,7 +575,7 @@ const About = () => {
                     </p>
                   </div>
                 </div>
-              </motion.div>
+              </div>
             ))}
           </div>
 
@@ -743,9 +712,8 @@ const About = () => {
               const IconComponent = (IconMap as any)[val?.icon] || CheckCircle;
 
               return (
-                <motion.div
+                <div
                   key={i}
-                  whileHover={{ y: -8 }}
                   className="
                     bg-slate-50 p-8 rounded-2xl
                     border border-slate-200
@@ -764,7 +732,7 @@ const About = () => {
                   <p className="text-slate-500 text-sm">
                     {val?.text}
                   </p>
-                </motion.div>
+                </div>
               );
             })}
           </div>
@@ -784,12 +752,8 @@ const About = () => {
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {teamMembers.map((member, i) => (
-                  <motion.div
+                  <div
                     key={i}
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: i * 0.1 }}
                     className="
                     bg-white p-6 rounded-3xl
                     shadow-md hover:shadow-xl
@@ -812,7 +776,7 @@ const About = () => {
                       <p className="text-blue-600 text-sm font-semibold mb-2">{member.role}</p>
                       <p className="text-slate-500 text-sm leading-snug">{member.desc}</p>
                     </div>
-                  </motion.div>
+                  </div>
                 ))}
               </div>
             </div>

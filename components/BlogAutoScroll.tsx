@@ -1,5 +1,4 @@
 import React, { useRef, useEffect, useState } from "react";
-import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { BLOG_SUMMARIES as BLOGS } from '../constants/blogSummaries';
 import { Calendar, User, ArrowRight } from "lucide-react";

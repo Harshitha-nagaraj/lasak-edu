@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { motion } from 'framer-motion';
 import { Trash2, UserPlus, Shield, User, Save, X, Edit2, CheckCircle, KeyRound, Eye, EyeOff } from 'lucide-react';
 import { useUserRole } from '../../hooks/useUserRole';
 
@@ -217,9 +216,7 @@ const UserManager = () => {
             </div>
 
             {isAdding && (
-                <motion.div
-                    initial={{ opacity: 0, y: -20 }}
-                    animate={{ opacity: 1, y: 0 }}
+                <div
                     className="bg-white p-6 rounded-2xl shadow-lg border border-slate-100"
                 >
                     <form onSubmit={handleAddUser} className="flex flex-col md:flex-row gap-4 items-end">
@@ -285,7 +282,7 @@ const UserManager = () => {
                             <Save size={18} /> Save User
                         </button>
                     </form>
-                </motion.div>
+                </div>
             )}
 
             <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">

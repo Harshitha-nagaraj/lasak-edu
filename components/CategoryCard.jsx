@@ -1,17 +1,10 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { motion } from "framer-motion";
-
 const CategoryCard = ({ title, icon, path }) => {
   const navigate = useNavigate();
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 30 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      whileHover={{ scale: 1.03 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.6 }}
+    <div
     >
       <div
         onClick={() => navigate(path)}
@@ -26,7 +19,7 @@ const CategoryCard = ({ title, icon, path }) => {
           <h3 className="font-bold text-lg">{title}</h3>
         </div>
       </div>
-    </motion.div>
+    </div>
   );
 };
 
