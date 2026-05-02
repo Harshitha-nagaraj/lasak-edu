@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate, Link } from 'react-router-dom';
+import { useParams, useNavigate, useLocation, Link } from 'react-router-dom';
 import {
     Check, Building2, Phone, ArrowRight, ArrowLeft, BookOpen,
     X, Wrench, Star, Users, Brain, GraduationCap,
@@ -28,8 +28,21 @@ const getYouTubeId = (url: string): string | null => {
 
 const CourseDetails = () => {
     const { id, slug } = useParams();
+    const location = useLocation();
     const navigate = useNavigate();
-    const staticCourse = COURSES.find(c => (id && c.id === id) || (slug && c.slug === slug));
+    
+    // Extract slug from explicit SEO paths or top-level /:slug route
+    let effectiveSlug = slug;
+    if (!id && !slug) {
+        // For top-level SEO URLs like /autocad-training-coimbatore
+        // Extract the path segment after the leading slash
+        const pathSlug = location.pathname.replace(/^\//, '').replace(/\/$/, '');
+        if (pathSlug) {
+            effectiveSlug = pathSlug;
+        }
+    }
+    
+    const staticCourse = COURSES.find(c => (id && c.id === id) || (effectiveSlug && c.slug === effectiveSlug));
     const [course, setCourse] = useState<Course | null>(staticCourse || null);
     const [loading, setLoading] = useState(!staticCourse);
     const [showScholarshipModal, setShowScholarshipModal] = useState(false);
@@ -115,7 +128,7 @@ const CourseDetails = () => {
     const pricingPaymentRef = React.useRef<any>(null);
 
     const fetchCourseData = async () => {
-        if (!id && !slug) return;
+        if (!id && !effectiveSlug) return;
         setLoading(true);
         try {
             const { getFirestoreDb } = await import('../lib/firebase');
@@ -130,7 +143,7 @@ const CourseDetails = () => {
             }
 
             if (!courseData) {
-                const staticData = COURSES.find(c => (id && c.id === id) || (slug && c.slug === slug));
+                const staticData = COURSES.find(c => (id && c.id === id) || (effectiveSlug && c.slug === effectiveSlug));
                 if (staticData) courseData = staticData;
             }
 
@@ -296,7 +309,7 @@ const CourseDetails = () => {
         };
         initAuth();
         return () => { if (unsubscribe) unsubscribe(); };
-    }, [id, slug]);
+    }, [id, effectiveSlug, location.pathname]);
 
     const handlePaymentClick = (type: 'hero' | 'pricing') => {
         // Check if basic information is present
@@ -742,7 +755,7 @@ const CourseDetails = () => {
                                 <div className="aspect-[4/3] rounded-3xl overflow-hidden shadow-2xl border-8 border-white">
                                     <img
                                         src={normalizeImagePath(course.image)}
-                                        alt={course.title}
+                                        alt={course.seo?.alt_text || course.title}
                                         width="800"
                                         height="600"
                                         fetchPriority="high"

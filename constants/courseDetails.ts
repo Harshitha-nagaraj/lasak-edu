@@ -4,16 +4,16 @@ export const COURSES: Course[] = [
   {
     id: 'mech1',
     title: 'AutoCAD Mechanical',
-    slug: "autocad-mechanical",
+    slug: "autocad-training-coimbatore",
     category: 'Mechanical',
     oldPrice: '₹9,000',
     price: '₹5,999',
     duration: '1 – 1.5 Months',
     image: '/img/mech/autocad.webp',
     description: 'Master AutoCAD Mechanical and accelerate your career growth with expert-led training.',
-    tagline: 'Master AutoCAD Mechanical and accelerate your career growth with expert-led training.',
-    introduction: "AutoCAD Mechanical is a specialized CAD software designed for mechanical engineering and manufacturing industries. It provides advanced tools for creating precise mechanical drawings, standard parts, annotations, and documentation.\n\nThis course offers complete hands-on training in 2D drafting, mechanical detailing, dimensioning standards, and industry workflows used in real-world design projects.",
-    long_description: "**Industries hiring include:**\n🏭 Manufacturing Companies\n🏗 Fabrication Industries\n🚗 Automotive Firms\n🚜 Heavy Machinery Sectors\n🛠 Product Development Companies",
+    tagline: 'Join the best AutoCAD training institute in Coimbatore. Civil & Mechanical courses with placement support.',
+    introduction: "Lasak Edu offers the best AutoCAD training in Coimbatore for civil and mechanical students. Our course includes real-time projects and placement support.\n\nAutoCAD Mechanical is a specialized CAD software designed for mechanical engineering and manufacturing industries. It provides advanced tools for creating precise mechanical drawings, standard parts, annotations, and documentation.\n\nThis course offers complete hands-on training in 2D drafting, mechanical detailing, dimensioning standards, and industry workflows used in real-world design projects.",
+    long_description: "## Why Choose Our AutoCAD Training in Coimbatore\n\nOur institute focuses on providing practical, industry-oriented training that guarantees you are job-ready. From learning the absolute basics to mastering advanced 2D drafting and 3D detailing, our course ensures a solid foundation.\n\n## Course Details – AutoCAD Training\n\nThis robust course walks you through AutoCAD's interface, workspace navigation, drawing setup, and professional layer management. You will work on real-time projects mimicking actual industry workflows.\n\n## Placement Support for Mechanical & Civil Students\n\nWe provide 100% placement support for our students. Our network with core companies guarantees excellent career start opportunities for our mechanical and civil students.\n\n**Industries hiring include:**\n🏭 Manufacturing Companies\n🏗 Fabrication Industries\n🚗 Automotive Firms\n🚜 Heavy Machinery Sectors\n🛠 Product Development Companies\n\n[Explore more Mechanical Courses](/courses/Mechanical)",
     enrollLink: "https://forms.gle/6sVSvE1schYRYfse7",
     phone: "+91 74187 32525",
     modules: [
@@ -90,9 +90,10 @@ export const COURSES: Course[] = [
       }
     ],
     seo: {
-      title: "AutoCAD Mechanical Course in Coimbatore | Lasak Edu",
-      description: "Learn AutoCAD Mechanical from experts in Coimbatore at Lasak Edu. Master 2D drafting, GD&T, and manufacturing documentation with 100% placement support.",
-      keywords: "AutoCAD Mechanical Course in Coimbatore, CAD Drafting Training, Mechanical Drawing, Lasak Edu, Manufacturing Design"
+      title: "AutoCAD Training in Coimbatore | Civil & Mechanical Courses | Lasak Edu",
+      description: "Join the best AutoCAD training institute in Coimbatore. Civil & Mechanical courses with placement support. Enroll today at Lasak Edu.",
+      keywords: "AutoCAD Training in Coimbatore, Civil & Mechanical Courses, AutoCAD training institute in Coimbatore, Lasak Edu, Mechanical Drawing",
+      alt_text: "AutoCAD training class in Coimbatore"
     },
     companies: [
       {
@@ -124,16 +125,16 @@ export const COURSES: Course[] = [
   {
     id: 'mech2',
     title: 'SolidWorks Masterclass',
-    slug: "solidworks-masterclass",
+    slug: "solidworks-masterclass-training-coimbatore",
     category: 'Mechanical',
     oldPrice: '₹25,000',
     price: '₹14,999',
     duration: '1.5 – 2 Months',
     image: '/img/mech/solidworks-408z.webp',
     description: 'Master SolidWorks and accelerate your career growth with expert-led training.',
-    tagline: 'Master SolidWorks and accelerate your career growth with expert-led training.',
-    introduction: "The SolidWorks Masterclass is a comprehensive, industry-focused training program designed to help you become proficient in 3D modeling, assembly design, and product development. SolidWorks is widely used in automotive, aerospace, manufacturing, and product design industries.\n\nThis course covers everything from basic sketching to advanced modeling techniques, ensuring you gain practical, real-world experience through live projects and hands-on exercises.",
-    long_description: "**Industries hiring include:**\n🚗 Automotive Companies\n🏭 Manufacturing Industries\n🏗 Heavy Machinery Firms\n🛠 Product Development Companies",
+    tagline: 'Join the best SolidWorks Masterclass training institute in Coimbatore. Mechanical courses with placement support.',
+    introduction: "Lasak Edu offers the best SolidWorks Masterclass training in Coimbatore for students and professionals. Our course includes real-time projects and placement support.\n\nThe SolidWorks Masterclass is a comprehensive, industry-focused training program designed to help you become proficient in 3D modeling, assembly design, and product development. SolidWorks is widely used in automotive, aerospace, manufacturing, and product design industries.\n\nThis course covers everything from basic sketching to advanced modeling techniques, ensuring you gain practical, real-world experience through live projects and hands-on exercises.",
+    long_description: "## Why Choose Our SolidWorks Masterclass Training in Coimbatore\n\nOur institute focuses on providing practical, industry-oriented training that guarantees you are job-ready. From learning the absolute basics to mastering advanced concepts, our course ensures a solid foundation.\n\n## Course Details – SolidWorks Masterclass Training\n\nThis robust course walks you through the core concepts and industry standard workflows. You will work on real-time projects mimicking actual industry workflows.\n\n## Placement Support for Students\n\nWe provide 100% placement support for our students. Our network with core companies guarantees excellent career start opportunities.\n\n**Industries hiring include:**\n🚗 Automotive Companies\n🏭 Manufacturing Industries\n🏗 Heavy Machinery Firms\n🛠 Product Development Companies\n\n[Explore more Mechanical Courses](/courses/Mechanical)",
     enrollLink: "https://forms.gle/6sVSvE1schYRYfse7",
     phone: "+91 74187 32525",
     modules: [
@@ -207,9 +208,10 @@ export const COURSES: Course[] = [
       }
     ],
     seo: {
-      title: "SolidWorks Masterclass Course in Coimbatore | Lasak Edu",
-      description: "Join the best SolidWorks Masterclass in Coimbatore at Lasak Edu. Learn 3D modeling, assembly, and simulation from industry experts with placement support.",
-      keywords: "SolidWorks Masterclass Course in Coimbatore, SolidWorks Training, CAD Course Coimbatore, Lasak Edu, Product Design"
+      title: "SolidWorks Masterclass Training in Coimbatore | Mechanical Courses | Lasak Edu",
+      description: "Join the best SolidWorks Masterclass training institute in Coimbatore. Mechanical courses with placement support. Enroll today at Lasak Edu.",
+      keywords: "SolidWorks Masterclass Training in Coimbatore, Mechanical Courses, SolidWorks Masterclass training institute in Coimbatore, Lasak Edu",
+      alt_text: "SolidWorks Masterclass training class in Coimbatore"
     },
     companies: [
       { name: "Tata", logo: "https://raw.githubusercontent.com/BrindhaAnand/companylogos/81fe637f03e11f7c51010552edff4520cac38597/tata.jpeg" },
@@ -228,16 +230,16 @@ export const COURSES: Course[] = [
   {
     id: 'mech3',
     title: 'Creo Parametric Course',
-    slug: "creo-parametric",
+    slug: "creo-parametric-training-coimbatore",
     category: 'Mechanical',
     oldPrice: '₹25,000',
     price: '₹14,999',
     duration: '1.5 – 2 Months',
     image: '/img/mech/creo-688z.webp',
     description: 'Master Creo Parametric and accelerate your career growth with expert-led training.',
-    tagline: 'Master Creo Parametric and accelerate your career growth with expert-led training.',
-    introduction: "Creo Parametric is a powerful 3D CAD software widely used in mechanical product design, manufacturing, and engineering industries. This course provides complete hands-on training in part modeling, assembly design, detailing, and real-time industrial projects.\n\nYou will learn industry-standard design workflows used in automotive, aerospace, and manufacturing sectors to create high-quality 3D models and production-ready drawings.",
-    long_description: "**Industries hiring include:**\n🚗 Automotive Companies\n🏭 Manufacturing Firms\n🏗 Heavy Machinery Industries\n🛠 Product Development Companies",
+    tagline: 'Join the best Creo Parametric training institute in Coimbatore. Mechanical courses with placement support.',
+    introduction: "Lasak Edu offers the best Creo Parametric training in Coimbatore for students and professionals. Our course includes real-time projects and placement support.\n\nCreo Parametric is a powerful 3D CAD software widely used in mechanical product design, manufacturing, and engineering industries. This course provides complete hands-on training in part modeling, assembly design, detailing, and real-time industrial projects.\n\nYou will learn industry-standard design workflows used in automotive, aerospace, and manufacturing sectors to create high-quality 3D models and production-ready drawings.",
+    long_description: "## Why Choose Our Creo Parametric Training in Coimbatore\n\nOur institute focuses on providing practical, industry-oriented training that guarantees you are job-ready. From learning the absolute basics to mastering advanced concepts, our course ensures a solid foundation.\n\n## Course Details – Creo Parametric Training\n\nThis robust course walks you through the core concepts and industry standard workflows. You will work on real-time projects mimicking actual industry workflows.\n\n## Placement Support for Students\n\nWe provide 100% placement support for our students. Our network with core companies guarantees excellent career start opportunities.\n\n**Industries hiring include:**\n🚗 Automotive Companies\n🏭 Manufacturing Firms\n🏗 Heavy Machinery Industries\n🛠 Product Development Companies\n\n[Explore more Mechanical Courses](/courses/Mechanical)",
     enrollLink: "https://forms.gle/6sVSvE1schYRYfse7",
     phone: "+91 74187 32525",
     modules: [
@@ -311,9 +313,10 @@ export const COURSES: Course[] = [
       }
     ],
     seo: {
-      title: "Creo Parametric Course in Coimbatore | Lasak Edu",
-      description: "Learn Creo Parametric from industry experts in Coimbatore at Lasak Edu. Master 3D modeling, assembly, and drafting with full practical placement support sessions.",
-      keywords: "Creo Parametric Course in Coimbatore, CAD Training, Lasak Edu, Creo Coaching Coimbatore, Product Design"
+      title: "Creo Parametric Training in Coimbatore | Mechanical Courses | Lasak Edu",
+      description: "Join the best Creo Parametric training institute in Coimbatore. Mechanical courses with placement support. Enroll today at Lasak Edu.",
+      keywords: "Creo Parametric Training in Coimbatore, Mechanical Courses, Creo Parametric training institute in Coimbatore, Lasak Edu",
+      alt_text: "Creo Parametric training class in Coimbatore"
     },
     companies: [
       { name: "Tata", logo: "https://example.com/tata.png" },
@@ -324,16 +327,16 @@ export const COURSES: Course[] = [
   {
     id: 'mech4',
     title: 'CATIA V5 Course (Mechanical Engineering)',
-    slug: "catia-v5",
+    slug: "catia-v5-training-coimbatore",
     category: 'Mechanical',
     oldPrice: '₹30,000',
     price: '₹17,999',
     duration: '1.5 – 3 Months',
     image: '/img/mech/catia-118z.webp',
     description: 'Master CATIA V5 and accelerate your career growth with expert-led training.',
-    tagline: 'Master CATIA V5 and accelerate your career growth with expert-led training.',
-    introduction: "Our CATIA V5 Course is designed for Mechanical Engineering students and professionals who want to build strong skills in product design and 3D modeling.\n\nCATIA V5 is one of the most widely used CAD software tools in automotive, aerospace, and manufacturing industries. It is used for designing complex mechanical components, assemblies, and industrial products.\n\nThis course provides hands-on training in part modeling, assembly design, drafting, and surface modeling. The focus is on real-time industrial design practices to help you become job-ready.\n\nBy the end of this course, you will be able to design mechanical components and generate production-ready drawings confidently.",
-    long_description: "**Industries hiring CATIA professionals:**\n🚗 Automotive Industry\n✈ Aerospace Industry\n🏭 Manufacturing Companies\n🔩 Heavy Machinery Industry\n\n**Average Fresher Salary in India:** ₹2.5 – ₹5 LPA\nWith Experience: ₹6 – ₹15 LPA+",
+    tagline: 'Join the best CATIA V5 training institute in Coimbatore. Mechanical courses with placement support.',
+    introduction: "Lasak Edu offers the best CATIA V5 training in Coimbatore for students and professionals. Our course includes real-time projects and placement support.\n\nOur CATIA V5 Course is designed for Mechanical Engineering students and professionals who want to build strong skills in product design and 3D modeling.\n\nCATIA V5 is one of the most widely used CAD software tools in automotive, aerospace, and manufacturing industries. It is used for designing complex mechanical components, assemblies, and industrial products.\n\nThis course provides hands-on training in part modeling, assembly design, drafting, and surface modeling. The focus is on real-time industrial design practices to help you become job-ready.\n\nBy the end of this course, you will be able to design mechanical components and generate production-ready drawings confidently.",
+    long_description: "## Why Choose Our CATIA V5 Training in Coimbatore\n\nOur institute focuses on providing practical, industry-oriented training that guarantees you are job-ready. From learning the absolute basics to mastering advanced concepts, our course ensures a solid foundation.\n\n## Course Details – CATIA V5 Training\n\nThis robust course walks you through the core concepts and industry standard workflows. You will work on real-time projects mimicking actual industry workflows.\n\n## Placement Support for Students\n\nWe provide 100% placement support for our students. Our network with core companies guarantees excellent career start opportunities.\n\n**Industries hiring CATIA professionals:**\n🚗 Automotive Industry\n✈ Aerospace Industry\n🏭 Manufacturing Companies\n🔩 Heavy Machinery Industry\n\n**Average Fresher Salary in India:** ₹2.5 – ₹5 LPA\nWith Experience: ₹6 – ₹15 LPA+\n\n[Explore more Mechanical Courses](/courses/Mechanical)",
     enrollLink: "https://forms.gle/6sVSvE1schYRYfse7",
     phone: "+91 74187 32525",
     modules: [
@@ -421,9 +424,10 @@ export const COURSES: Course[] = [
       }
     ],
     seo: {
-      title: "CATIA V5 Course in Coimbatore | Lasak Edu",
-      description: "Master CATIA V5 with expert training in Coimbatore at Lasak Edu. Learn 3D modeling, assembly, and drafting from scratch with real projects and placement support.",
-      keywords: "CATIA V5 Course in Coimbatore, CAD Training, Lasak Edu, CATIA Coaching Coimbatore, Product Design"
+      title: "CATIA V5 Training in Coimbatore | Mechanical Courses | Lasak Edu",
+      description: "Join the best CATIA V5 training institute in Coimbatore. Mechanical courses with placement support. Enroll today at Lasak Edu.",
+      keywords: "CATIA V5 Training in Coimbatore, Mechanical Courses, CATIA V5 training institute in Coimbatore, Lasak Edu",
+      alt_text: "CATIA V5 training class in Coimbatore"
     },
     companies: [
       { name: "Tata", logo: "https://example.com/tata.png" },
@@ -434,16 +438,16 @@ export const COURSES: Course[] = [
   {
     id: 'mech5',
     title: 'ANSYS Simulation Course (Mechanical Engineering)',
-    slug: "ansys-simulation",
+    slug: "ansys-simulation-training-coimbatore",
     category: 'Mechanical',
     oldPrice: '₹30,000',
     price: '₹17,999',
     duration: '2 – 3 Months',
     image: '/img/mech/ansys-670z.webp',
     description: 'Master ANSYS Simulation and accelerate your career growth with expert-led training.',
-    tagline: 'Master ANSYS Simulation and accelerate your career growth with expert-led training.',
-    introduction: "Our ANSYS Simulation Course is designed for Mechanical Engineering students and professionals who want to build expertise in Computer-Aided Engineering (CAE) and Finite Element Analysis (FEA).\n\nANSYS is one of the most powerful and widely used simulation software tools in industries like automotive, aerospace, manufacturing, and energy. This course focuses on structural analysis, thermal analysis, and simulation techniques used in real-world engineering applications.\n\nThrough practical training and real-time projects, you will learn how to analyze mechanical components, predict performance, and improve product design using simulation tools.\n\nBy the end of the course, you will confidently perform engineering simulations and solve complex mechanical problems.",
-    long_description: "**Industries hiring ANSYS professionals:**\n🚗 Automotive Companies\n✈ Aerospace Industry\n🏭 Manufacturing Firms\n⚙ Heavy Equipment Industries\n🔋 Energy & Power Sector\n\n**Average Fresher Salary in India:** ₹3 – ₹6 LPA\nWith Experience: ₹8 – ₹18 LPA+",
+    tagline: 'Join the best ANSYS Simulation training institute in Coimbatore. Mechanical courses with placement support.',
+    introduction: "Lasak Edu offers the best ANSYS Simulation training in Coimbatore for students and professionals. Our course includes real-time projects and placement support.\n\nOur ANSYS Simulation Course is designed for Mechanical Engineering students and professionals who want to build expertise in Computer-Aided Engineering (CAE) and Finite Element Analysis (FEA).\n\nANSYS is one of the most powerful and widely used simulation software tools in industries like automotive, aerospace, manufacturing, and energy. This course focuses on structural analysis, thermal analysis, and simulation techniques used in real-world engineering applications.\n\nThrough practical training and real-time projects, you will learn how to analyze mechanical components, predict performance, and improve product design using simulation tools.\n\nBy the end of the course, you will confidently perform engineering simulations and solve complex mechanical problems.",
+    long_description: "## Why Choose Our ANSYS Simulation Training in Coimbatore\n\nOur institute focuses on providing practical, industry-oriented training that guarantees you are job-ready. From learning the absolute basics to mastering advanced concepts, our course ensures a solid foundation.\n\n## Course Details – ANSYS Simulation Training\n\nThis robust course walks you through the core concepts and industry standard workflows. You will work on real-time projects mimicking actual industry workflows.\n\n## Placement Support for Students\n\nWe provide 100% placement support for our students. Our network with core companies guarantees excellent career start opportunities.\n\n**Industries hiring ANSYS professionals:**\n🚗 Automotive Companies\n✈ Aerospace Industry\n🏭 Manufacturing Firms\n⚙ Heavy Equipment Industries\n🔋 Energy & Power Sector\n\n**Average Fresher Salary in India:** ₹3 – ₹6 LPA\nWith Experience: ₹8 – ₹18 LPA+\n\n[Explore more Mechanical Courses](/courses/Mechanical)",
     enrollLink: "https://forms.gle/6sVSvE1schYRYfse7",
     phone: "+91 74187 32525",
     modules: [
@@ -532,9 +536,10 @@ export const COURSES: Course[] = [
       }
     ],
     seo: {
-      title: "ANSYS Simulation Course in Coimbatore | Lasak Edu",
-      description: "Become an ANSYS expert in Coimbatore at Lasak Edu. Master FEA, structural, and thermal analysis through practical projects and comprehensive placement assistance.",
-      keywords: "ANSYS Course in Coimbatore, FEA Training, CAE Simulation, Lasak Edu, Mechanical Engineering Courses"
+      title: "ANSYS Simulation Training in Coimbatore | Mechanical Courses | Lasak Edu",
+      description: "Join the best ANSYS Simulation training institute in Coimbatore. Mechanical courses with placement support. Enroll today at Lasak Edu.",
+      keywords: "ANSYS Simulation Training in Coimbatore, Mechanical Courses, ANSYS Simulation training institute in Coimbatore, Lasak Edu",
+      alt_text: "ANSYS Simulation training class in Coimbatore"
     },
     companies: [
       { name: "Tata", logo: "https://example.com/tata.png" },
@@ -545,16 +550,16 @@ export const COURSES: Course[] = [
   {
     id: 'mech6',
     title: 'HyperMesh Course (Mechanical Engineering)',
-    slug: "hypermesh",
+    slug: "hypermesh-training-coimbatore",
     category: 'Mechanical',
     oldPrice: '₹40,000',
     price: '₹19,999',
     duration: '1.5 – 3 Months',
     image: '/img/mech/hypermesh-631z.webp',
     description: 'Master HyperMesh and accelerate your career growth with expert-led training.',
-    tagline: 'Master HyperMesh and accelerate your career growth with expert-led training.',
-    introduction: "Our HyperMesh Course is specially designed for Mechanical Engineering students and professionals who want to build a strong career in CAE (Computer-Aided Engineering) and Finite Element Analysis (FEA).\n\nHyperMesh is one of the most widely used pre-processing tools in the automotive and aerospace industries for simulation and analysis. In this course, you will learn how to create high-quality meshes, apply loads and boundary conditions, and prepare models for structural analysis.\n\nThe training is completely practical and industry-oriented, focusing on real-time engineering problems and projects.\n\nBy the end of the course, you will be able to confidently work on CAE projects in leading core companies.",
-    long_description: "**Industries hiring HyperMesh professionals:**\n🚗 Automotive Industry\n✈ Aerospace Industry\n🏭 Manufacturing Companies\n🔩 Heavy Machinery Companies\n\n**Average Fresher Salary in India:** ₹3 – ₹6 LPA\nWith Experience: ₹8 – ₹15 LPA+",
+    tagline: 'Join the best HyperMesh training institute in Coimbatore. Mechanical courses with placement support.',
+    introduction: "Lasak Edu offers the best HyperMesh training in Coimbatore for students and professionals. Our course includes real-time projects and placement support.\n\nOur HyperMesh Course is specially designed for Mechanical Engineering students and professionals who want to build a strong career in CAE (Computer-Aided Engineering) and Finite Element Analysis (FEA).\n\nHyperMesh is one of the most widely used pre-processing tools in the automotive and aerospace industries for simulation and analysis. In this course, you will learn how to create high-quality meshes, apply loads and boundary conditions, and prepare models for structural analysis.\n\nThe training is completely practical and industry-oriented, focusing on real-time engineering problems and projects.\n\nBy the end of the course, you will be able to confidently work on CAE projects in leading core companies.",
+    long_description: "## Why Choose Our HyperMesh Training in Coimbatore\n\nOur institute focuses on providing practical, industry-oriented training that guarantees you are job-ready. From learning the absolute basics to mastering advanced concepts, our course ensures a solid foundation.\n\n## Course Details – HyperMesh Training\n\nThis robust course walks you through the core concepts and industry standard workflows. You will work on real-time projects mimicking actual industry workflows.\n\n## Placement Support for Students\n\nWe provide 100% placement support for our students. Our network with core companies guarantees excellent career start opportunities.\n\n**Industries hiring HyperMesh professionals:**\n🚗 Automotive Industry\n✈ Aerospace Industry\n🏭 Manufacturing Companies\n🔩 Heavy Machinery Companies\n\n**Average Fresher Salary in India:** ₹3 – ₹6 LPA\nWith Experience: ₹8 – ₹15 LPA+\n\n[Explore more Mechanical Courses](/courses/Mechanical)",
     enrollLink: "https://forms.gle/6sVSvE1schYRYfse7",
     phone: "+91 74187 32525",
     modules: [
@@ -637,9 +642,10 @@ export const COURSES: Course[] = [
       }
     ],
     seo: {
-      title: "HyperMesh Course in Coimbatore | Lasak Edu",
-      description: "Master HyperMesh with our expert-led course in Coimbatore at Lasak Edu. Gain expertise in FEA, meshing, and structural analysis with complete placement support.",
-      keywords: "HyperMesh Course in Coimbatore, FEA Training, CAE Course, Lasak Edu, Mechanical Engineering Courses"
+      title: "HyperMesh Training in Coimbatore | Mechanical Courses | Lasak Edu",
+      description: "Join the best HyperMesh training institute in Coimbatore. Mechanical courses with placement support. Enroll today at Lasak Edu.",
+      keywords: "HyperMesh Training in Coimbatore, Mechanical Courses, HyperMesh training institute in Coimbatore, Lasak Edu",
+      alt_text: "HyperMesh training class in Coimbatore"
     },
     companies: [
       { name: "Tata", logo: "https://example.com/tata.png" },
@@ -650,16 +656,16 @@ export const COURSES: Course[] = [
   {
     id: 'mech7',
     title: 'ANSA Pre-Processing Course (Mechanical Engineering)',
-    slug: "ansa-pre-processing",
+    slug: "ansa-pre-processing-training-coimbatore",
     category: 'Mechanical',
     oldPrice: '₹25,000',
     price: '₹14,999',
     duration: '1.5 – 3 Months',
     image: '/img/mech/ansa-062z.webp',
     description: 'Master ANSA Pre-Processing and accelerate your career growth with expert-led training.',
-    tagline: 'Master ANSA Pre-Processing and accelerate your career growth with expert-led training.',
-    introduction: "Our ANSA Pre-Processing Course is designed for Mechanical Engineering students and professionals who want to build a strong career in CAE (Computer-Aided Engineering) and Finite Element Analysis (FEA).\n\nANSA is a powerful pre-processing software widely used in automotive and aerospace industries for model preparation, meshing, and simulation setup. It helps engineers create high-quality finite element models before analysis.\n\nThis course provides hands-on training in geometry cleanup, 2D and 3D meshing, model setup, and quality checks. The training is practical and industry-oriented, focusing on real-time engineering case studies.\n\nBy the end of the course, you will be able to prepare complete CAE models ready for simulation.",
-    long_description: "**Industries hiring ANSA professionals:**\n🚗 Automotive Industry\n✈ Aerospace Industry\n🏭 Manufacturing Companies\n🔩 Heavy Engineering Firms\n\n**Average Fresher Salary in India:** ₹3 – ₹6 LPA\nWith Experience: ₹8 – ₹16 LPA+",
+    tagline: 'Join the best ANSA Pre-Processing training institute in Coimbatore. Mechanical courses with placement support.',
+    introduction: "Lasak Edu offers the best ANSA Pre-Processing training in Coimbatore for students and professionals. Our course includes real-time projects and placement support.\n\nOur ANSA Pre-Processing Course is designed for Mechanical Engineering students and professionals who want to build a strong career in CAE (Computer-Aided Engineering) and Finite Element Analysis (FEA).\n\nANSA is a powerful pre-processing software widely used in automotive and aerospace industries for model preparation, meshing, and simulation setup. It helps engineers create high-quality finite element models before analysis.\n\nThis course provides hands-on training in geometry cleanup, 2D and 3D meshing, model setup, and quality checks. The training is practical and industry-oriented, focusing on real-time engineering case studies.\n\nBy the end of the course, you will be able to prepare complete CAE models ready for simulation.",
+    long_description: "## Why Choose Our ANSA Pre-Processing Training in Coimbatore\n\nOur institute focuses on providing practical, industry-oriented training that guarantees you are job-ready. From learning the absolute basics to mastering advanced concepts, our course ensures a solid foundation.\n\n## Course Details – ANSA Pre-Processing Training\n\nThis robust course walks you through the core concepts and industry standard workflows. You will work on real-time projects mimicking actual industry workflows.\n\n## Placement Support for Students\n\nWe provide 100% placement support for our students. Our network with core companies guarantees excellent career start opportunities.\n\n**Industries hiring ANSA professionals:**\n🚗 Automotive Industry\n✈ Aerospace Industry\n🏭 Manufacturing Companies\n🔩 Heavy Engineering Firms\n\n**Average Fresher Salary in India:** ₹3 – ₹6 LPA\nWith Experience: ₹8 – ₹16 LPA+\n\n[Explore more Mechanical Courses](/courses/Mechanical)",
     enrollLink: "https://forms.gle/6sVSvE1schYRYfse7",
     phone: "+91 74187 32525",
     modules: [
@@ -745,9 +751,10 @@ export const COURSES: Course[] = [
       }
     ],
     seo: {
-      title: "ANSA Course in Coimbatore | Lasak Edu",
-      description: "Learn ANSA Pre-Processing from industry experts in Coimbatore at Lasak Edu. Master geometry cleanup, meshing, and model setup with full placement support today.",
-      keywords: "ANSA Course in Coimbatore, CAE Training, FEA Pre-Processing, Lasak Edu, Mechanical Engineering Courses"
+      title: "ANSA Pre-Processing Training in Coimbatore | Mechanical Courses | Lasak Edu",
+      description: "Join the best ANSA Pre-Processing training institute in Coimbatore. Mechanical courses with placement support. Enroll today at Lasak Edu.",
+      keywords: "ANSA Pre-Processing Training in Coimbatore, Mechanical Courses, ANSA Pre-Processing training institute in Coimbatore, Lasak Edu",
+      alt_text: "ANSA Pre-Processing training class in Coimbatore"
     },
     companies: [
       { name: "Tata", logo: "https://example.com/tata.png" },
@@ -758,16 +765,16 @@ export const COURSES: Course[] = [
   {
     id: 'mech8',
     title: 'Computational Fluid Dynamics (CFD)',
-    slug: "computational-fluid-dynamics",
+    slug: "computational-fluid-dynamics-training-coimbatore",
     category: 'Mechanical',
     oldPrice: '₹25,000',
     price: '₹11,999',
     duration: '2 – 3 Months',
     image: '/img/mech/cfd-486z.webp',
     description: 'Master Computational Fluid Dynamics (CFD) and accelerate your career growth with expert-led training.',
-    tagline: 'Master Computational Fluid Dynamics (CFD) and accelerate your career growth with expert-led training.',
-    introduction: "Computational Fluid Dynamics (CFD) is a powerful simulation technique used to analyze fluid flow, heat transfer, and related physical phenomena. This course provides in-depth training in CFD theory and hands-on practice using industry-standard tools like ANSYS Fluent and ANSYS CFX.\n\nYou will learn how to simulate real-world engineering problems such as airflow over vehicles, heat exchangers, pipe flow, and thermal analysis through project-based learning.",
-    long_description: "**Industries hiring include:**\n🚗 Automotive\n✈ Aerospace\n⚡ Energy\n❄ HVAC\n🏭 Manufacturing\n🔬 Research & Development",
+    tagline: 'Join the best Computational Fluid Dynamics training institute in Coimbatore. Mechanical courses with placement support.',
+    introduction: "Lasak Edu offers the best Computational Fluid Dynamics training in Coimbatore for students and professionals. Our course includes real-time projects and placement support.\n\nComputational Fluid Dynamics (CFD) is a powerful simulation technique used to analyze fluid flow, heat transfer, and related physical phenomena. This course provides in-depth training in CFD theory and hands-on practice using industry-standard tools like ANSYS Fluent and ANSYS CFX.\n\nYou will learn how to simulate real-world engineering problems such as airflow over vehicles, heat exchangers, pipe flow, and thermal analysis through project-based learning.",
+    long_description: "## Why Choose Our Computational Fluid Dynamics Training in Coimbatore\n\nOur institute focuses on providing practical, industry-oriented training that guarantees you are job-ready. From learning the absolute basics to mastering advanced concepts, our course ensures a solid foundation.\n\n## Course Details – Computational Fluid Dynamics Training\n\nThis robust course walks you through the core concepts and industry standard workflows. You will work on real-time projects mimicking actual industry workflows.\n\n## Placement Support for Students\n\nWe provide 100% placement support for our students. Our network with core companies guarantees excellent career start opportunities.\n\n**Industries hiring include:**\n🚗 Automotive\n✈ Aerospace\n⚡ Energy\n❄ HVAC\n🏭 Manufacturing\n🔬 Research & Development\n\n[Explore more Mechanical Courses](/courses/Mechanical)",
     enrollLink: "https://forms.gle/6sVSvE1schYRYfse7",
     phone: "+91 74187 32525",
     modules: [
@@ -837,9 +844,10 @@ export const COURSES: Course[] = [
       }
     ],
     seo: {
-      title: "CFD Course in Coimbatore | Lasak Edu",
-      description: "Master Computational Fluid Dynamics (CFD) in Coimbatore at Lasak Edu. Learn ANSYS Fluent, CFX, and turbulence modeling with dedicated career placement support.",
-      keywords: "CFD Course in Coimbatore, Computational Fluid Dynamics, Lasak Edu, CFD Coaching Coimbatore, Thermal Analysis"
+      title: "Computational Fluid Dynamics Training in Coimbatore | Mechanical Courses | Lasak Edu",
+      description: "Join the best Computational Fluid Dynamics training institute in Coimbatore. Mechanical courses with placement support. Enroll today at Lasak Edu.",
+      keywords: "Computational Fluid Dynamics Training in Coimbatore, Mechanical Courses, Computational Fluid Dynamics training institute in Coimbatore, Lasak Edu",
+      alt_text: "Computational Fluid Dynamics training class in Coimbatore"
     },
     companies: [
       { name: "Tata", logo: "https://example.com/tata.png" },
@@ -851,16 +859,16 @@ export const COURSES: Course[] = [
   {
     id: 'mech9',
     title: 'NX CAD (Unigraphics) Course (Mechanical Engineering)',
-    slug: "nx-cad-unigraphics",
+    slug: "nx-cad-training-coimbatore",
     category: 'Mechanical',
     oldPrice: '₹30,000',
     price: '₹17,999',
     duration: '2 – 3 Months',
     image: '/img/mech/nxcad-582z.webp',
     description: 'Master NX CAD (Unigraphics) and accelerate your career growth with expert-led training.',
-    tagline: 'Master NX CAD (Unigraphics) and accelerate your career growth with expert-led training.',
-    introduction: "Our NX CAD (Unigraphics) Course is designed for Mechanical Engineering students and professionals who want to build strong expertise in advanced product design and 3D modeling.\n\nNX CAD (formerly known as Unigraphics) is a powerful CAD/CAM/CAE software widely used in automotive, aerospace, tool design, and manufacturing industries. It is known for its advanced modeling capabilities and precision engineering design tools.\n\nThis course provides hands-on training in part modeling, assembly design, drafting, surface modeling, and basic manufacturing concepts. The focus is on practical learning with real-time industrial design examples.\n\nBy the end of this course, you will be able to create complex mechanical components and assemblies with industry-level standards.",
-    long_description: "**Industries hiring NX CAD professionals:**\n🚗 Automotive Companies\n✈ Aerospace Industry\n🏭 Manufacturing Firms\n🛠 Tool & Die Industry\n\n**Average Fresher Salary in India:** ₹3 – ₹6 LPA\nWith Experience: ₹7 – ₹18 LPA+",
+    tagline: 'Join the best NX CAD training institute in Coimbatore. Mechanical courses with placement support.',
+    introduction: "Lasak Edu offers the best NX CAD training in Coimbatore for students and professionals. Our course includes real-time projects and placement support.\n\nOur NX CAD (Unigraphics) Course is designed for Mechanical Engineering students and professionals who want to build strong expertise in advanced product design and 3D modeling.\n\nNX CAD (formerly known as Unigraphics) is a powerful CAD/CAM/CAE software widely used in automotive, aerospace, tool design, and manufacturing industries. It is known for its advanced modeling capabilities and precision engineering design tools.\n\nThis course provides hands-on training in part modeling, assembly design, drafting, surface modeling, and basic manufacturing concepts. The focus is on practical learning with real-time industrial design examples.\n\nBy the end of this course, you will be able to create complex mechanical components and assemblies with industry-level standards.",
+    long_description: "## Why Choose Our NX CAD Training in Coimbatore\n\nOur institute focuses on providing practical, industry-oriented training that guarantees you are job-ready. From learning the absolute basics to mastering advanced concepts, our course ensures a solid foundation.\n\n## Course Details – NX CAD Training\n\nThis robust course walks you through the core concepts and industry standard workflows. You will work on real-time projects mimicking actual industry workflows.\n\n## Placement Support for Students\n\nWe provide 100% placement support for our students. Our network with core companies guarantees excellent career start opportunities.\n\n**Industries hiring NX CAD professionals:**\n🚗 Automotive Companies\n✈ Aerospace Industry\n🏭 Manufacturing Firms\n🛠 Tool & Die Industry\n\n**Average Fresher Salary in India:** ₹3 – ₹6 LPA\nWith Experience: ₹7 – ₹18 LPA+\n\n[Explore more Mechanical Courses](/courses/Mechanical)",
     enrollLink: "https://forms.gle/6sVSvE1schYRYfse7",
     phone: "+91 74187 32525",
     modules: [
@@ -944,9 +952,10 @@ export const COURSES: Course[] = [
       }
     ],
     seo: {
-      title: "NX CAD Course in Coimbatore | Lasak Edu",
-      description: "Learn NX CAD (Unigraphics) from industry experts in Coimbatore at Lasak Edu. Master 3D modeling, assembly, and drafting with guaranteed placement support help.",
-      keywords: "NX CAD Course in Coimbatore, Unigraphics Training, Lasak Edu, Mechanical Design Training, Product Design"
+      title: "NX CAD Training in Coimbatore | Mechanical Courses | Lasak Edu",
+      description: "Join the best NX CAD training institute in Coimbatore. Mechanical courses with placement support. Enroll today at Lasak Edu.",
+      keywords: "NX CAD Training in Coimbatore, Mechanical Courses, NX CAD training institute in Coimbatore, Lasak Edu",
+      alt_text: "NX CAD training class in Coimbatore"
     },
     companies: [
       { name: "Tata", logo: "https://example.com/tata.png" },
@@ -957,16 +966,16 @@ export const COURSES: Course[] = [
   {
     id: 'mech10',
     title: 'Autodesk Inventor Course (Mechanical Engineering)',
-    slug: "autodesk-inventor",
+    slug: "autodesk-inventor-training-coimbatore",
     category: 'Mechanical',
     oldPrice: '₹30,000',
     price: '₹17,999',
     duration: '1.5 – 3 Months',
     image: '/img/mech/autodesk-inventor-783z.webp',
     description: 'Master Autodesk Inventor and accelerate your career growth with expert-led training.',
-    tagline: 'Master Autodesk Inventor and accelerate your career growth with expert-led training.',
-    introduction: "Our Autodesk Inventor Course is designed for Mechanical Engineering students and professionals who want to develop strong skills in 3D mechanical design, product modeling, and engineering drafting.\n\nAutodesk Inventor is a powerful 3D CAD software widely used in manufacturing, product design, machinery design, and industrial engineering. It allows engineers to create accurate digital prototypes, simulate product performance, and generate production-ready drawings.\n\nThis course focuses on practical training with real-time industrial examples, helping students understand how to design mechanical components and assemblies professionally.\n\nBy the end of this course, you will be able to design complete mechanical products and generate detailed technical drawings confidently.",
-    long_description: "**Industries hiring Autodesk Inventor professionals:**\n🏭 Manufacturing Companies\n🚗 Automotive Industry\n🛠 Machinery & Equipment Industry\n🏗 Industrial Product Companies\n\n**Average Fresher Salary in India:** ₹2.5 – ₹5 LPA\nWith Experience: ₹6 – ₹14 LPA+",
+    tagline: 'Join the best Autodesk Inventor training institute in Coimbatore. Mechanical courses with placement support.',
+    introduction: "Lasak Edu offers the best Autodesk Inventor training in Coimbatore for students and professionals. Our course includes real-time projects and placement support.\n\nOur Autodesk Inventor Course is designed for Mechanical Engineering students and professionals who want to develop strong skills in 3D mechanical design, product modeling, and engineering drafting.\n\nAutodesk Inventor is a powerful 3D CAD software widely used in manufacturing, product design, machinery design, and industrial engineering. It allows engineers to create accurate digital prototypes, simulate product performance, and generate production-ready drawings.\n\nThis course focuses on practical training with real-time industrial examples, helping students understand how to design mechanical components and assemblies professionally.\n\nBy the end of this course, you will be able to design complete mechanical products and generate detailed technical drawings confidently.",
+    long_description: "## Why Choose Our Autodesk Inventor Training in Coimbatore\n\nOur institute focuses on providing practical, industry-oriented training that guarantees you are job-ready. From learning the absolute basics to mastering advanced concepts, our course ensures a solid foundation.\n\n## Course Details – Autodesk Inventor Training\n\nThis robust course walks you through the core concepts and industry standard workflows. You will work on real-time projects mimicking actual industry workflows.\n\n## Placement Support for Students\n\nWe provide 100% placement support for our students. Our network with core companies guarantees excellent career start opportunities.\n\n**Industries hiring Autodesk Inventor professionals:**\n🏭 Manufacturing Companies\n🚗 Automotive Industry\n🛠 Machinery & Equipment Industry\n🏗 Industrial Product Companies\n\n**Average Fresher Salary in India:** ₹2.5 – ₹5 LPA\nWith Experience: ₹6 – ₹14 LPA+\n\n[Explore more Mechanical Courses](/courses/Mechanical)",
     enrollLink: "https://forms.gle/6sVSvE1schYRYfse7",
     phone: "+91 74187 32525",
     modules: [
@@ -1051,9 +1060,10 @@ export const COURSES: Course[] = [
       }
     ],
     seo: {
-      title: "Autodesk Inventor Course in Coimbatore | Lasak Edu",
-      description: "Learn Autodesk Inventor from industry experts in Coimbatore at Lasak Edu. Master 3D modeling, assembly, and drafting with full placement support and training.",
-      keywords: "Autodesk Inventor Course in Coimbatore, CAD Training, Lasak Edu, Inventor Coaching Coimbatore, Product Design"
+      title: "Autodesk Inventor Training in Coimbatore | Mechanical Courses | Lasak Edu",
+      description: "Join the best Autodesk Inventor training institute in Coimbatore. Mechanical courses with placement support. Enroll today at Lasak Edu.",
+      keywords: "Autodesk Inventor Training in Coimbatore, Mechanical Courses, Autodesk Inventor training institute in Coimbatore, Lasak Edu",
+      alt_text: "Autodesk Inventor training class in Coimbatore"
     },
     companies: [
       { name: "Tata", logo: "https://example.com/tata.png" },
@@ -1064,16 +1074,16 @@ export const COURSES: Course[] = [
   {
     id: 'mech11',
     title: 'Wiring Harness Design Course',
-    slug: "wiring-harness-design",
+    slug: "wiring-harness-design-training-coimbatore",
     category: 'Mechanical',
     oldPrice: '₹35,000',
     price: '₹19,999',
     duration: '1.5 – 2 Months',
     image: '/img/mech/wiring-harness-catia-256z.webp',
     description: 'Master Wiring Harness Design and accelerate your career growth with expert-led training.',
-    tagline: 'Master Wiring Harness Design and accelerate your career growth with expert-led training.',
-    introduction: "Wiring Harness Design plays a critical role in industries like automotive, aerospace, and heavy machinery. This course provides comprehensive training on designing, routing, and documenting electrical harness systems using industry-standard tools such as CATIA V5 Electrical Workbench and AutoCAD Electrical.\n\nYou will gain hands-on experience in creating harness layouts, selecting connectors, preparing 2D drawings, and generating manufacturing documentation through real-time industry projects.",
-    long_description: "**Industries hiring include:**\n🚗 Automotive OEMs\n⚡ EV Companies\n✈ Aerospace Firms\n🏭 Electrical Manufacturing Industries\n\n**Average Fresher Salary in India:** ₹3 – ₹6 LPA\nWith Experience: ₹8 – ₹15 LPA+",
+    tagline: 'Join the best Wiring Harness Design training institute in Coimbatore. Mechanical courses with placement support.',
+    introduction: "Lasak Edu offers the best Wiring Harness Design training in Coimbatore for students and professionals. Our course includes real-time projects and placement support.\n\nWiring Harness Design plays a critical role in industries like automotive, aerospace, and heavy machinery. This course provides comprehensive training on designing, routing, and documenting electrical harness systems using industry-standard tools such as CATIA V5 Electrical Workbench and AutoCAD Electrical.\n\nYou will gain hands-on experience in creating harness layouts, selecting connectors, preparing 2D drawings, and generating manufacturing documentation through real-time industry projects.",
+    long_description: "## Why Choose Our Wiring Harness Design Training in Coimbatore\n\nOur institute focuses on providing practical, industry-oriented training that guarantees you are job-ready. From learning the absolute basics to mastering advanced concepts, our course ensures a solid foundation.\n\n## Course Details – Wiring Harness Design Training\n\nThis robust course walks you through the core concepts and industry standard workflows. You will work on real-time projects mimicking actual industry workflows.\n\n## Placement Support for Students\n\nWe provide 100% placement support for our students. Our network with core companies guarantees excellent career start opportunities.\n\n**Industries hiring include:**\n🚗 Automotive OEMs\n⚡ EV Companies\n✈ Aerospace Firms\n🏭 Electrical Manufacturing Industries\n\n**Average Fresher Salary in India:** ₹3 – ₹6 LPA\nWith Experience: ₹8 – ₹15 LPA+\n\n[Explore more Mechanical Courses](/courses/Mechanical)",
     enrollLink: "https://forms.gle/6sVSvE1schYRYfse7",
     phone: "+91 74187 32525",
     modules: [
@@ -1142,9 +1152,10 @@ export const COURSES: Course[] = [
       }
     ],
     seo: {
-      title: "Wiring Harness Design Course in Coimbatore | Lasak Edu",
-      description: "Master Wiring Harness Design with expert training in Coimbatore at Lasak Edu. Learn CATIA Electrical, routing, and packaging with full placement support help.",
-      keywords: "Wiring Harness Design Course in Coimbatore, Automotive Electrical Training, Lasak Edu, Harness Packaging, Electrical CAD Course"
+      title: "Wiring Harness Design Training in Coimbatore | Mechanical Courses | Lasak Edu",
+      description: "Join the best Wiring Harness Design training institute in Coimbatore. Mechanical courses with placement support. Enroll today at Lasak Edu.",
+      keywords: "Wiring Harness Design Training in Coimbatore, Mechanical Courses, Wiring Harness Design training institute in Coimbatore, Lasak Edu",
+      alt_text: "Wiring Harness Design training class in Coimbatore"
     },
     companies: [
       { name: "Tata", logo: "https://example.com/tata.png" },
@@ -1156,16 +1167,16 @@ export const COURSES: Course[] = [
 
     id: 'mech12',
     title: '3D Printing & Prototyping',
-    slug: "3d-printing-prototyping",
+    slug: "3d-printing-prototyping-training-coimbatore",
     category: 'Mechanical',
     oldPrice: '₹25,000',
     price: '₹14,999',
     duration: '1 – 1.5 Months',
     image: '/img/mech/3d-399z.webp',
     description: 'Master 3D Printing & Prototyping and accelerate your career growth with expert-led training.',
-    tagline: 'Master 3D Printing & Prototyping and accelerate your career growth with expert-led training.',
-    introduction: "3D Printing & Prototyping is transforming product development across industries such as automotive, aerospace, medical, architecture, and consumer products. This course provides practical training on additive manufacturing technologies, design for 3D printing, material selection, and rapid prototyping workflows.\n\nYou will learn how to convert 3D models into physical prototypes using industry tools and real-time project practice.",
-    long_description: "**Industries hiring include:**\n🏭 Manufacturing Companies\n🛠 Product Design Firms\n🔬 R&D Centers\n🚀 Startups & Innovation Labs",
+    tagline: 'Join the best 3D Printing & Prototyping training institute in Coimbatore. Mechanical courses with placement support.',
+    introduction: "Lasak Edu offers the best 3D Printing & Prototyping training in Coimbatore for students and professionals. Our course includes real-time projects and placement support.\n\n3D Printing & Prototyping is transforming product development across industries such as automotive, aerospace, medical, architecture, and consumer products. This course provides practical training on additive manufacturing technologies, design for 3D printing, material selection, and rapid prototyping workflows.\n\nYou will learn how to convert 3D models into physical prototypes using industry tools and real-time project practice.",
+    long_description: "## Why Choose Our 3D Printing & Prototyping Training in Coimbatore\n\nOur institute focuses on providing practical, industry-oriented training that guarantees you are job-ready. From learning the absolute basics to mastering advanced concepts, our course ensures a solid foundation.\n\n## Course Details – 3D Printing & Prototyping Training\n\nThis robust course walks you through the core concepts and industry standard workflows. You will work on real-time projects mimicking actual industry workflows.\n\n## Placement Support for Students\n\nWe provide 100% placement support for our students. Our network with core companies guarantees excellent career start opportunities.\n\n**Industries hiring include:**\n🏭 Manufacturing Companies\n🛠 Product Design Firms\n🔬 R&D Centers\n🚀 Startups & Innovation Labs\n\n[Explore more Mechanical Courses](/courses/Mechanical)",
     enrollLink: "https://forms.gle/6sVSvE1schYRYfse7",
     phone: "+91 74187 32525",
     modules: [
@@ -1237,9 +1248,10 @@ export const COURSES: Course[] = [
       }
     ],
     seo: {
-      title: "3D Printing & Prototyping Course in Coimbatore | Lasak Edu",
-      description: "Master 3D Printing & Prototyping in Coimbatore at Lasak Edu. Learn FDM, SLA, Slicing, and DfAM from experts with hands-on training and placement support help.",
-      keywords: "3D Printing Course in Coimbatore, Prototyping Training, Lasak Edu, 3D Printer Course Coimbatore, Product Design"
+      title: "3D Printing & Prototyping Training in Coimbatore | Mechanical Courses | Lasak Edu",
+      description: "Join the best 3D Printing & Prototyping training institute in Coimbatore. Mechanical courses with placement support. Enroll today at Lasak Edu.",
+      keywords: "3D Printing & Prototyping Training in Coimbatore, Mechanical Courses, 3D Printing & Prototyping training institute in Coimbatore, Lasak Edu",
+      alt_text: "3D Printing & Prototyping training class in Coimbatore"
     },
     companies: [
       { name: "Tata", logo: "https://example.com/tata.png" },
@@ -1251,7 +1263,7 @@ export const COURSES: Course[] = [
   {
     id: 'it1',
     title: 'Full Stack Development Course – Build Complete Web Applications',
-    slug: "full-stack-development",
+    slug: "full-stack-development-build-complete-web-applications-training-coimbatore",
     category: 'IT',
     oldPrice: '₹60,000',
     price: '₹34,999',
@@ -1259,15 +1271,16 @@ export const COURSES: Course[] = [
     image: '/img/it/full-stack-development-171z.webp',
     description: 'Master Front-End, Back-End, Databases, and Deployment with React & Node.js.',
     seo: {
-      title: "Full Stack Development Course in Coimbatore | Lasak Edu",
-      description: "Join our Full Stack Development Course in Coimbatore at Lasak Edu. Master MERN Stack, React, and Node.js with real-time projects and full job placement support.",
-      keywords: "Full Stack Development Course in Coimbatore, MERN Stack Training, Full Stack Developer Course, Web Development Training Coimbatore, Lasak Edu, React JS, Node.js, Placement Assistance"
+      title: "Full Stack Development– Build Complete Web Applications Training in Coimbatore | IT Courses | Lasak Edu",
+      description: "Join the best Full Stack Development– Build Complete Web Applications training institute in Coimbatore. IT courses with placement support. Enroll today at Lasak Edu.",
+      keywords: "Full Stack Development– Build Complete Web Applications Training in Coimbatore, IT Courses, Full Stack Development– Build Complete Web Applications training institute in Coimbatore, Lasak Edu",
+      alt_text: "Full Stack Development– Build Complete Web Applications training class in Coimbatore"
     },
     enrollLink: "https://forms.gle/6sVSvE1schYRYfse7",
     phone: "+91 74187 32525",
-    tagline: "Full Stack Development Course – Build Complete Web Applications",
-    introduction: "Our Full Stack Development Course is designed to make you a complete web developer capable of building both front-end and back-end applications. This course covers everything from designing user interfaces to managing servers and databases.\n\nYou will learn how to create responsive websites, develop REST APIs, connect databases, implement authentication systems, and deploy applications to live servers.",
-    long_description: "By the end of the course, you will be able to build complete full-stack web applications independently. The training is fully practical and project-based, ensuring you gain real-world development experience.\n\n**Average Salary in India:**\n• Freshers: ₹3 – ₹6 LPA\n• Experienced: ₹8 – ₹18 LPA+\n\n**Career Paths:**\n• Full Stack Developer\n• Front-End Developer\n• Back-End Developer\n• React Developer\n• Node.js Developer",
+    tagline: 'Join the best Full Stack Development– Build Complete Web Applications training institute in Coimbatore. IT courses with placement support.',
+    introduction: "Lasak Edu offers the best Full Stack Development– Build Complete Web Applications training in Coimbatore for students and professionals. Our course includes real-time projects and placement support.\n\nOur Full Stack Development Course is designed to make you a complete web developer capable of building both front-end and back-end applications. This course covers everything from designing user interfaces to managing servers and databases.\n\nYou will learn how to create responsive websites, develop REST APIs, connect databases, implement authentication systems, and deploy applications to live servers.",
+    long_description: "## Why Choose Our Full Stack Development– Build Complete Web Applications Training in Coimbatore\n\nOur institute focuses on providing practical, industry-oriented training that guarantees you are job-ready. From learning the absolute basics to mastering advanced concepts, our course ensures a solid foundation.\n\n## Course Details – Full Stack Development– Build Complete Web Applications Training\n\nThis robust course walks you through the core concepts and industry standard workflows. You will work on real-time projects mimicking actual industry workflows.\n\n## Placement Support for Students\n\nWe provide 100% placement support for our students. Our network with core companies guarantees excellent career start opportunities.\n\nBy the end of the course, you will be able to build complete full-stack web applications independently. The training is fully practical and project-based, ensuring you gain real-world development experience.\n\n**Average Salary in India:**\n• Freshers: ₹3 – ₹6 LPA\n• Experienced: ₹8 – ₹18 LPA+\n\n**Career Paths:**\n• Full Stack Developer\n• Front-End Developer\n• Back-End Developer\n• React Developer\n• Node.js Developer\n\n[Explore more IT Courses](/courses/IT)",
     skills_gained: [
       "Front-End Development (HTML, CSS, JavaScript)",
       "Responsive Web Design",
@@ -1358,7 +1371,7 @@ export const COURSES: Course[] = [
   {
     id: 'it2',
     title: 'Web Development Course – Become a Full Stack Developer',
-    slug: "web-development",
+    slug: "web-development-become-a-full-stack-developer-training-coimbatore",
     category: 'IT',
     oldPrice: '₹34,999',
     price: '₹13,999',
@@ -1366,15 +1379,16 @@ export const COURSES: Course[] = [
     image: '/img/it/web-development-387z.webp',
     description: 'Our Web Development Course is designed to help you become a professional Full Stack Web Developer. Learn to design, develop, and deploy modern websites.',
     seo: {
-      title: "Web Development Course in Coimbatore | Lasak Edu",
-      description: "Learn Web Development in Coimbatore at Lasak Edu. Master HTML, CSS, JavaScript, React, and Node.js. Best Full Stack Web Development training with placement.",
-      keywords: "Web Development Course in Coimbatore, Front End Development, Back End Development, Full Stack Web Developer, Lasak Edu, HTML, CSS, JavaScript"
+      title: "Web Development– Become a Full Stack Developer Training in Coimbatore | IT Courses | Lasak Edu",
+      description: "Join the best Web Development– Become a Full Stack Developer training institute in Coimbatore. IT courses with placement support. Enroll today at Lasak Edu.",
+      keywords: "Web Development– Become a Full Stack Developer Training in Coimbatore, IT Courses, Web Development– Become a Full Stack Developer training institute in Coimbatore, Lasak Edu",
+      alt_text: "Web Development– Become a Full Stack Developer training class in Coimbatore"
     },
     enrollLink: "https://forms.gle/6sVSvE1schYRYfse7",
     phone: "+91 74187 32525",
-    tagline: "Web Development Course – Become a Full Stack Developer",
-    introduction: "Our Web Development Course is designed to help you become a professional Full Stack Web Developer. In this course, you will learn how to design, develop, and deploy modern websites and web applications using the latest technologies.\n\nWe start from the basics of HTML and CSS, then move to JavaScript, React, Node.js, and databases. The course is fully practical and project-based, ensuring that you gain real-world experience.",
-    long_description: "By the end of the course, you will be able to build dynamic, responsive, and fully functional web applications independently. Web Development offers excellent career opportunities in India and globally.\n\n**Average Salary in India:**\n• Freshers: ₹3 – ₹6 LPA\n• Experienced: ₹8 – ₹15 LPA+\n\n**Career Paths:**\n• Front-End & Back-End Development\n• Full Stack Web Applications\n• Remote Freelancing & Startups",
+    tagline: 'Join the best Web Development– Become a Full Stack Developer training institute in Coimbatore. IT courses with placement support.',
+    introduction: "Lasak Edu offers the best Web Development– Become a Full Stack Developer training in Coimbatore for students and professionals. Our course includes real-time projects and placement support.\n\nOur Web Development Course is designed to help you become a professional Full Stack Web Developer. In this course, you will learn how to design, develop, and deploy modern websites and web applications using the latest technologies.\n\nWe start from the basics of HTML and CSS, then move to JavaScript, React, Node.js, and databases. The course is fully practical and project-based, ensuring that you gain real-world experience.",
+    long_description: "## Why Choose Our Web Development– Become a Full Stack Developer Training in Coimbatore\n\nOur institute focuses on providing practical, industry-oriented training that guarantees you are job-ready. From learning the absolute basics to mastering advanced concepts, our course ensures a solid foundation.\n\n## Course Details – Web Development– Become a Full Stack Developer Training\n\nThis robust course walks you through the core concepts and industry standard workflows. You will work on real-time projects mimicking actual industry workflows.\n\n## Placement Support for Students\n\nWe provide 100% placement support for our students. Our network with core companies guarantees excellent career start opportunities.\n\nBy the end of the course, you will be able to build dynamic, responsive, and fully functional web applications independently. Web Development offers excellent career opportunities in India and globally.\n\n**Average Salary in India:**\n• Freshers: ₹3 – ₹6 LPA\n• Experienced: ₹8 – ₹15 LPA+\n\n**Career Paths:**\n• Front-End & Back-End Development\n• Full Stack Web Applications\n• Remote Freelancing & Startups\n\n[Explore more IT Courses](/courses/IT)",
     skills_gained: [
       "Responsive Web Design (HTML & CSS)",
       "Interactive Pages (JavaScript)",
@@ -1458,7 +1472,7 @@ export const COURSES: Course[] = [
   {
     id: 'it3',
     title: 'Software Testing Course – Become a QA Expert',
-    slug: "software-testing",
+    slug: "software-testing-become-a-qa-expert-training-coimbatore",
     category: 'IT',
     oldPrice: '₹34,999',
     price: '₹13,999',
@@ -1466,15 +1480,16 @@ export const COURSES: Course[] = [
     image: '/img/it/st-291z.webp',
     description: 'Master Manual and Automation Testing (Selenium) with real-time projects and placement support.',
     seo: {
-      title: "Software Testing Course in Coimbatore | Lasak Edu",
-      description: "Best Software Testing Course in Coimbatore at Lasak Edu. Learn Manual Testing, Selenium Automation, API Testing, and QA tools with 100% placement assistance.",
-      keywords: "Software Testing Course in Coimbatore, Selenium Automation Training, QA Training Coimbatore, Manual Testing Course, Software Testing Institute, Lasak Edu, API Testing"
+      title: "Software Testing– Become a QA Expert Training in Coimbatore | IT Courses | Lasak Edu",
+      description: "Join the best Software Testing– Become a QA Expert training institute in Coimbatore. IT courses with placement support. Enroll today at Lasak Edu.",
+      keywords: "Software Testing– Become a QA Expert Training in Coimbatore, IT Courses, Software Testing– Become a QA Expert training institute in Coimbatore, Lasak Edu",
+      alt_text: "Software Testing– Become a QA Expert training class in Coimbatore"
     },
     enrollLink: "https://forms.gle/6sVSvE1schYRYfse7",
     phone: "+91 74187 32525",
-    tagline: "Software Testing Course – Become a QA Expert",
-    introduction: "Our Software Testing Course is designed to help you become a skilled Quality Assurance (QA) professional. In this course, you will learn how to test software applications to ensure they are bug-free, secure, and high-performing.\n\nWe cover both Manual Testing and Automation Testing, including real-time projects and industry-standard tools. The course focuses on practical knowledge so you can confidently work on live projects in IT companies.",
-    long_description: "By the end of the course, you will understand the complete Software Testing Life Cycle (STLC) and be ready to work as a QA Engineer. Software Testing is one of the most stable and in-demand IT careers.\n\n**Average Salary in India:**\n• Freshers: ₹2.5 – ₹5 LPA\n• Experienced: ₹6 – ₹12 LPA+\n\n**Career Paths:**\n• Software Tester\n• QA Engineer\n• Automation Tester\n• Test Analyst",
+    tagline: 'Join the best Software Testing– Become a QA Expert training institute in Coimbatore. IT courses with placement support.',
+    introduction: "Lasak Edu offers the best Software Testing– Become a QA Expert training in Coimbatore for students and professionals. Our course includes real-time projects and placement support.\n\nOur Software Testing Course is designed to help you become a skilled Quality Assurance (QA) professional. In this course, you will learn how to test software applications to ensure they are bug-free, secure, and high-performing.\n\nWe cover both Manual Testing and Automation Testing, including real-time projects and industry-standard tools. The course focuses on practical knowledge so you can confidently work on live projects in IT companies.",
+    long_description: "## Why Choose Our Software Testing– Become a QA Expert Training in Coimbatore\n\nOur institute focuses on providing practical, industry-oriented training that guarantees you are job-ready. From learning the absolute basics to mastering advanced concepts, our course ensures a solid foundation.\n\n## Course Details – Software Testing– Become a QA Expert Training\n\nThis robust course walks you through the core concepts and industry standard workflows. You will work on real-time projects mimicking actual industry workflows.\n\n## Placement Support for Students\n\nWe provide 100% placement support for our students. Our network with core companies guarantees excellent career start opportunities.\n\nBy the end of the course, you will understand the complete Software Testing Life Cycle (STLC) and be ready to work as a QA Engineer. Software Testing is one of the most stable and in-demand IT careers.\n\n**Average Salary in India:**\n• Freshers: ₹2.5 – ₹5 LPA\n• Experienced: ₹6 – ₹12 LPA+\n\n**Career Paths:**\n• Software Tester\n• QA Engineer\n• Automation Tester\n• Test Analyst\n\n[Explore more IT Courses](/courses/IT)",
     skills_gained: [
       "Software Testing Life Cycle (STLC)",
       "Manual Testing Concepts",
@@ -1565,7 +1580,7 @@ export const COURSES: Course[] = [
   {
     id: 'it4',
     title: 'Data Analytics Course – Turn Data into Powerful Insights',
-    slug: "data-analytics",
+    slug: "data-analytics-turn-data-into-powerful-insights-training-coimbatore",
     category: 'IT',
     oldPrice: '₹29,999',
     price: '₹10,999',
@@ -1573,15 +1588,16 @@ export const COURSES: Course[] = [
     image: '/img/it/da-013z.webp',
     description: 'Learn to collect, analyze, interpret, and visualize data using industry-standard tools like Excel, SQL, Power BI, and Python.',
     seo: {
-      title: "Data Analytics Course in Coimbatore | Lasak Edu",
-      description: "Master Data Analytics in Coimbatore at Lasak Edu. Learn Excel, SQL, Power BI, and Python. Best Data Analytics training with real-time projects and placement.",
-      keywords: "Data Analytics Course in Coimbatore, Data Analyst Training, Power BI Course, SQL Training Coimbatore, Lasak Edu, Python for Data Analysis"
+      title: "Data Analytics– Turn Data into Powerful Insights Training in Coimbatore | IT Courses | Lasak Edu",
+      description: "Join the best Data Analytics– Turn Data into Powerful Insights training institute in Coimbatore. IT courses with placement support. Enroll today at Lasak Edu.",
+      keywords: "Data Analytics– Turn Data into Powerful Insights Training in Coimbatore, IT Courses, Data Analytics– Turn Data into Powerful Insights training institute in Coimbatore, Lasak Edu",
+      alt_text: "Data Analytics– Turn Data into Powerful Insights training class in Coimbatore"
     },
     enrollLink: "https://forms.gle/6sVSvE1schYRYfse7",
     phone: "+91 74187 32525",
-    tagline: "Data Analytics Course – Turn Data into Powerful Insights",
-    introduction: "In today’s digital world, data is one of the most valuable assets for businesses. Companies use data analytics to make smart decisions, improve performance, increase profits, and understand customer behavior.\n\nOur Data Analytics Course is designed to help students learn how to collect, analyze, interpret, and visualize data using industry-standard tools like Excel, SQL, Power BI, and Python.\n\nThis course focuses on practical implementation and real-time business case studies. Students will learn how to transform raw data into meaningful insights and reports that help organizations grow.",
-    long_description: "Data Analytics is one of the highest-demand career fields in India and globally. Every business depends on data-driven decisions to optimize their operations and maximize growth.\n\n**Average Salary in India:**\n• Freshers: ₹18,000 – ₹30,000 per month\n• Experienced: ₹40,000 – ₹80,000+ per month\n• Senior Data Analysts: ₹6–12 LPA\n\n**Industries Hiring Data Professionals:**\n• IT & Tech Companies\n• Banking & Finance\n• E-commerce & Retail\n• Healthcare & Marketing",
+    tagline: 'Join the best Data Analytics– Turn Data into Powerful Insights training institute in Coimbatore. IT courses with placement support.',
+    introduction: "Lasak Edu offers the best Data Analytics– Turn Data into Powerful Insights training in Coimbatore for students and professionals. Our course includes real-time projects and placement support.\n\nIn today’s digital world, data is one of the most valuable assets for businesses. Companies use data analytics to make smart decisions, improve performance, increase profits, and understand customer behavior.\n\nOur Data Analytics Course is designed to help students learn how to collect, analyze, interpret, and visualize data using industry-standard tools like Excel, SQL, Power BI, and Python.\n\nThis course focuses on practical implementation and real-time business case studies. Students will learn how to transform raw data into meaningful insights and reports that help organizations grow.",
+    long_description: "## Why Choose Our Data Analytics– Turn Data into Powerful Insights Training in Coimbatore\n\nOur institute focuses on providing practical, industry-oriented training that guarantees you are job-ready. From learning the absolute basics to mastering advanced concepts, our course ensures a solid foundation.\n\n## Course Details – Data Analytics– Turn Data into Powerful Insights Training\n\nThis robust course walks you through the core concepts and industry standard workflows. You will work on real-time projects mimicking actual industry workflows.\n\n## Placement Support for Students\n\nWe provide 100% placement support for our students. Our network with core companies guarantees excellent career start opportunities.\n\nData Analytics is one of the highest-demand career fields in India and globally. Every business depends on data-driven decisions to optimize their operations and maximize growth.\n\n**Average Salary in India:**\n• Freshers: ₹18,000 – ₹30,000 per month\n• Experienced: ₹40,000 – ₹80,000+ per month\n• Senior Data Analysts: ₹6–12 LPA\n\n**Industries Hiring Data Professionals:**\n• IT & Tech Companies\n• Banking & Finance\n• E-commerce & Retail\n• Healthcare & Marketing\n\n[Explore more IT Courses](/courses/IT)",
     skills_gained: [
       "Microsoft Excel for Data Analysis",
       "SQL (Structured Query Language)",
@@ -1665,7 +1681,7 @@ export const COURSES: Course[] = [
   {
     id: 'it5',
     title: 'Java Programming Course | Beginner to Advanced Training',
-    slug: "java-programming",
+    slug: "java-programming-beginner-to-advanced-training-coimbatore",
     category: 'IT',
     oldPrice: '₹29,999',
     price: '₹11,999',
@@ -1673,15 +1689,16 @@ export const COURSES: Course[] = [
     image: '/img/it/java-747z.webp',
     description: 'Build a strong career in software development with our comprehensive Java Programming Course. Learn from basics to advanced Core Java with practical training and projects.',
     seo: {
-      title: "Java Programming Course in Coimbatore | Lasak Edu",
-      description: "Join our Java Programming Course in Coimbatore at Lasak Edu. Master Core Java, OOP, and software development with 100% practical training and placement support.",
-      keywords: "Java Programming Course in Coimbatore, Core Java Training, Software Development, Lasak Edu, Java Coaching Coimbatore"
+      title: "Java Programming| Beginner to Advanced Training in Coimbatore | IT Courses | Lasak Edu",
+      description: "Join the best Java Programming| Beginner to Advanced training institute in Coimbatore. IT courses with placement support. Enroll today at Lasak Edu.",
+      keywords: "Java Programming| Beginner to Advanced Training in Coimbatore, IT Courses, Java Programming| Beginner to Advanced training institute in Coimbatore, Lasak Edu",
+      alt_text: "Java Programming| Beginner to Advanced training class in Coimbatore"
     },
     enrollLink: "https://forms.gle/6sVSvE1schYRYfse7",
     phone: "+91 74187 32525",
-    tagline: "Build a Strong Career in Software Development – Master Core Java with Practical Training",
-    introduction: "Java is one of the most powerful and widely used programming languages in the world. It is used to develop web applications, desktop applications, enterprise software, Android applications, and large-scale business systems.\n\nOur Java Programming Course is designed to help students learn programming fundamentals and master Core Java concepts with practical implementation. This course focuses on logical thinking, object-oriented programming (OOP), and real-time coding practice.",
-    long_description: "Java is highly demanded in IT companies because it is secure, platform-independent, and widely used in enterprise-level applications. Learning Java opens doors to career opportunities in software development, backend development, and full stack development.\n\n**Average Salary in India:**\n• Freshers: ₹15,000 – ₹25,000 per month\n• Experienced: ₹30,000 – ₹70,000+ per month",
+    tagline: 'Join the best Java Programming| Beginner to Advanced training institute in Coimbatore. IT courses with placement support.',
+    introduction: "Lasak Edu offers the best Java Programming| Beginner to Advanced training in Coimbatore for students and professionals. Our course includes real-time projects and placement support.\n\nJava is one of the most powerful and widely used programming languages in the world. It is used to develop web applications, desktop applications, enterprise software, Android applications, and large-scale business systems.\n\nOur Java Programming Course is designed to help students learn programming fundamentals and master Core Java concepts with practical implementation. This course focuses on logical thinking, object-oriented programming (OOP), and real-time coding practice.",
+    long_description: "## Why Choose Our Java Programming| Beginner to Advanced Training in Coimbatore\n\nOur institute focuses on providing practical, industry-oriented training that guarantees you are job-ready. From learning the absolute basics to mastering advanced concepts, our course ensures a solid foundation.\n\n## Course Details – Java Programming| Beginner to Advanced Training\n\nThis robust course walks you through the core concepts and industry standard workflows. You will work on real-time projects mimicking actual industry workflows.\n\n## Placement Support for Students\n\nWe provide 100% placement support for our students. Our network with core companies guarantees excellent career start opportunities.\n\nJava is highly demanded in IT companies because it is secure, platform-independent, and widely used in enterprise-level applications. Learning Java opens doors to career opportunities in software development, backend development, and full stack development.\n\n**Average Salary in India:**\n• Freshers: ₹15,000 – ₹25,000 per month\n• Experienced: ₹30,000 – ₹70,000+ per month\n\n[Explore more IT Courses](/courses/IT)",
     skills_gained: [
       "Java Fundamentals",
       "Object-Oriented Programming (OOP)",
@@ -1762,7 +1779,7 @@ export const COURSES: Course[] = [
   {
     id: 'it6',
     title: 'Python Programming | Beginner to Advanced Training',
-    slug: "python-programming",
+    slug: "python-programming-beginner-to-advanced-training-coimbatore",
     category: 'IT',
     oldPrice: '₹27,999',
     price: '₹10,999',
@@ -1770,15 +1787,16 @@ export const COURSES: Course[] = [
     image: '/img/it/python-267z.webp',
     description: 'Learn Python Programming from basics to advanced with practical training, real-time projects, and placement assistance. Join the best Python course in coimbatore and start your career as a Python Developer today.',
     seo: {
-      title: "Python Programming Course in Coimbatore | Lasak Edu",
-      description: "Python Programming Course in Coimbatore at Lasak Edu. Learn Python from scratch to advanced level with real-world projects and dedicated placement support help.",
-      keywords: "Python Programming Course in Coimbatore, Python Developer Training, Lasak Edu, Python Coaching Coimbatore, Web Development"
+      title: "Python Programming | Beginner to Advanced Training in Coimbatore | IT Courses | Lasak Edu",
+      description: "Join the best Python Programming | Beginner to Advanced training institute in Coimbatore. IT courses with placement support. Enroll today at Lasak Edu.",
+      keywords: "Python Programming | Beginner to Advanced Training in Coimbatore, IT Courses, Python Programming | Beginner to Advanced training institute in Coimbatore, Lasak Edu",
+      alt_text: "Python Programming | Beginner to Advanced training class in Coimbatore"
     },
     enrollLink: "https://forms.gle/6sVSvE1schYRYfse7",
     phone: "+91 74187 32525",
-    tagline: "Master Python Programming from basics to advanced with practical training, real-time projects, and placement assistance.",
-    introduction: "Python is one of the most popular and fastest-growing programming languages in the world. It is widely used in software development, web development, data science, artificial intelligence, automation, and machine learning. Because of its simple syntax and powerful capabilities, Python is the first choice for beginners and professionals alike.\n\nOur Python Programming Course is designed to provide a strong foundation in programming concepts while focusing on real-time practical implementation. This course helps students develop logical thinking, coding skills, and problem-solving ability required in the IT industry.",
-    long_description: "Python is one of the most popular and fastest-growing programming languages in the world. It is widely used in software development, web development, data science, artificial intelligence, automation, and machine learning. Because of its simple syntax and powerful capabilities, Python is the first choice for beginners and professionals alike.\n\nOur Python Programming Course is designed to provide a strong foundation in programming concepts while focusing on real-time practical implementation. This course helps students develop logical thinking, coding skills, and problem-solving ability required in the IT industry.\n\n**Average Salary in India:**\n• Freshers: ₹15,000 – ₹25,000 per month\n• 2–3 Years Experience: ₹30,000 – ₹60,000+ per month\n• Experienced Developers: ₹8 LPA and above",
+    tagline: 'Join the best Python Programming | Beginner to Advanced training institute in Coimbatore. IT courses with placement support.',
+    introduction: "Lasak Edu offers the best Python Programming | Beginner to Advanced training in Coimbatore for students and professionals. Our course includes real-time projects and placement support.\n\nPython is one of the most popular and fastest-growing programming languages in the world. It is widely used in software development, web development, data science, artificial intelligence, automation, and machine learning. Because of its simple syntax and powerful capabilities, Python is the first choice for beginners and professionals alike.\n\nOur Python Programming Course is designed to provide a strong foundation in programming concepts while focusing on real-time practical implementation. This course helps students develop logical thinking, coding skills, and problem-solving ability required in the IT industry.",
+    long_description: "## Why Choose Our Python Programming | Beginner to Advanced Training in Coimbatore\n\nOur institute focuses on providing practical, industry-oriented training that guarantees you are job-ready. From learning the absolute basics to mastering advanced concepts, our course ensures a solid foundation.\n\n## Course Details – Python Programming | Beginner to Advanced Training\n\nThis robust course walks you through the core concepts and industry standard workflows. You will work on real-time projects mimicking actual industry workflows.\n\n## Placement Support for Students\n\nWe provide 100% placement support for our students. Our network with core companies guarantees excellent career start opportunities.\n\nPython is one of the most popular and fastest-growing programming languages in the world. It is widely used in software development, web development, data science, artificial intelligence, automation, and machine learning. Because of its simple syntax and powerful capabilities, Python is the first choice for beginners and professionals alike.\n\nOur Python Programming Course is designed to provide a strong foundation in programming concepts while focusing on real-time practical implementation. This course helps students develop logical thinking, coding skills, and problem-solving ability required in the IT industry.\n\n**Average Salary in India:**\n• Freshers: ₹15,000 – ₹25,000 per month\n• 2–3 Years Experience: ₹30,000 – ₹60,000+ per month\n• Experienced Developers: ₹8 LPA and above\n\n[Explore more IT Courses](/courses/IT)",
     skills_gained: [
       "Python Fundamentals",
       "Conditional Statements & Loops",
@@ -1862,7 +1880,7 @@ export const COURSES: Course[] = [
   {
     id: 'it7',
     title: 'Digital Marketing (Adv) | Master Digital Marketing Excellence',
-    slug: "digital-marketing-adv",
+    slug: "digital-marketing-master-digital-marketing-excellence-training-coimbatore",
     category: 'IT',
     oldPrice: '₹29,999',
     price: '₹10,999',
@@ -1870,15 +1888,16 @@ export const COURSES: Course[] = [
     image: '/img/it/digital-marketing-875z.webp',
     description: 'Master SEO, SEM, and Social Media Marketing strategies to grow brands and increase sales.',
     seo: {
-      title: "Digital Marketing Course in Coimbatore | Lasak Edu",
-      description: "Master SEO, SEM, and Social Media Marketing in Coimbatore at Lasak Edu. Learn to grow brands and increase sales with 100% practical digital marketing training.",
-      keywords: "Digital Marketing Course in Coimbatore, SEO Training, SEM Course, SMM Training, Lasak Edu, Online Marketing"
+      title: "Digital Marketing| Master Digital Marketing Excellence Training in Coimbatore | IT Courses | Lasak Edu",
+      description: "Join the best Digital Marketing| Master Digital Marketing Excellence training institute in Coimbatore. IT courses with placement support. Enroll today at Lasak Edu.",
+      keywords: "Digital Marketing| Master Digital Marketing Excellence Training in Coimbatore, IT Courses, Digital Marketing| Master Digital Marketing Excellence training institute in Coimbatore, Lasak Edu",
+      alt_text: "Digital Marketing| Master Digital Marketing Excellence training class in Coimbatore"
     },
     enrollLink: "https://forms.gle/6sVSvE1schYRYfse7",
     phone: "+91 74187 32525",
-    tagline: "Master SEO, SEM & Social Media Marketing – Grow Your Brand Digitally",
-    introduction: "Our Digital Marketing Course is designed to provide practical, industry-focused training in SEO, SEM, Social Media Marketing, and complete online marketing strategies. This course helps students, entrepreneurs, and job seekers gain real-world skills to succeed in the digital industry.",
-    long_description: "Digital Marketing is one of the fastest-growing career fields in today’s digital world. Every business — from small startups to multinational companies — depends on online marketing to grow their brand, attract customers, and increase sales. This course focuses on practical implementation, live projects, and real-time campaign management so that students gain hands-on experience.\n\nAverage Salary in India:\n• Freshers: ₹15,000 – ₹25,000 per month\n• Experienced: ₹30,000 – ₹60,000+ per month\n• Freelancers: Unlimited earning potential",
+    tagline: 'Join the best Digital Marketing| Master Digital Marketing Excellence training institute in Coimbatore. IT courses with placement support.',
+    introduction: "Lasak Edu offers the best Digital Marketing| Master Digital Marketing Excellence training in Coimbatore for students and professionals. Our course includes real-time projects and placement support.\n\nOur Digital Marketing Course is designed to provide practical, industry-focused training in SEO, SEM, Social Media Marketing, and complete online marketing strategies. This course helps students, entrepreneurs, and job seekers gain real-world skills to succeed in the digital industry.",
+    long_description: "## Why Choose Our Digital Marketing| Master Digital Marketing Excellence Training in Coimbatore\n\nOur institute focuses on providing practical, industry-oriented training that guarantees you are job-ready. From learning the absolute basics to mastering advanced concepts, our course ensures a solid foundation.\n\n## Course Details – Digital Marketing| Master Digital Marketing Excellence Training\n\nThis robust course walks you through the core concepts and industry standard workflows. You will work on real-time projects mimicking actual industry workflows.\n\n## Placement Support for Students\n\nWe provide 100% placement support for our students. Our network with core companies guarantees excellent career start opportunities.\n\nDigital Marketing is one of the fastest-growing career fields in today’s digital world. Every business — from small startups to multinational companies — depends on online marketing to grow their brand, attract customers, and increase sales. This course focuses on practical implementation, live projects, and real-time campaign management so that students gain hands-on experience.\n\nAverage Salary in India:\n• Freshers: ₹15,000 – ₹25,000 per month\n• Experienced: ₹30,000 – ₹60,000+ per month\n• Freelancers: Unlimited earning potential\n\n[Explore more IT Courses](/courses/IT)",
     skills_gained: [
       "Search Engine Optimization (SEO)",
       "Search Engine Marketing (SEM)",
@@ -1970,7 +1989,7 @@ export const COURSES: Course[] = [
   {
     id: 'it8',
     title: 'UI/UX Design Course – Master Digital Product Design',
-    slug: "ui-ux-design",
+    slug: "ui-ux-design-master-digital-product-design-training-coimbatore",
     category: 'IT',
     oldPrice: '₹34,999',
     price: '₹13,999',
@@ -1978,15 +1997,16 @@ export const COURSES: Course[] = [
     image: '/img/it/ui-514z.webp',
     description: 'Master UI/UX Design from research to prototype with practical training and real-time projects.',
     seo: {
-      title: "UI/UX Design Course in Coimbatore | Lasak Edu",
-      description: "Join the best UI/UX Design Course in Coimbatore at Lasak Edu. Learn User Research, Wireframing, Prototyping, Figma, and Adobe XD with 100% practical training.",
-      keywords: "UI/UX Design Course in Coimbatore, UI UX Training, Figma Course, User Experience Design, Product Design Course, Lasak Edu, Wireframing"
+      title: "UI/UX Design– Master Digital Product Design Training in Coimbatore | IT Courses | Lasak Edu",
+      description: "Join the best UI/UX Design– Master Digital Product Design training institute in Coimbatore. IT courses with placement support. Enroll today at Lasak Edu.",
+      keywords: "UI/UX Design– Master Digital Product Design Training in Coimbatore, IT Courses, UI/UX Design– Master Digital Product Design training institute in Coimbatore, Lasak Edu",
+      alt_text: "UI/UX Design– Master Digital Product Design training class in Coimbatore"
     },
     enrollLink: "https://forms.gle/6sVSvE1schYRYfse7",
     phone: "+91 74187 32525",
-    tagline: "Master UI/UX Design from research to prototype with practical training and real-time projects.",
-    introduction: "Our UI/UX Design Course is designed to help you become a professional User Interface (UI) and User Experience (UX) Designer. In this course, you will learn how to design visually appealing, user-friendly, and interactive digital products such as websites and mobile applications.\n\nWe cover design principles, user research, wireframing, prototyping, and real-time project implementation using industry-standard tools. This course focuses on practical learning, ensuring you build a strong portfolio.",
-    long_description: "By the end of the course, you will be able to design complete user experiences from research to final prototype. UI/UX Design is one of the fastest-growing creative tech careers.\n\n**Average Salary in India:**\n• Freshers: ₹3 – ₹6 LPA\n• Experienced: ₹8 – ₹18 LPA+\n\n**Career Paths:**\n• UI/UX Designer\n• Product Designer\n• Interaction Designer\n• UX Researcher",
+    tagline: 'Join the best UI/UX Design– Master Digital Product Design training institute in Coimbatore. IT courses with placement support.',
+    introduction: "Lasak Edu offers the best UI/UX Design– Master Digital Product Design training in Coimbatore for students and professionals. Our course includes real-time projects and placement support.\n\nOur UI/UX Design Course is designed to help you become a professional User Interface (UI) and User Experience (UX) Designer. In this course, you will learn how to design visually appealing, user-friendly, and interactive digital products such as websites and mobile applications.\n\nWe cover design principles, user research, wireframing, prototyping, and real-time project implementation using industry-standard tools. This course focuses on practical learning, ensuring you build a strong portfolio.",
+    long_description: "## Why Choose Our UI/UX Design– Master Digital Product Design Training in Coimbatore\n\nOur institute focuses on providing practical, industry-oriented training that guarantees you are job-ready. From learning the absolute basics to mastering advanced concepts, our course ensures a solid foundation.\n\n## Course Details – UI/UX Design– Master Digital Product Design Training\n\nThis robust course walks you through the core concepts and industry standard workflows. You will work on real-time projects mimicking actual industry workflows.\n\n## Placement Support for Students\n\nWe provide 100% placement support for our students. Our network with core companies guarantees excellent career start opportunities.\n\nBy the end of the course, you will be able to design complete user experiences from research to final prototype. UI/UX Design is one of the fastest-growing creative tech careers.\n\n**Average Salary in India:**\n• Freshers: ₹3 – ₹6 LPA\n• Experienced: ₹8 – ₹18 LPA+\n\n**Career Paths:**\n• UI/UX Designer\n• Product Designer\n• Interaction Designer\n• UX Researcher\n\n[Explore more IT Courses](/courses/IT)",
     skills_gained: [
       "UI Design Principles & Color Theory",
       "Typography & Layout Design",
@@ -2080,16 +2100,16 @@ export const COURSES: Course[] = [
   {
     id: 'civil1',
     title: 'Civil CAD',
-    slug: "civil-cad",
+    slug: "civil-cad-training-coimbatore",
     category: 'Civil',
     oldPrice: '₹10,000',
     price: '₹6,499',
     duration: '1.5 to 2 Months',
     image: '/img/civil/civil-cad.webp',
     description: 'Master Civil CAD and accelerate your career growth with expert-led training.',
-    tagline: 'Master Civil CAD and accelerate your career growth with expert-led training.',
-    introduction: "Civil CAD is essential for civil engineers involved in drafting, planning, and infrastructure design. This course provides complete hands-on training in 2D drafting, layout planning, structural drawings, and project documentation using industry-standard tools like AutoCAD.\n\nYou will learn how to prepare detailed construction drawings used in residential, commercial, and infrastructure projects.",
-    long_description: "**Industries hiring include:**\n🏗 Construction Companies\n🏢 Infrastructure Firms\n🏛 Architectural Consultancies\n🏘 Real Estate Developers\n\n**Average Fresher Salary in India:** ₹2 – ₹4 LPA\nWith Experience: ₹5 – ₹10 LPA+",
+    tagline: 'Join the best Civil CAD training institute in Coimbatore. Civil courses with placement support.',
+    introduction: "Lasak Edu offers the best Civil CAD training in Coimbatore for students and professionals. Our course includes real-time projects and placement support.\n\nCivil CAD is essential for civil engineers involved in drafting, planning, and infrastructure design. This course provides complete hands-on training in 2D drafting, layout planning, structural drawings, and project documentation using industry-standard tools like AutoCAD.\n\nYou will learn how to prepare detailed construction drawings used in residential, commercial, and infrastructure projects.",
+    long_description: "## Why Choose Our Civil CAD Training in Coimbatore\n\nOur institute focuses on providing practical, industry-oriented training that guarantees you are job-ready. From learning the absolute basics to mastering advanced concepts, our course ensures a solid foundation.\n\n## Course Details – Civil CAD Training\n\nThis robust course walks you through the core concepts and industry standard workflows. You will work on real-time projects mimicking actual industry workflows.\n\n## Placement Support for Students\n\nWe provide 100% placement support for our students. Our network with core companies guarantees excellent career start opportunities.\n\n**Industries hiring include:**\n🏗 Construction Companies\n🏢 Infrastructure Firms\n🏛 Architectural Consultancies\n🏘 Real Estate Developers\n\n**Average Fresher Salary in India:** ₹2 – ₹4 LPA\nWith Experience: ₹5 – ₹10 LPA+\n\n*Check out our [AutoCAD Mechanical course](/courses/mechanical/auto-cad) or explore other [Civil CAD training options](/courses/civil/civil-cad).*\n\n[Explore more Civil Courses](/courses/Civil)",
     enrollLink: "https://forms.gle/6sVSvE1schYRYfse7",
     phone: "+91 74187 32525",
     modules: [
@@ -2163,9 +2183,10 @@ export const COURSES: Course[] = [
       }
     ],
     seo: {
-      title: "Civil CAD Course in Coimbatore | Lasak Edu",
-      description: "Master Civil CAD with hands-on AutoCAD training in Coimbatore at Lasak Edu. Learn 2D drafting, structural drawings, and drafting with full placement support.",
-      keywords: "Civil CAD Course, AutoCAD for Civil Engineering, Civil Drafting Training, Construction Drawings, CAD Training Coimbatore, Lasak Edu"
+      title: "Civil CAD Training in Coimbatore | Civil Courses | Lasak Edu",
+      description: "Join the best Civil CAD training institute in Coimbatore. Civil courses with placement support. Enroll today at Lasak Edu.",
+      keywords: "Civil CAD Training in Coimbatore, Civil Courses, Civil CAD training institute in Coimbatore, Lasak Edu",
+      alt_text: "Civil CAD training class in Coimbatore"
     },
     companies: [
       { name: "L&T", logo: "https://upload.wikimedia.org/wikipedia/commons/5/5d/Larsen_%26_Toubro_logo.svg" },
@@ -2178,16 +2199,16 @@ export const COURSES: Course[] = [
   {
     id: 'civil2',
     title: 'Revit Architecture',
-    slug: "revit-architecture",
+    slug: "revit-architecture-training-coimbatore",
     category: 'Civil',
     oldPrice: '₹25,000',
     price: '₹14,999',
     duration: '1.5 to 2 Months',
     image: '/img/civil/revit-471z.webp',
     description: 'Master Revit Architecture and accelerate your career growth with expert-led training.',
-    tagline: 'Master Revit Architecture and accelerate your career growth with expert-led training.',
-    introduction: "Autodesk Revit (Revit Architecture) is a leading BIM (Building Information Modeling) software widely used in architectural design and construction industries. It enables professionals to create intelligent 3D building models with accurate project data and documentation.\n\nThis course provides complete hands-on training in architectural modeling, drafting, visualization, and project coordination using real-time building projects.",
-    long_description: "**Industries hiring include:**\n🏛 Architectural Firms\n🏗 Construction Companies\n🏘 Real Estate Developers\n🏢 Infrastructure Firms\n🌍 International BIM Consultancy Companies\n\n**Average Fresher Salary in India:** ₹3 – ₹6 LPA\nWith Experience: ₹7 – ₹15 LPA+",
+    tagline: 'Join the best Revit Architecture training institute in Coimbatore. Civil courses with placement support.',
+    introduction: "Lasak Edu offers the best Revit Architecture training in Coimbatore for students and professionals. Our course includes real-time projects and placement support.\n\nAutodesk Revit (Revit Architecture) is a leading BIM (Building Information Modeling) software widely used in architectural design and construction industries. It enables professionals to create intelligent 3D building models with accurate project data and documentation.\n\nThis course provides complete hands-on training in architectural modeling, drafting, visualization, and project coordination using real-time building projects.",
+    long_description: "## Why Choose Our Revit Architecture Training in Coimbatore\n\nOur institute focuses on providing practical, industry-oriented training that guarantees you are job-ready. From learning the absolute basics to mastering advanced concepts, our course ensures a solid foundation.\n\n## Course Details – Revit Architecture Training\n\nThis robust course walks you through the core concepts and industry standard workflows. You will work on real-time projects mimicking actual industry workflows.\n\n## Placement Support for Students\n\nWe provide 100% placement support for our students. Our network with core companies guarantees excellent career start opportunities.\n\n**Industries hiring include:**\n🏛 Architectural Firms\n🏗 Construction Companies\n🏘 Real Estate Developers\n🏢 Infrastructure Firms\n🌍 International BIM Consultancy Companies\n\n**Average Fresher Salary in India:** ₹3 – ₹6 LPA\nWith Experience: ₹7 – ₹15 LPA+\n\n[Explore more Civil Courses](/courses/Civil)",
     enrollLink: "https://forms.gle/6sVSvE1schYRYfse7",
     phone: "+91 74187 32525",
     modules: [
@@ -2267,9 +2288,10 @@ export const COURSES: Course[] = [
       }
     ],
     seo: {
-      title: "Revit Architecture Course in Coimbatore | Lasak Edu",
-      description: "Master Revit Architecture and BIM in Coimbatore at Lasak Edu. Learn 3D architectural modeling, family creation, and documents with placement support help.",
-      keywords: "Revit Architecture Course, BIM Training, Architectural Modeling, Revit BIM, Autodesk Revit Training Coimbatore, Lasak Edu"
+      title: "Revit Architecture Training in Coimbatore | Civil Courses | Lasak Edu",
+      description: "Join the best Revit Architecture training institute in Coimbatore. Civil courses with placement support. Enroll today at Lasak Edu.",
+      keywords: "Revit Architecture Training in Coimbatore, Civil Courses, Revit Architecture training institute in Coimbatore, Lasak Edu",
+      alt_text: "Revit Architecture training class in Coimbatore"
     },
     companies: [
       { name: "L&T", logo: "https://upload.wikimedia.org/wikipedia/commons/5/5d/Larsen_%26_Toubro_logo.svg" },
@@ -2280,16 +2302,16 @@ export const COURSES: Course[] = [
   {
     id: 'civil3',
     title: 'SketchUp for Civil Engineering',
-    slug: "sketchup",
+    slug: "sketchup-for-civil-engineering-training-coimbatore",
     category: 'Civil',
     oldPrice: '₹25,000',
     price: '₹14,999',
     duration: '1 to 1.5 Months',
     image: '/img/civil/sketchup-430z.webp',
     description: 'Master SketchUp and accelerate your career growth with expert-led training.',
-    tagline: 'Master SketchUp and accelerate your career growth with expert-led training.',
-    introduction: "SketchUp is a powerful and user-friendly 3D modeling software widely used in civil engineering, architecture, construction planning, and interior design.\n\nThis course is specially designed for civil engineering students and professionals to create 3D building models, site layouts, elevations, and presentation-ready designs.\n\nYou will gain hands-on experience in modeling residential and commercial projects with real-time practical exercises.",
-    long_description: "**Industries hiring include:**\n🏗 Construction Companies\n🏛 Architectural Firms\n🏠 Interior Design Studios\n🏘 Real Estate Developers\n\n**Average Fresher Salary in India:** ₹2.5 – ₹5 LPA\nWith Experience: ₹6 – ₹12 LPA+",
+    tagline: 'Join the best SketchUp for Civil Engineering training institute in Coimbatore. Civil courses with placement support.',
+    introduction: "Lasak Edu offers the best SketchUp for Civil Engineering training in Coimbatore for students and professionals. Our course includes real-time projects and placement support.\n\nSketchUp is a powerful and user-friendly 3D modeling software widely used in civil engineering, architecture, construction planning, and interior design.\n\nThis course is specially designed for civil engineering students and professionals to create 3D building models, site layouts, elevations, and presentation-ready designs.\n\nYou will gain hands-on experience in modeling residential and commercial projects with real-time practical exercises.",
+    long_description: "## Why Choose Our SketchUp for Civil Engineering Training in Coimbatore\n\nOur institute focuses on providing practical, industry-oriented training that guarantees you are job-ready. From learning the absolute basics to mastering advanced concepts, our course ensures a solid foundation.\n\n## Course Details – SketchUp for Civil Engineering Training\n\nThis robust course walks you through the core concepts and industry standard workflows. You will work on real-time projects mimicking actual industry workflows.\n\n## Placement Support for Students\n\nWe provide 100% placement support for our students. Our network with core companies guarantees excellent career start opportunities.\n\n**Industries hiring include:**\n🏗 Construction Companies\n🏛 Architectural Firms\n🏠 Interior Design Studios\n🏘 Real Estate Developers\n\n**Average Fresher Salary in India:** ₹2.5 – ₹5 LPA\nWith Experience: ₹6 – ₹12 LPA+\n\n[Explore more Civil Courses](/courses/Civil)",
     enrollLink: "https://forms.gle/6sVSvE1schYRYfse7",
     phone: "+91 74187 32525",
     modules: [
@@ -2366,9 +2388,10 @@ export const COURSES: Course[] = [
       }
     ],
     seo: {
-      title: "SketchUp Course for Civil Engineering in Coimbatore | Lasak Edu",
-      description: "Learn SketchUp for civil engineering in Coimbatore at Lasak Edu. Master 3D building modeling, site layouts, and visualization with full placement support help.",
-      keywords: "SketchUp Course, Civil Engineering 3D Modeling, Architectural Modeling, Construction Planning, SketchUp Training Coimbatore, Lasak Edu"
+      title: "SketchUp for Civil Engineering Training in Coimbatore | Civil Courses | Lasak Edu",
+      description: "Join the best SketchUp for Civil Engineering training institute in Coimbatore. Civil courses with placement support. Enroll today at Lasak Edu.",
+      keywords: "SketchUp for Civil Engineering Training in Coimbatore, Civil Courses, SketchUp for Civil Engineering training institute in Coimbatore, Lasak Edu",
+      alt_text: "SketchUp for Civil Engineering training class in Coimbatore"
     },
     companies: [
       { name: "L&T", logo: "https://upload.wikimedia.org/wikipedia/commons/5/5d/Larsen_%26_Toubro_logo.svg" },
@@ -2380,16 +2403,16 @@ export const COURSES: Course[] = [
   {
     id: 'civil4',
     title: 'STAAD.Pro',
-    slug: "staad-pro",
+    slug: "staad-pro-training-coimbatore",
     category: 'Civil',
     oldPrice: '₹30,000',
     price: '₹17,999',
     duration: '2 to 3 Months',
     image: '/img/civil/staadpro-216z.webp',
     description: 'Master STAAD.Pro and accelerate your career growth with expert-led training.',
-    tagline: 'Master STAAD.Pro and accelerate your career growth with expert-led training.',
-    introduction: "STAAD.Pro is one of the most widely used structural analysis and design software tools in civil and structural engineering. It is used for analyzing and designing buildings, bridges, towers, industrial structures, and other infrastructure projects.\n\nThis course provides comprehensive training in structural modeling, load application, analysis, and design according to industry standards. You will gain practical experience by working on real-time structural projects.",
-    long_description: "**Industries hiring include:**\n🏗 Construction Companies\n🏢 Structural Consultancy Firms\n🏗 Infrastructure Developers\n🌍 EPC Companies\n\n**Average Fresher Salary in India:** ₹3 – ₹6 LPA\nWith Experience: ₹7 – ₹15 LPA+",
+    tagline: 'Join the best STAAD.Pro training institute in Coimbatore. Civil courses with placement support.',
+    introduction: "Lasak Edu offers the best STAAD.Pro training in Coimbatore for students and professionals. Our course includes real-time projects and placement support.\n\nSTAAD.Pro is one of the most widely used structural analysis and design software tools in civil and structural engineering. It is used for analyzing and designing buildings, bridges, towers, industrial structures, and other infrastructure projects.\n\nThis course provides comprehensive training in structural modeling, load application, analysis, and design according to industry standards. You will gain practical experience by working on real-time structural projects.",
+    long_description: "## Why Choose Our STAAD.Pro Training in Coimbatore\n\nOur institute focuses on providing practical, industry-oriented training that guarantees you are job-ready. From learning the absolute basics to mastering advanced concepts, our course ensures a solid foundation.\n\n## Course Details – STAAD.Pro Training\n\nThis robust course walks you through the core concepts and industry standard workflows. You will work on real-time projects mimicking actual industry workflows.\n\n## Placement Support for Students\n\nWe provide 100% placement support for our students. Our network with core companies guarantees excellent career start opportunities.\n\n**Industries hiring include:**\n🏗 Construction Companies\n🏢 Structural Consultancy Firms\n🏗 Infrastructure Developers\n🌍 EPC Companies\n\n**Average Fresher Salary in India:** ₹3 – ₹6 LPA\nWith Experience: ₹7 – ₹15 LPA+\n\n[Explore more Civil Courses](/courses/Civil)",
     enrollLink: "https://forms.gle/6sVSvE1schYRYfse7",
     phone: "+91 74187 32525",
     modules: [
@@ -2467,9 +2490,10 @@ export const COURSES: Course[] = [
       }
     ],
     seo: {
-      title: "STAAD.Pro Course in Coimbatore | Lasak Edu",
-      description: "Master STAAD.Pro for structural analysis and design in Coimbatore at Lasak Edu. Learn RCC/Steel design, load analysis, and IS standards with placement support.",
-      keywords: "STAAD.Pro Course, Structural Analysis Training, RCC Design, Steel Design, Civil Engineering Course, STAAD.Pro Training Coimbatore, Lasak Edu"
+      title: "STAAD.Pro Training in Coimbatore | Civil Courses | Lasak Edu",
+      description: "Join the best STAAD.Pro training institute in Coimbatore. Civil courses with placement support. Enroll today at Lasak Edu.",
+      keywords: "STAAD.Pro Training in Coimbatore, Civil Courses, STAAD.Pro training institute in Coimbatore, Lasak Edu",
+      alt_text: "STAAD.Pro training class in Coimbatore"
     },
     companies: [
       { name: "L&T", logo: "https://upload.wikimedia.org/wikipedia/commons/5/5d/Larsen_%26_Toubro_logo.svg" },
@@ -2480,16 +2504,16 @@ export const COURSES: Course[] = [
   {
     id: 'civil5',
     title: 'BIM Professional',
-    slug: "bim-professional",
+    slug: "bim-professional-training-coimbatore",
     category: 'Civil',
     oldPrice: '₹50,000',
     price: '₹34,999',
     duration: '2 to 3 Months',
     image: '/img/civil/bim-240z.webp',
     description: 'Master Building Information Modeling (BIM) and accelerate your career growth with expert-led training.',
-    tagline: 'Master Building Information Modeling (BIM) and accelerate your career growth with expert-led training.',
-    introduction: "Building Information Modeling (BIM) is revolutionizing the construction and infrastructure industry by enabling intelligent 3D modeling, coordination, and project management.\n\nThis BIM Professional course provides in-depth training using industry-standard tools like Autodesk Revit, Navisworks, and AutoCAD.\n\nYou will learn how to create detailed 3D building models, manage project data, perform clash detection, and generate accurate construction documentation.",
-    long_description: "**Industries hiring include:**\n🏗 Construction Companies\n🏛 Architectural Firms\n🏗 Infrastructure Developers\n🌍 International EPC Companies\n\n**Average Fresher Salary in India:** ₹3.5 – ₹7 LPA\nWith Experience: ₹8 – ₹18 LPA+",
+    tagline: 'Join the best BIM Professional training institute in Coimbatore. Civil courses with placement support.',
+    introduction: "Lasak Edu offers the best BIM Professional training in Coimbatore for students and professionals. Our course includes real-time projects and placement support.\n\nBuilding Information Modeling (BIM) is revolutionizing the construction and infrastructure industry by enabling intelligent 3D modeling, coordination, and project management.\n\nThis BIM Professional course provides in-depth training using industry-standard tools like Autodesk Revit, Navisworks, and AutoCAD.\n\nYou will learn how to create detailed 3D building models, manage project data, perform clash detection, and generate accurate construction documentation.",
+    long_description: "## Why Choose Our BIM Professional Training in Coimbatore\n\nOur institute focuses on providing practical, industry-oriented training that guarantees you are job-ready. From learning the absolute basics to mastering advanced concepts, our course ensures a solid foundation.\n\n## Course Details – BIM Professional Training\n\nThis robust course walks you through the core concepts and industry standard workflows. You will work on real-time projects mimicking actual industry workflows.\n\n## Placement Support for Students\n\nWe provide 100% placement support for our students. Our network with core companies guarantees excellent career start opportunities.\n\n**Industries hiring include:**\n🏗 Construction Companies\n🏛 Architectural Firms\n🏗 Infrastructure Developers\n🌍 International EPC Companies\n\n**Average Fresher Salary in India:** ₹3.5 – ₹7 LPA\nWith Experience: ₹8 – ₹18 LPA+\n\n[Explore more Civil Courses](/courses/Civil)",
     enrollLink: "https://forms.gle/6sVSvE1schYRYfse7",
     phone: "+91 74187 32525",
     modules: [
@@ -2561,9 +2585,10 @@ export const COURSES: Course[] = [
       }
     ],
     seo: {
-      title: "BIM Professional Course in Coimbatore | Lasak Edu",
-      description: "Master Building Information Modeling (BIM) with Revit and Navisworks in Coimbatore at Lasak Edu. Learn 3D modeling and coordination with full placement support.",
-      keywords: "BIM Course, Revit Training, Navisworks, BIM Coordinator Course, Building Information Modeling, BIM Training Coimbatore, Lasak Edu"
+      title: "BIM Professional Training in Coimbatore | Civil Courses | Lasak Edu",
+      description: "Join the best BIM Professional training institute in Coimbatore. Civil courses with placement support. Enroll today at Lasak Edu.",
+      keywords: "BIM Professional Training in Coimbatore, Civil Courses, BIM Professional training institute in Coimbatore, Lasak Edu",
+      alt_text: "BIM Professional training class in Coimbatore"
     },
     companies: [
       { name: "L&T", logo: "https://upload.wikimedia.org/wikipedia/commons/5/5d/Larsen_%26_Toubro_logo.svg" },
@@ -2576,15 +2601,15 @@ export const COURSES: Course[] = [
   {
     id: 'arts1',
     title: 'Graphic Design',
-    slug: 'graphic-design',
+    slug: "graphic-design-training-coimbatore",
     category: 'Arts',
     oldPrice: '₹18,000',
     price: '₹9,999',
     duration: '1.5 – 2 Months',
     image: '/img/arts/digital-marketing-840z.webp',
     description: 'Master Graphic Design using Photoshop, Illustrator and CorelDRAW.',
-    tagline: 'Master Graphic Design and build a creative career with expert-led training.',
-    introduction: "Our Graphic Design course is designed for aspiring designers who want to master industry-standard tools like Adobe Photoshop, Illustrator, and CorelDRAW. Learn the art of visual communication and brand identity.\n\nFrom logo design to professional layouts, this course covers everything you need to become a successful graphic designer in today's digital world.",
+    tagline: 'Join the best Graphic Design training institute in Coimbatore. Arts courses with placement support.',
+    introduction: "Lasak Edu offers the best Graphic Design training in Coimbatore for students and professionals. Our course includes real-time projects and placement support.\n\nOur Graphic Design course is designed for aspiring designers who want to master industry-standard tools like Adobe Photoshop, Illustrator, and CorelDRAW. Learn the art of visual communication and brand identity.\n\nFrom logo design to professional layouts, this course covers everything you need to become a successful graphic designer in today's digital world.",
     skills_gained: [
       "Adobe Photoshop Mastery",
       "Adobe Illustrator Vector Design",
@@ -2614,23 +2639,24 @@ export const COURSES: Course[] = [
       { name: "Zoho", logo: "https://raw.githubusercontent.com/BrindhaAnand/companylogos/a2a0cbc04401cc7b57c6f07b75ec42dd611a75f3/zohologo.png" }
     ],
     seo: {
-      title: "Graphic Design Course in Coimbatore | Lasak Edu",
-      description: "Learn Graphic Design in Coimbatore at Lasak Edu. Master Photoshop, Illustrator, and CorelDRAW with real-time projects and placement support.",
-      keywords: "Graphic Design Course, Photoshop Training, Illustrator Course, Lasak Edu, Design Institute Coimbatore"
+      title: "Graphic Design Training in Coimbatore | Arts Courses | Lasak Edu",
+      description: "Join the best Graphic Design training institute in Coimbatore. Arts courses with placement support. Enroll today at Lasak Edu.",
+      keywords: "Graphic Design Training in Coimbatore, Arts Courses, Graphic Design training institute in Coimbatore, Lasak Edu",
+      alt_text: "Graphic Design training class in Coimbatore"
     }
   },
   {
     id: 'arts2',
     title: 'Video Editing',
-    slug: 'video-editing',
+    slug: "video-editing-training-coimbatore",
     category: 'Arts',
     oldPrice: '₹18,000',
     price: '₹9,999',
     duration: '1.5 – 2 Months',
     image: '/img/arts/ms-office-specialist-640z.webp',
     description: 'Master Video Editing with Premiere Pro and After Effects.',
-    tagline: 'Master Video Editing and Motion Graphics with expert-led training.',
-    introduction: "Our Video Editing course provides hands-on training in professional video production using Adobe Premiere Pro and After Effects. Learn to create high-quality content for YouTube, social media, and film.\n\nFrom basic cuts to advanced motion graphics and color grading, you will gain the skills needed to excel in the rapidly growing video industry.",
+    tagline: 'Join the best Video Editing training institute in Coimbatore. Arts courses with placement support.',
+    introduction: "Lasak Edu offers the best Video Editing training in Coimbatore for students and professionals. Our course includes real-time projects and placement support.\n\nOur Video Editing course provides hands-on training in professional video production using Adobe Premiere Pro and After Effects. Learn to create high-quality content for YouTube, social media, and film.\n\nFrom basic cuts to advanced motion graphics and color grading, you will gain the skills needed to excel in the rapidly growing video industry.",
     skills_gained: [
       "Professional Video Editing (Premiere Pro)",
       "Motion Graphics & Effects (After Effects)",
@@ -2660,23 +2686,24 @@ export const COURSES: Course[] = [
       { name: "Freshworks", logo: "https://raw.githubusercontent.com/BrindhaAnand/companylogos/751d82d902a13278b0333b733061dcbb81622197/Freshworkslogo.png" }
     ],
     seo: {
-      title: "Video Editing Course in Coimbatore | Lasak Edu",
-      description: "Learn Video Editing in Coimbatore at Lasak Edu. Master Premiere Pro and After Effects with hands-on projects and career placement help.",
-      keywords: "Video Editing Course, Premiere Pro Training, After Effects Course, Lasak Edu, Media Training Coimbatore"
+      title: "Video Editing Training in Coimbatore | Arts Courses | Lasak Edu",
+      description: "Join the best Video Editing training institute in Coimbatore. Arts courses with placement support. Enroll today at Lasak Edu.",
+      keywords: "Video Editing Training in Coimbatore, Arts Courses, Video Editing training institute in Coimbatore, Lasak Edu",
+      alt_text: "Video Editing training class in Coimbatore"
     }
   },
   {
     id: 'arts3',
     title: 'Digital Marketing (Media)',
-    slug: "digital-marketing-media",
+    slug: "digital-marketing-training-coimbatore",
     category: 'Arts',
     oldPrice: '₹29,999',
     price: '₹11,999',
     duration: '90 Days',
     image: '/img/arts/digital-marketing-840z.webp',
     description: 'Focus on branding, content strategy and online presence.',
-    tagline: 'Master Digital Media Marketing and build a strong online presence.',
-    introduction: "Our Digital Marketing (Media) course is specifically tailored for those who want to master branding, social media strategy, and content creation. Learn how to grow reach and engagement for brands on platforms like Facebook, Instagram, and YouTube.",
+    tagline: 'Join the best Digital Marketing training institute in Coimbatore. Arts courses with placement support.',
+    introduction: "Lasak Edu offers the best Digital Marketing training in Coimbatore for students and professionals. Our course includes real-time projects and placement support.\n\nOur Digital Marketing (Media) course is specifically tailored for those who want to master branding, social media strategy, and content creation. Learn how to grow reach and engagement for brands on platforms like Facebook, Instagram, and YouTube.",
     skills_gained: [
       "Social Media Branding & Strategy",
       "Facebook & Instagram Ad Management",
@@ -2692,24 +2719,25 @@ export const COURSES: Course[] = [
       { name: "Flipkart", logo: "https://raw.githubusercontent.com/BrindhaAnand/companylogos/2b88affb35221185e9345ac022285ff4737a77b5/Flipkartlogo.png" }
     ],
     seo: {
-      title: "Digital Marketing (Media) Course in Coimbatore | Lasak Edu",
-      description: "Master digital marketing for media in Coimbatore. Learn strategy, branding, and ads with Lasak Edu's expert-led training.",
-      keywords: "Digital Marketing Media, Social Media Course, Branding Training, Lasak Edu"
+      title: "Digital Marketing Training in Coimbatore | Arts Courses | Lasak Edu",
+      description: "Join the best Digital Marketing training institute in Coimbatore. Arts courses with placement support. Enroll today at Lasak Edu.",
+      keywords: "Digital Marketing Training in Coimbatore, Arts Courses, Digital Marketing training institute in Coimbatore, Lasak Edu",
+      alt_text: "Digital Marketing training class in Coimbatore"
     }
   },
   {
     id: 'arts4',
     title: 'MS Office',
-    slug: "ms-office",
+    slug: "ms-office-training-coimbatore",
     category: 'Arts',
     oldPrice: '₹12,000',
     price: '₹5,999',
     duration: '1 to 1.5 Months',
     image: '/img/arts/ms-office-specialist-640z.webp',
     description: 'Master MS Office and build essential computer skills for academic and professional success.',
-    tagline: 'Master MS Office and build essential computer skills for academic and professional success.',
-    introduction: "This course provides complete training in Microsoft Word, Excel, PowerPoint, and Outlook. Learn essential computer skills that are required in every professional environment.",
-    long_description: "**Industries hiring include:**\n🏢 Corporate Offices\n🏪 Retail & Trading\n🏥 Healthcare & Hospitals\n🏫 Educational Institutions\n💼 Every Industry Sector\n\n**Average Fresher Salary in India:** ₹1.8 – ₹3.5 LPA\nWith Experience: ₹3.5 – ₹6 LPA+",
+    tagline: 'Join the best MS Office training institute in Coimbatore. Arts courses with placement support.',
+    introduction: "Lasak Edu offers the best MS Office training in Coimbatore for students and professionals. Our course includes real-time projects and placement support.\n\nThis course provides complete training in Microsoft Word, Excel, PowerPoint, and Outlook. Learn essential computer skills that are required in every professional environment.",
+    long_description: "## Why Choose Our MS Office Training in Coimbatore\n\nOur institute focuses on providing practical, industry-oriented training that guarantees you are job-ready. From learning the absolute basics to mastering advanced concepts, our course ensures a solid foundation.\n\n## Course Details – MS Office Training\n\nThis robust course walks you through the core concepts and industry standard workflows. You will work on real-time projects mimicking actual industry workflows.\n\n## Placement Support for Students\n\nWe provide 100% placement support for our students. Our network with core companies guarantees excellent career start opportunities.\n\n**Industries hiring include:**\n🏢 Corporate Offices\n🏪 Retail & Trading\n🏥 Healthcare & Hospitals\n🏫 Educational Institutions\n💼 Every Industry Sector\n\n**Average Fresher Salary in India:** ₹1.8 – ₹3.5 LPA\nWith Experience: ₹3.5 – ₹6 LPA+\n\n[Explore more Arts Courses](/courses/Arts)",
     enrollLink: "https://forms.gle/6sVSvE1schYRYfse7",
     phone: "+91 74187 32525",
     modules: [
@@ -2779,9 +2807,10 @@ export const COURSES: Course[] = [
       }
     ],
     seo: {
-      title: "MS Office Course in Coimbatore | Lasak Edu",
-      description: "Master MS Office with hands-on training in Word, Excel, and PowerPoint at Lasak Edu in Coimbatore. Gain essential skills with full career placement support help.",
-      keywords: "MS Office Course, Excel Training, Word PowerPoint, Computer Course, MS Office Training Coimbatore, Lasak Edu"
+      title: "MS Office Training in Coimbatore | Arts Courses | Lasak Edu",
+      description: "Join the best MS Office training institute in Coimbatore. Arts courses with placement support. Enroll today at Lasak Edu.",
+      keywords: "MS Office Training in Coimbatore, Arts Courses, MS Office training institute in Coimbatore, Lasak Edu",
+      alt_text: "MS Office training class in Coimbatore"
     },
     companies: [
       { name: "TCS", logo: "https://upload.wikimedia.org/wikipedia/commons/9/95/Tata_Consultancy_Services_Logo.svg" },
@@ -2792,16 +2821,16 @@ export const COURSES: Course[] = [
   {
     id: 'arts5',
     title: 'Tally with GST',
-    slug: "tally-with-gst",
+    slug: "tally-with-gst-training-coimbatore",
     category: 'Arts',
     oldPrice: '₹15,000',
     price: '₹5,999',
     duration: '1.5 to 2 Months',
     image: '/img/arts/tally-with-gst-448z.webp',
     description: 'Master Tally with GST and accelerate your career growth with expert-led training.',
-    tagline: 'Master Tally with GST and accelerate your career growth with expert-led training.',
-    introduction: "TallyPrime with GST is a complete accounting and taxation course designed to make you job-ready. This course covers practical accounting concepts, GST compliance, inventory management, payroll processing, and financial reporting with real-time examples.",
-    long_description: "**Industries hiring include:**\n💼 Accounting Firms\n🏢 Corporate Finance Departments\n🏪 Retail & Trading Companies\n📊 Tax Consultancies\n🏭 Manufacturing Companies\n\n**Average Fresher Salary in India:** ₹2 – ₹4 LPA\nWith Experience: ₹4 – ₹8 LPA+",
+    tagline: 'Join the best Tally with GST training institute in Coimbatore. Arts courses with placement support.',
+    introduction: "Lasak Edu offers the best Tally with GST training in Coimbatore for students and professionals. Our course includes real-time projects and placement support.\n\nTallyPrime with GST is a complete accounting and taxation course designed to make you job-ready. This course covers practical accounting concepts, GST compliance, inventory management, payroll processing, and financial reporting with real-time examples.",
+    long_description: "## Why Choose Our Tally with GST Training in Coimbatore\n\nOur institute focuses on providing practical, industry-oriented training that guarantees you are job-ready. From learning the absolute basics to mastering advanced concepts, our course ensures a solid foundation.\n\n## Course Details – Tally with GST Training\n\nThis robust course walks you through the core concepts and industry standard workflows. You will work on real-time projects mimicking actual industry workflows.\n\n## Placement Support for Students\n\nWe provide 100% placement support for our students. Our network with core companies guarantees excellent career start opportunities.\n\n**Industries hiring include:**\n💼 Accounting Firms\n🏢 Corporate Finance Departments\n🏪 Retail & Trading Companies\n📊 Tax Consultancies\n🏭 Manufacturing Companies\n\n**Average Fresher Salary in India:** ₹2 – ₹4 LPA\nWith Experience: ₹4 – ₹8 LPA+\n\n[Explore more Arts Courses](/courses/Arts)",
     enrollLink: "https://forms.gle/6sVSvE1schYRYfse7",
     phone: "+91 74187 32525",
     modules: [
@@ -2873,9 +2902,10 @@ export const COURSES: Course[] = [
       }
     ],
     seo: {
-      title: "Tally with GST Course in Coimbatore | Lasak Edu",
-      description: "Master Tally with GST in Coimbatore at Lasak Edu. Learn accounting, GST compliance, inventory, and payroll with practical training and full placement support.",
-      keywords: "Tally Course, TallyPrime, GST Training, Accounting Course, Tally with GST Coimbatore, Lasak Edu"
+      title: "Tally with GST Training in Coimbatore | Arts Courses | Lasak Edu",
+      description: "Join the best Tally with GST training institute in Coimbatore. Arts courses with placement support. Enroll today at Lasak Edu.",
+      keywords: "Tally with GST Training in Coimbatore, Arts Courses, Tally with GST training institute in Coimbatore, Lasak Edu",
+      alt_text: "Tally with GST training class in Coimbatore"
     },
     companies: [
       { name: "Deloitte", logo: "https://upload.wikimedia.org/wikipedia/commons/5/56/Deloitte.svg" },
@@ -2889,15 +2919,15 @@ export const COURSES: Course[] = [
   {
     id: 'kid1',
     title: 'Robotics for Kids',
-    slug: "robotics-for-kids",
+    slug: "robotics-for-kids-training-coimbatore",
     category: 'Kids',
     price: '₹1',
     duration: '1 to 2 Months',
     image: 'https://images.unsplash.com/photo-1561557944-6e7860d1a7eb?auto=format&fit=crop&q=80&w=600',
     description: 'Fun robotics program for kids to learn coding, electronics, and build real robots!',
-    tagline: 'Master Robotics for Kids and build the future with expert-led training.',
-    introduction: "Robotics for Kids is a fun and interactive program designed to introduce children to the exciting world of robotics, coding, and automation. This course helps students develop logical thinking, creativity, and problem-solving skills through hands-on learning.\n\nStudents will build and program real robots using beginner-friendly platforms like Scratch and hardware such as Arduino IDE (basic level introduction).\n\nThe training is designed in a simple, engaging way so kids can learn technology while having fun.",
-    long_description: "**Benefits for your child:**\n🧠 Improves creativity & innovation\n📚 Enhances STEM knowledge\n💪 Builds confidence in technology\n🎯 Develops analytical thinking\n🤝 Encourages teamwork\n\n**Perfect for kids aged 8-16 years interested in science, technology, and building things!**",
+    tagline: 'Join the best Robotics for Kids training institute in Coimbatore. Kids courses with placement support.',
+    introduction: "Lasak Edu offers the best Robotics for Kids training in Coimbatore for students and professionals. Our course includes real-time projects and placement support.\n\nRobotics for Kids is a fun and interactive program designed to introduce children to the exciting world of robotics, coding, and automation. This course helps students develop logical thinking, creativity, and problem-solving skills through hands-on learning.\n\nStudents will build and program real robots using beginner-friendly platforms like Scratch and hardware such as Arduino IDE (basic level introduction).\n\nThe training is designed in a simple, engaging way so kids can learn technology while having fun.",
+    long_description: "## Why Choose Our Robotics for Kids Training in Coimbatore\n\nOur institute focuses on providing practical, industry-oriented training that guarantees you are job-ready. From learning the absolute basics to mastering advanced concepts, our course ensures a solid foundation.\n\n## Course Details – Robotics for Kids Training\n\nThis robust course walks you through the core concepts and industry standard workflows. You will work on real-time projects mimicking actual industry workflows.\n\n## Placement Support for Students\n\nWe provide 100% placement support for our students. Our network with core companies guarantees excellent career start opportunities.\n\n**Benefits for your child:**\n🧠 Improves creativity & innovation\n📚 Enhances STEM knowledge\n💪 Builds confidence in technology\n🎯 Develops analytical thinking\n🤝 Encourages teamwork\n\n**Perfect for kids aged 8-16 years interested in science, technology, and building things!**\n\n[Explore more Kids Courses](/courses/Kids)",
     isFree: false,
     enrollLink: "https://forms.gle/6sVSvE1schYRYfse7",
     phone: "+91 74187 32525",
@@ -2958,23 +2988,24 @@ export const COURSES: Course[] = [
       }
     ],
     seo: {
-      title: "Robotics for Kids Course in Coimbatore | Lasak Edu",
-      description: "Fun robotics program for kids aged 8-16 in Coimbatore at Lasak Edu. Learn coding, build robots, and develop STEM skills with hands-on projects and expert help.",
-      keywords: "Robotics for Kids, Kids Coding, Arduino for Kids, STEM Education, Robotics Course Coimbatore, Lasak Edu"
+      title: "Robotics for Kids Training in Coimbatore | Kids Courses | Lasak Edu",
+      description: "Join the best Robotics for Kids training institute in Coimbatore. Kids courses with placement support. Enroll today at Lasak Edu.",
+      keywords: "Robotics for Kids Training in Coimbatore, Kids Courses, Robotics for Kids training institute in Coimbatore, Lasak Edu",
+      alt_text: "Robotics for Kids training class in Coimbatore"
     }
   },
   {
     id: 'kid2',
     title: 'Scratch Coding',
-    slug: "scratch-coding",
+    slug: "scratch-coding-training-coimbatore",
     category: 'Kids',
     price: 'Starts @ ₹4,000',
     duration: '1 Month',
     image: 'https://images.unsplash.com/photo-1509228468518-180dd4864904?auto=format&fit=crop&q=80&w=600',
     description: 'Learn coding through fun games and animations using block-based programming!',
-    tagline: 'Master Scratch Coding and accelerate your creative tech journey with expert-led training.',
-    introduction: "Scratch is a beginner-friendly, block-based programming platform developed by MIT Media Lab. It helps kids learn coding in a fun and visual way without writing complex code.\n\nThis course introduces children to the fundamentals of programming through games, animations, and interactive stories, helping them build logical thinking and creativity.",
-    long_description: "**Benefits of Learning Scratch:**\n🧠 Develops computational thinking\n🎨 Improves creativity and imagination\n🎯 Enhances problem-solving skills\n💪 Builds confidence in coding\n🚀 Strong foundation for Python, Java, and other languages\n\n**Perfect for kids aged 7-15 years who want to start their coding journey!**",
+    tagline: 'Join the best Scratch Coding training institute in Coimbatore. Kids courses with placement support.',
+    introduction: "Lasak Edu offers the best Scratch Coding training in Coimbatore for students and professionals. Our course includes real-time projects and placement support.\n\nScratch is a beginner-friendly, block-based programming platform developed by MIT Media Lab. It helps kids learn coding in a fun and visual way without writing complex code.\n\nThis course introduces children to the fundamentals of programming through games, animations, and interactive stories, helping them build logical thinking and creativity.",
+    long_description: "## Why Choose Our Scratch Coding Training in Coimbatore\n\nOur institute focuses on providing practical, industry-oriented training that guarantees you are job-ready. From learning the absolute basics to mastering advanced concepts, our course ensures a solid foundation.\n\n## Course Details – Scratch Coding Training\n\nThis robust course walks you through the core concepts and industry standard workflows. You will work on real-time projects mimicking actual industry workflows.\n\n## Placement Support for Students\n\nWe provide 100% placement support for our students. Our network with core companies guarantees excellent career start opportunities.\n\n**Benefits of Learning Scratch:**\n🧠 Develops computational thinking\n🎨 Improves creativity and imagination\n🎯 Enhances problem-solving skills\n💪 Builds confidence in coding\n🚀 Strong foundation for Python, Java, and other languages\n\n**Perfect for kids aged 7-15 years who want to start their coding journey!**\n\n[Explore more Kids Courses](/courses/Kids)",
     isFree: false,
     enrollLink: "https://forms.gle/6sVSvE1schYRYfse7",
     phone: "+91 74187 32525",
@@ -3033,9 +3064,10 @@ export const COURSES: Course[] = [
       }
     ],
     seo: {
-      title: "Scratch Coding Course in Coimbatore | Lasak Edu",
-      description: "Learn Scratch coding for kids aged 7-15 in Coimbatore at Lasak Edu. Create games, animations, and stories using block-based programming on our fun platform here.",
-      keywords: "Scratch Coding, Kids Programming, Block Coding, Scratch for Kids, Coding Course Coimbatore, Lasak Edu"
+      title: "Scratch Coding Training in Coimbatore | Kids Courses | Lasak Edu",
+      description: "Join the best Scratch Coding training institute in Coimbatore. Kids courses with placement support. Enroll today at Lasak Edu.",
+      keywords: "Scratch Coding Training in Coimbatore, Kids Courses, Scratch Coding training institute in Coimbatore, Lasak Edu",
+      alt_text: "Scratch Coding training class in Coimbatore"
     }
   }
 ];

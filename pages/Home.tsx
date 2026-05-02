@@ -444,7 +444,30 @@ const Home = () => {
 
       // Process Learning Ecosystem
       if (learningEcosystemRaw) {
-        setLearningEcosystem(learningEcosystemRaw);
+        const ecosystemOrder = [
+          "Lasak LMS Portal",
+          "Coursera Access",
+          "Industry Exposure Sessions",
+          "Placement & Career Support",
+          "Communication & Aptitude",
+          "Real-world Projects"
+        ];
+
+        const processedEcosystem = [...learningEcosystemRaw]
+          .map((item: any) => {
+            if (item.title === "Industry Exposure Sessions") return { ...item, size: 'large' };
+            if (item.title === "Placement & Career Support") return { ...item, size: 'large' };
+            if (item.title === "Communication & Aptitude") return { ...item, size: 'large' };
+            return { ...item, size: 'small' };
+          })
+          .sort((a, b) => {
+            const indexA = ecosystemOrder.indexOf(a.title);
+            const indexB = ecosystemOrder.indexOf(b.title);
+            if (indexA !== -1 && indexB !== -1) return indexA - indexB;
+            return (a.order_num || 0) - (b.order_num || 0);
+          });
+
+        setLearningEcosystem(processedEcosystem);
       }
 
     } catch (error) {

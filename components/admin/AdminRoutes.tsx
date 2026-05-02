@@ -1,4 +1,5 @@
-import React, { lazy } from 'react';
+import React, { lazy, useEffect, useRef } from 'react';
+import { COURSES } from '../../constants/courseDetails';
 import { Routes, Route, Navigate } from 'react-router-dom';
 
 // Admin Layout
@@ -47,6 +48,56 @@ const ProgramSegmentsManager = lazy(() => import('../../pages/admin/ProgramSegme
 const LearningEcosystemManager = lazy(() => import('../../pages/admin/LearningEcosystemManager'));
 
 const AdminRoutes = () => {
+  const cleanupRef = useRef(false);
+
+  useEffect(() => {
+    if (cleanupRef.current) return;
+    cleanupRef.current = true;
+
+    const deepCleanup = async () => {
+      try {
+        const { getFirestoreDb } = await import('../../lib/firebase');
+        const { doc, setDoc, deleteDoc, collection, getDocs } = await import('firebase/firestore');
+        const db = await getFirestoreDb();
+
+        console.log('🧹 Starting Deep Cleanup of Course Duplicates...');
+
+        // 1. Get all current document IDs from Firestore
+        const querySnapshot = await getDocs(collection(db, 'courses'));
+        const allDocIds = querySnapshot.docs.map(d => d.id);
+        const validIds = COURSES.map(c => c.id);
+
+        let deletedCount = 0;
+        let syncedCount = 0;
+
+        // 2. Identify and delete duplicates (IDs that aren't in our constant list)
+        for (const docId of allDocIds) {
+          if (!validIds.includes(docId)) {
+            console.log(`🗑️ Deleting duplicate: ${docId}`);
+            await deleteDoc(doc(db, 'courses', docId));
+            deletedCount++;
+          }
+        }
+
+        // 3. Ensure all valid courses are synced and up to date
+        for (const course of COURSES) {
+          await setDoc(doc(db, 'courses', course.id), {
+            ...course,
+            last_sync: new Date().toISOString()
+          }, { merge: true });
+          syncedCount++;
+        }
+
+        console.log(`✅ Cleanup Complete! Deleted ${deletedCount} duplicates, synced ${syncedCount} courses.`);
+        alert(`Cleanup Finished! Removed ${deletedCount} duplicates. Your admin panel is now clean.`);
+      } catch (e) {
+        console.error('Cleanup failed:', e);
+      }
+    };
+
+    deepCleanup();
+  }, []);
+
   return (
     <Routes>
       <Route element={<AdminLayout />}>

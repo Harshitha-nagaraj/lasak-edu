@@ -102,6 +102,7 @@ const AnimatedRoutes = () => {
         <Route path="/courses/:category" element={<PageWrapper><Courses /></PageWrapper>} />
         <Route path="/courses/:category/:slug" element={<PageWrapper><CourseDetails /></PageWrapper>} />
         <Route path="/course/:id" element={<PageWrapper><CourseDetails /></PageWrapper>} />
+
         <Route path="/verify" element={<PageWrapper><Verification /></PageWrapper>} />
         <Route path="/contact" element={<PageWrapper><Contact /></PageWrapper>} />
         <Route path="/about" element={<PageWrapper><About /></PageWrapper>} />
@@ -116,6 +117,8 @@ const AnimatedRoutes = () => {
         <Route path="/cancellation-policy" element={<CancellationPolicy />} />
         <Route path="/privacy-policy" element={<PrivacyPolicy />} />
         <Route path="/internship" element={<Navigate to="/contact" replace />} />
+        {/* Dynamic Top-Level SEO Route for Courses */}
+        <Route path="/:slug" element={<PageWrapper><CourseDetails /></PageWrapper>} />
       </Route>
 
       <Route path="*" element={<Navigate to="/" replace />} />

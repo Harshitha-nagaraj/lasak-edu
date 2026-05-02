@@ -66,6 +66,7 @@ export interface Course {
     title: string;
     description: string;
     keywords: string;
+    alt_text?: string;
   };
 }
 

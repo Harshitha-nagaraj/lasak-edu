@@ -4,8 +4,8 @@ import { CourseSummary } from '../types';
 export const COURSE_SUMMARIES: CourseSummary[] = [
   {
     id: 'mech1',
-    title: 'Precision Mechanical CAD Course – Mastering AutoCAD & SolidWorks',
-    slug: "precision-mechanical-cad",
+    title: 'AutoCAD Mechanical',
+    slug: "autocad-training-coimbatore",
     category: 'Mechanical',
     oldPrice: '₹12,000',
     price: '₹6,499',
@@ -16,8 +16,8 @@ export const COURSE_SUMMARIES: CourseSummary[] = [
   },
   {
     id: 'mech2',
-    title: 'SolidWorks Design Course (Mechanical Engineering)',
-    slug: "solidworks-design",
+    title: 'SolidWorks Masterclass',
+    slug: 'solidworks-masterclass-training-coimbatore',
     category: 'Mechanical',
     oldPrice: '₹25,000',
     price: '₹14,999',
@@ -28,8 +28,8 @@ export const COURSE_SUMMARIES: CourseSummary[] = [
   },
   {
     id: 'mech3',
-    title: 'Creo Parametric Course (Mechanical Engineering)',
-    slug: "creo-parametric",
+    title: 'Creo Parametric Course',
+    slug: 'creo-parametric-training-coimbatore',
     category: 'Mechanical',
     oldPrice: '₹25,000',
     price: '₹14,999',
@@ -41,7 +41,7 @@ export const COURSE_SUMMARIES: CourseSummary[] = [
   {
     id: 'mech4',
     title: 'CATIA V5 Course (Mechanical Engineering)',
-    slug: "catia-v5",
+    slug: 'catia-v5-training-coimbatore',
     category: 'Mechanical',
     oldPrice: '₹30,000',
     price: '₹17,999',
@@ -53,7 +53,7 @@ export const COURSE_SUMMARIES: CourseSummary[] = [
   {
     id: 'mech5',
     title: 'ANSYS Simulation Course (Mechanical Engineering)',
-    slug: "ansys-simulation",
+    slug: 'ansys-simulation-training-coimbatore',
     category: 'Mechanical',
     oldPrice: '₹30,000',
     price: '₹17,999',
@@ -65,7 +65,7 @@ export const COURSE_SUMMARIES: CourseSummary[] = [
   {
     id: 'mech6',
     title: 'HyperMesh Course (Mechanical Engineering)',
-    slug: "hypermesh",
+    slug: 'hypermesh-training-coimbatore',
     category: 'Mechanical',
     oldPrice: '₹40,000',
     price: '₹19,999',
@@ -77,7 +77,7 @@ export const COURSE_SUMMARIES: CourseSummary[] = [
   {
     id: 'mech7',
     title: 'ANSA Pre-Processing Course (Mechanical Engineering)',
-    slug: "ansa-pre-processing",
+    slug: 'ansa-pre-processing-training-coimbatore',
     category: 'Mechanical',
     oldPrice: '₹25,000',
     price: '₹14,999',
@@ -89,7 +89,7 @@ export const COURSE_SUMMARIES: CourseSummary[] = [
   {
     id: 'mech8',
     title: 'Computational Fluid Dynamics (CFD)',
-    slug: "computational-fluid-dynamics",
+    slug: 'computational-fluid-dynamics-training-coimbatore',
     category: 'Mechanical',
     oldPrice: '₹25,000',
     price: '₹11,999',
@@ -101,7 +101,7 @@ export const COURSE_SUMMARIES: CourseSummary[] = [
   {
     id: 'mech9',
     title: 'NX CAD (Unigraphics) Course (Mechanical Engineering)',
-    slug: "nx-cad-unigraphics",
+    slug: 'nx-cad-training-coimbatore',
     category: 'Mechanical',
     oldPrice: '₹30,000',
     price: '₹17,999',
@@ -113,7 +113,7 @@ export const COURSE_SUMMARIES: CourseSummary[] = [
   {
     id: 'mech10',
     title: 'Autodesk Inventor Course (Mechanical Engineering)',
-    slug: "autodesk-inventor",
+    slug: 'autodesk-inventor-training-coimbatore',
     category: 'Mechanical',
     oldPrice: '₹30,000',
     price: '₹17,999',
@@ -125,7 +125,7 @@ export const COURSE_SUMMARIES: CourseSummary[] = [
   {
     id: 'mech11',
     title: 'Wiring Harness Design Course',
-    slug: "wiring-harness-design",
+    slug: 'wiring-harness-design-training-coimbatore',
     category: 'Mechanical',
     oldPrice: '₹35,000',
     price: '₹19,999',
@@ -137,7 +137,7 @@ export const COURSE_SUMMARIES: CourseSummary[] = [
   {
     id: 'mech12',
     title: '3D Printing & Prototyping',
-    slug: "3d-printing-prototyping",
+    slug: '3d-printing-prototyping-training-coimbatore',
     category: 'Mechanical',
     oldPrice: '₹25,000',
     price: '₹14,999',
@@ -149,7 +149,7 @@ export const COURSE_SUMMARIES: CourseSummary[] = [
   {
     id: 'it1',
     title: 'Full Stack Development Course – Build Complete Web Applications',
-    slug: "full-stack-development",
+    slug: 'full-stack-development-build-complete-web-applications-training-coimbatore',
     category: 'IT',
     oldPrice: '₹60,000',
     price: '₹34,999',
@@ -161,7 +161,7 @@ export const COURSE_SUMMARIES: CourseSummary[] = [
   {
     id: 'it2',
     title: 'Web Development Course – Become a Full Stack Developer',
-    slug: "web-development",
+    slug: 'web-development-become-a-full-stack-developer-training-coimbatore',
     category: 'IT',
     oldPrice: '₹34,999',
     price: '₹13,999',
@@ -173,7 +173,7 @@ export const COURSE_SUMMARIES: CourseSummary[] = [
   {
     id: 'it3',
     title: 'Software Testing Course – Become a QA Expert',
-    slug: "software-testing",
+    slug: 'software-testing-become-a-qa-expert-training-coimbatore',
     category: 'IT',
     oldPrice: '₹34,999',
     price: '₹13,999',
@@ -185,7 +185,7 @@ export const COURSE_SUMMARIES: CourseSummary[] = [
   {
     id: 'it4',
     title: 'Data Analytics Course – Turn Data into Powerful Insights',
-    slug: "data-analytics",
+    slug: 'data-analytics-turn-data-into-powerful-insights-training-coimbatore',
     category: 'IT',
     oldPrice: '₹29,999',
     price: '₹10,999',
@@ -197,7 +197,7 @@ export const COURSE_SUMMARIES: CourseSummary[] = [
   {
     id: 'it5',
     title: 'Java Programming Course | Beginner to Advanced Training',
-    slug: "java-programming",
+    slug: 'java-programming-beginner-to-advanced-training-coimbatore',
     category: 'IT',
     oldPrice: '₹29,999',
     price: '₹11,999',
@@ -209,7 +209,7 @@ export const COURSE_SUMMARIES: CourseSummary[] = [
   {
     id: 'it6',
     title: 'Python Programming | Beginner to Advanced Training',
-    slug: "python-programming",
+    slug: 'python-programming-beginner-to-advanced-training-coimbatore',
     category: 'IT',
     oldPrice: '₹27,999',
     price: '₹10,999',
@@ -221,7 +221,7 @@ export const COURSE_SUMMARIES: CourseSummary[] = [
   {
     id: 'it7',
     title: 'Digital Marketing (Adv) | Master Digital Marketing Excellence',
-    slug: "digital-marketing-adv",
+    slug: 'digital-marketing-master-digital-marketing-excellence-training-coimbatore',
     category: 'IT',
     oldPrice: '₹29,999',
     price: '₹10,999',
@@ -233,7 +233,7 @@ export const COURSE_SUMMARIES: CourseSummary[] = [
   {
     id: 'it8',
     title: 'UI/UX Design Course – Master Digital Product Design',
-    slug: "ui-ux-design",
+    slug: 'ui-ux-design-master-digital-product-design-training-coimbatore',
     category: 'IT',
     oldPrice: '₹34,999',
     price: '₹13,999',
@@ -245,7 +245,7 @@ export const COURSE_SUMMARIES: CourseSummary[] = [
   {
     id: 'civil1',
     title: 'Civil CAD',
-    slug: "civil-cad",
+    slug: 'civil-cad-training-coimbatore',
     category: 'Civil',
     oldPrice: '₹10,000',
     price: '₹6,499',
@@ -257,7 +257,7 @@ export const COURSE_SUMMARIES: CourseSummary[] = [
   {
     id: 'civil2',
     title: 'Revit Architecture',
-    slug: "revit-architecture",
+    slug: 'revit-architecture-training-coimbatore',
     category: 'Civil',
     oldPrice: '₹25,000',
     price: '₹14,999',
@@ -269,7 +269,7 @@ export const COURSE_SUMMARIES: CourseSummary[] = [
   {
     id: 'civil3',
     title: 'SketchUp for Civil Engineering',
-    slug: "sketchup",
+    slug: 'sketchup-for-civil-engineering-training-coimbatore',
     category: 'Civil',
     oldPrice: '₹25,000',
     price: '₹14,999',
@@ -281,7 +281,7 @@ export const COURSE_SUMMARIES: CourseSummary[] = [
   {
     id: 'civil4',
     title: 'STAAD.Pro',
-    slug: "staad-pro",
+    slug: 'staad-pro-training-coimbatore',
     category: 'Civil',
     oldPrice: '₹30,000',
     price: '₹17,999',
@@ -293,7 +293,7 @@ export const COURSE_SUMMARIES: CourseSummary[] = [
   {
     id: 'civil5',
     title: 'BIM Professional',
-    slug: "bim-professional",
+    slug: 'bim-professional-training-coimbatore',
     category: 'Civil',
     oldPrice: '₹50,000',
     price: '₹34,999',
@@ -305,7 +305,7 @@ export const COURSE_SUMMARIES: CourseSummary[] = [
   {
     id: 'arts1',
     title: 'Graphic Design',
-    slug: 'graphic-design',
+    slug: 'graphic-design-training-coimbatore',
     category: 'Arts',
     oldPrice: '₹18,000',
     price: '₹9,999',
@@ -317,7 +317,7 @@ export const COURSE_SUMMARIES: CourseSummary[] = [
   {
     id: 'arts2',
     title: 'Video Editing',
-    slug: 'video-editing',
+    slug: 'video-editing-training-coimbatore',
     category: 'Arts',
     oldPrice: '₹18,000',
     price: '₹9,999',
@@ -329,7 +329,7 @@ export const COURSE_SUMMARIES: CourseSummary[] = [
   {
     id: 'arts3',
     title: 'Digital Marketing (Media)',
-    slug: "digital-marketing-media",
+    slug: 'digital-marketing-training-coimbatore',
     category: 'Arts',
     oldPrice: '₹29,999',
     price: '₹11,999',
@@ -341,7 +341,7 @@ export const COURSE_SUMMARIES: CourseSummary[] = [
   {
     id: 'arts4',
     title: 'MS Office',
-    slug: "ms-office",
+    slug: 'ms-office-training-coimbatore',
     category: 'Arts',
     oldPrice: '₹12,000',
     price: '₹5,999',
@@ -353,7 +353,7 @@ export const COURSE_SUMMARIES: CourseSummary[] = [
   {
     id: 'arts5',
     title: 'Tally with GST',
-    slug: "tally-with-gst",
+    slug: 'tally-with-gst-training-coimbatore',
     category: 'Arts',
     oldPrice: '₹15,000',
     price: '₹5,999',
@@ -365,7 +365,7 @@ export const COURSE_SUMMARIES: CourseSummary[] = [
   {
     id: 'kid1',
     title: 'Robotics for Kids',
-    slug: "robotics-for-kids",
+    slug: 'robotics-for-kids-training-coimbatore',
     category: 'Kids',
     price: '₹1',
     duration: '1 to 2 Months',
@@ -376,7 +376,7 @@ export const COURSE_SUMMARIES: CourseSummary[] = [
   {
     id: 'kid2',
     title: 'Scratch Coding',
-    slug: "scratch-coding",
+    slug: 'scratch-coding-training-coimbatore',
     category: 'Kids',
     price: 'Starts @ ₹4,000',
     duration: '1 Month',

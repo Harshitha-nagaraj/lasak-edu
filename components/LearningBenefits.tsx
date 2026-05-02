@@ -80,14 +80,14 @@ const LearningBenefits = ({ benefitsData }: { benefitsData?: any[] }) => {
       title: "Placement & Career Support",
       desc: "assured interviews and dedicated career mentorship",
       image: "https://images.unsplash.com/photo-1521791136064-7986c2923216?q=80&w=800&auto=format&fit=crop",
-      size: "small"
+      size: "large"
     },
     {
       id: 5,
       title: "Communication & Aptitude",
       desc: "intensive professional-grade soft skills training for workplace-readiness",
       image: "https://images.unsplash.com/photo-1552664730-d307ca884978?q=80&w=800&auto=format&fit=crop",
-      size: "small"
+      size: "large"
     },
     {
       id: 6,
