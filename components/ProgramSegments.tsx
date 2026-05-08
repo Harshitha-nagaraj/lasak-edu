@@ -41,7 +41,7 @@ const ProgramSegments = ({ segments }: { segments?: any[] }) => {
 
       <div className="relative w-full overflow-hidden">
         <div 
-          className="flex animate-scroll hover:pause space-x-6 px-4 md:px-10 will-change-transform" 
+          className="flex animate-scroll space-x-6 px-4 md:px-10 will-change-transform" 
           style={{ 
             width: 'fit-content',
             animationDuration: '60s' // Slower for smoother experience
@@ -85,7 +85,7 @@ const ProgramSegments = ({ segments }: { segments?: any[] }) => {
 
                     {/* 3. Courses Ticker (Inner Ticker) */}
                     <div className="w-full overflow-hidden relative py-4 my-2 flex-shrink-0">
-                      <div className="flex animate-scroll-horizontal hover:pause space-x-4 will-change-transform">
+                      <div className="flex animate-scroll-horizontal space-x-4 will-change-transform">
                         {[...(program.categories || []), ...(program.categories || []), ...(program.categories || [])].map((cat: any, idx: number) => (
                           <div
                             key={idx}
