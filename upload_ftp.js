@@ -11,15 +11,23 @@ async function deploy() {
             password: "Lasakedu@2024",
             secure: false
         });
-        console.log('Connected. Starting upload to current directory (Hostinger root)...');
+        console.log('Connected.');
+        
+        console.log('Checking current directory...');
+        console.log('Current PWD:', await client.pwd());
+        
+        console.log('Attempting to change directory to public_html...');
+        try {
+            await client.cd("public_html");
+            console.log('Changed directory to public_html. PWD:', await client.pwd());
+        } catch (e) {
+            console.log('Could not cd to public_html, might already be in root or it doesn\'t exist. Continuing...');
+        }
+
+        console.log('Starting upload from "dist" folder...');
         await client.uploadFromDir("dist");
         
-        console.log('Upload complete. Cleaning up rogue /public_html folder from earlier...');
-        try {
-            await client.removeDir("public_html");
-        } catch (e) {
-            console.log("Rogue folder cleanup failed or folder not found (safe to ignore)");
-        }
+        console.log('Upload complete.');
     }
     catch (err) {
         console.log('FTP Upload Error:', err);

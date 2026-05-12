@@ -24,6 +24,8 @@ const LazyProgramSegments = lazy(() => import('../components/ProgramSegments'));
 const LazyLearningBenefits = lazy(() => import('../components/LearningBenefits'));
 const InquiryModal = lazy(() => import('../components/InquiryModal'));
 const RazorpayButton = lazy(() => import('../components/RazorpayButton'));
+const ZenHero = lazy(() => import('../components/ZenHero'));
+const AboutSection = lazy(() => import('../components/AboutSection'));
 
 // --- Sub Components ---
 
@@ -132,6 +134,7 @@ const CourseCard: React.FC<{
         </div>
 
         <div className="mt-auto pt-4 border-t border-slate-100">
+          {/* Temporarily hide pricing 
           <div className="flex items-center gap-3 mb-4">
             {course.oldPrice && (
               <span className="text-gray-700 line-through text-sm font-medium">
@@ -147,13 +150,15 @@ const CourseCard: React.FC<{
               </span>
             )}
           </div>
+          */}
 
-          {/* EMI Option Badge */}
+          {/* Temporarily hide EMI info
           <div className="mb-4">
             <span className="text-xs font-bold text-blue-600 bg-blue-50 px-2 py-1 rounded border border-blue-100">
               EMI options starts from ₹2999
             </span>
           </div>
+          */}
 
           <div className="flex flex-col gap-3">
             <div className="flex gap-3">
@@ -176,6 +181,7 @@ const CourseCard: React.FC<{
                 Modules
               </button>
             </div>
+            {/* Temporarily hide payment button
             <Suspense fallback={<div className="h-12 w-full bg-slate-100 animate-pulse rounded-xl"></div>}>
               <RazorpayButton
                 amount={Number((course.price || "0").toString().replace(/[^0-9]/g, ''))}
@@ -190,6 +196,7 @@ const CourseCard: React.FC<{
                 className="w-full py-3 rounded-xl font-bold text-sm bg-white border-2 border-blue-600 text-blue-700 hover:bg-blue-50 transition-all shadow-md active:scale-95"
               />
             </Suspense>
+            */}
           </div>
         </div>
       </div>
@@ -696,111 +703,22 @@ const Home = () => {
         )}
       
 
-      {/* 1. Hero Section */}
+      {/* 1. Hero Section (Updated to Zen Style) */}
+      <Suspense fallback={<div className="h-[90vh] bg-slate-50 animate-pulse" />}>
+        <ZenHero />
+      </Suspense>
+
+      {/* Legacy Carousel Hero - Commented out for now
       <section className="relative h-[90vh] flex items-center justify-center overflow-hidden group bg-white">
+        ... (rest of the carousel) ...
+      </section>
+      */}
 
-        {/* Slider Background */}
-        <>
-          <div
-            key={currentSlide}
-            className="absolute inset-0 z-0"
-          >
-            <img
-              src={cleanPath(heroSlides[currentSlide]?.image || '/img/websitebanner1.webp')}
-              alt={heroSlides[currentSlide]?.title}
-              width="1920"
-              height="1080"
-              sizes="(max-width: 768px) 100vw, 1920px"
-              className="w-full h-full object-cover brightness-125"
-              loading={currentSlide === 0 ? "eager" : "lazy"}
-              decoding={currentSlide === 0 ? "sync" : "async"}
-              fetchPriority={currentSlide === 0 ? "high" : "low"}
-            />
-
-            {/* Dark overlay without blur – image stays sharp */}
-
-            <div className="absolute inset-0 bg-black/70"></div>
-          </div>
-        </>
-
-        {/* Animated Blobs */}
-        < div className="absolute inset-0 overflow-hidden pointer-events-none z-0" >
-          <div
-            className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-blue-500/10 rounded-full blur-[100px]"
-          />
-          <div
-            className="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] bg-indigo-500/10 rounded-full blur-[100px]"
-          />
-        </div >
-
-        {/* ❌ Arrows Removed Completely */}
-
-        {/* Indicators */}
-        <div className="absolute bottom-10 left-1/2 -translate-x-1/2 z-20 flex space-x-3">
-          {heroSlides.map((_, idx) => (
-            <button
-              key={idx}
-              onClick={() => setCurrentSlide(idx)}
-              aria-label={`Go to slide ${idx + 1}`}
-              className={`w-3 h-3 rounded-full transition-all duration-300 ${currentSlide === idx ? 'bg-blue-600 w-8' : 'bg-white/50 hover:bg-white'}`}
-            />
-          ))}
-        </div>
-
-        {/* Content */}
-        <div className="relative z-10 container mx-auto px-4 text-center">
-          <div
-            key={currentSlide}
-          >
-            <h1 className="text-3xl xs:text-5xl md:text-7xl lg:text-8xl font-tech font-black mb-4 md:mb-6 tracking-tighter leading-tight drop-shadow-[0_4px_20px_rgba(0,0,0,0.7)]">
-              <span
-                key={heroSlides[currentSlide]?.title}
-                className="block"
-              >
-                {heroSlides[currentSlide]?.title.split(" ").map((word, i) => (
-                  <span
-                    key={i}
-                    className={i === 1 ? "text-blue-400" : "text-white"}
-                  >
-                    {word}{" "}
-                  </span>
-                ))}
-              </span>
-            </h1>
-
-            <p className="text-lg md:text-2xl lg:text-3xl text-white/90 drop-shadow-[0_3px_12px_rgba(0,0,0,0.7)] font-sans font-medium tracking-wide max-w-4xl mx-auto mb-8 md:mb-12 leading-relaxed min-h-[3em] flex items-center justify-center px-4">
-              {heroSlides[currentSlide]?.subtitle}
-            </p>
-
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <div
-              >
-                <Link
-                  to={heroSlides[currentSlide]?.cta_link}
-                  className="px-8 py-4 bg-blue-600 rounded shadow-xl font-bold text-lg hover:bg-blue-700 hover:-translate-y-1 transition-all flex items-center justify-center gap-2 text-white group h-full"
-                >
-                  {heroSlides[currentSlide]?.cta_text}
-                  <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
-                </Link>
-              </div>
-
-              <div
-              >
-                <Link
-                  to="/contact"
-                  className="px-8 py-4 bg-white border border-slate-200 rounded font-bold text-lg text-slate-700 hover:bg-slate-50 hover:text-blue-600 hover:border-blue-200 shadow-md transition-all hover:-translate-y-1 h-full flex items-center justify-center"
-                >
-                  Contact Us
-                </Link>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section >
 
 
       {/* 2. Accreditation Logos (Fixed) */}
-      < section className="bg-white py-12 border-b border-slate-100" >
+      <section className="bg-white pt-4 pb-12 border-b border-slate-100">
+
         <ScrollReveal>
           <h2 className="text-center text-xl font-bold text-slate-600 uppercase tracking-widest mb-8">
             We are accredited by
@@ -947,7 +865,7 @@ const Home = () => {
               <LazyStatCounter end={100} label="Placement %" />
               <LazyStatCounter end={50} label="College Tie-ups" />
               <LazyStatCounter end={30} label="Courses" />
-              <LazyStatCounter end={12} label="Highest Package" />
+              <LazyStatCounter end={11} label="Highest Package" />
               <LazyStatCounter end={5} label="Years Exp." />
             </Suspense>
           </div>
@@ -957,7 +875,7 @@ const Home = () => {
       {/* 6. Categories (White) */}
       <section className="pt-10 bg-white">
         <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-black text-center mb-16">
+          <h2 className="text-3xl md:text-4xl font-black text-center mb-16">
             Explore Course Categories
           </h2>
 
@@ -976,10 +894,22 @@ const Home = () => {
 
       {/* 6.3 Important Program Segments - Pure Tailwind Sticky Stack */}
       <Suspense fallback={<div className="h-96 animate-pulse bg-slate-100 rounded-3xl mx-4 my-20" />}>
-        <LazyProgramSegments segments={programSegments} />
+        <LazyProgramSegments 
+          segments={programSegments} 
+          onRegister={(title, cat) => setInquiryModal({
+            isOpen: true,
+            courseId: 'program-segment',
+            courseTitle: title,
+            category: cat,
+            actionType: 'enroll',
+            onSuccess: undefined
+          })}
+        />
       </Suspense>
 
+
       {/* 7. Latest Courses (White) */}
+      {/* 7. Latest Courses - Hidden as requested
       <section className="pb-20 pt-10 bg-white">
         <div className="container mx-auto px-4">
           <ScrollReveal active={false}>
@@ -1028,12 +958,14 @@ const Home = () => {
           </ScrollReveal>
         </div>
       </section>
+      */}
+
 
       {/* 8. Achievers – Auto Scrolling Row */}
       <section className="py-20 bg-gradient-to-br from-slate-50 to-blue-50">
         <div className="container mx-auto px-4">
           <ScrollReveal>
-            <h2 className="text-3xl font-black text-slate-900 text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-black text-slate-900 text-center mb-16">
               Our Achievers
             </h2>
 
@@ -1047,7 +979,11 @@ const Home = () => {
 
       {/* 9. Student Voices (Autoplay Local Videos + Infinite Scroll) */}
       <Suspense fallback={<div className="py-20 text-center text-slate-600">Loading testimonials...</div>}>
-        <StudentTestimonials videos={videoTestimonials} />
+        <StudentTestimonials 
+          videos={videoTestimonials} 
+          title="Training & Internship Success Stories" 
+          subtitle="Real experiences from our students and internship participants."
+        />
       </Suspense>
 
       {/* 10. Demo Courses Ticker */}
@@ -1056,7 +992,7 @@ const Home = () => {
 
         <div className="container mx-auto px-4 relative z-10 mb-10 text-center">
           <ScrollReveal>
-            <h2 className="text-3xl md:text-5xl font-bold mb-2 font-tech text-white">
+            <h2 className="text-3xl md:text-4xl font-black mb-2 font-tech text-white">
               Subscribe to Our YouTube Channel
             </h2>
             <p className="text-white/80">
@@ -1079,7 +1015,7 @@ const Home = () => {
       {/* 11. Testimonials (White) */}
       <section className="py-24 bg-white text-slate-900 border-b border-slate-100">
         <div className="container mx-auto px-4">
-          <h2 className="text-4xl font-black text-center mb-16 text-slate-900">Google Reviews</h2>
+          <h2 className="text-3xl md:text-4xl font-black text-center mb-16 text-slate-900">Google Reviews</h2>
 
           <div className="max-w-7xl mx-auto flex flex-col xl:flex-row gap-8 xl:gap-10">
 
@@ -1182,6 +1118,10 @@ const Home = () => {
 
       <Suspense fallback={<div className="py-16 text-center text-slate-600">Loading blogs...</div>}>
         <BlogAutoScroll />
+      </Suspense>
+
+      <Suspense fallback={<div className="h-96 animate-pulse bg-slate-50" />}>
+        <AboutSection />
       </Suspense>
 
       <Suspense fallback={null}>

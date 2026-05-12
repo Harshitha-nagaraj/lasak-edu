@@ -701,6 +701,7 @@ const CourseDetails = () => {
                                 >
                                     Enquiry now <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
                                 </button>
+                                {/* Temporarily hide payment and scholarship 
                                 <div onClick={() => handlePaymentClick('hero')} className="w-full sm:w-auto">
                                     <React.Suspense fallback={<div className="h-12 w-full bg-slate-100 animate-pulse rounded-xl"></div>}>
                                         <RazorpayButton
@@ -724,6 +725,7 @@ const CourseDetails = () => {
                                 <button onClick={handleApplyScholarship} className="px-8 py-4 bg-white text-blue-600 border-2 border-blue-600 font-bold rounded-xl hover:bg-blue-50 transition-all flex items-center justify-center gap-2 w-full sm:w-auto">
                                     Apply Scholarship
                                 </button>
+                                */}
                             </div>
                         </div>
 
@@ -1104,7 +1106,7 @@ const CourseDetails = () => {
                 `}} />
             </section>
 
-            {/* 10. FAQ SECTION */}
+            {/* Temporarily hide FAQ section 
             <section className="py-20 bg-slate-50">
                 <div className="container mx-auto px-4">
                     <div className="text-center mb-16">
@@ -1124,295 +1126,33 @@ const CourseDetails = () => {
                                     <span className="font-bold text-slate-800">{faq.question}</span>
                                     <ChevronDown className={`text-slate-600 transition-transform ${activeAccordion === idx ? 'rotate-180' : ''}`} />
                                 </button>
-                                
-                                    {activeAccordion === idx && (
-                                        <div className="overflow-hidden">
-                                            <div className="p-6 pt-0 text-slate-600 leading-relaxed border-t border-slate-50">
-                                                {faq.answer}
-                                            </div>
+                                {activeAccordion === idx && (
+                                    <div className="overflow-hidden">
+                                        <div className="p-6 pt-0 text-slate-600 leading-relaxed border-t border-slate-50">
+                                            {faq.answer}
                                         </div>
-                                    )}
-                                
+                                    </div>
+                                )}
                             </div>
                         ))}
                     </div>
                 </div>
             </section>
+            */}
 
-            {/* 10. CHOOSE YOUR PASSPORT (NEW SECTION) */}
+            {/* Temporarily hide Passport section 
             {course.category !== 'Kids' && (
                 <section className="py-24 bg-white relative overflow-hidden">
-                    <div className="container mx-auto px-4 relative z-10">
-                        <div className="text-center mb-16">
-                            <h2 className="text-3xl md:text-5xl font-black text-slate-900 mb-4">Choose Your Passport</h2>
-                            <p className="text-slate-500 text-lg">Select the level of support you need for your career growth.</p>
-                        </div>
-
-                        <div className="grid lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
-                            {/* 1. SKILLS PASSPORT */}
-                            <div
-                                onClick={() => setSelectedPassport('skills')}
-                                className={`relative p-5 sm:p-6 md:p-8 rounded-2xl sm:rounded-3xl md:rounded-[2.5rem] border-4 transition-all cursor-pointer group flex flex-col ${selectedPassport === 'skills' ? 'border-blue-600 bg-blue-50/30 shadow-2xl scale-[1.02] sm:scale-105' : 'border-slate-100 bg-white hover:border-blue-200 shadow-xl'}`}
-                            >
-                                <div className={`absolute top-6 right-6 w-8 h-8 rounded-full border-2 flex items-center justify-center transition-colors ${selectedPassport === 'skills' ? 'bg-blue-600 border-blue-600' : 'border-slate-200'}`}>
-                                    {selectedPassport === 'skills' && <Check size={16} className="text-white" strokeWidth={4} />}
-                                </div>
-                                <div className="mb-8">
-                                    <h3 className="text-2xl font-black text-slate-900 mb-2 uppercase tracking-tight">Career Skill Builder</h3>
-                                    <div className="flex items-baseline gap-1">
-                                        <span className="text-3xl font-black text-blue-600">
-                                            {parsePrice(passportSettings.skills.price) === 0 ? "INCLUDED" : `+ ${passportSettings.skills.price}`}
-                                        </span>
-                                        <span className="text-slate-600 text-sm font-bold">/ Upgrade</span>
-                                    </div>
-                                </div>
-                                <ul className="space-y-4 mb-20 flex-1">
-                                    {passportSettings.skills.features.map((item, i) => (
-                                        <li key={i} className="flex gap-3 text-slate-600 text-sm font-medium">
-                                            <Check size={18} className="text-green-500 shrink-0" strokeWidth={3} />
-                                            {item}
-                                        </li>
-                                    ))}
-                                </ul>
-                                <div className={`mt-auto text-center font-black uppercase tracking-widest text-xs py-3 rounded-xl transition-colors ${selectedPassport === 'skills' ? 'bg-blue-600 text-white' : 'bg-slate-100 text-slate-600'}`}>
-                                    {selectedPassport === 'skills' ? 'Selected' : 'Select Package'}
-                                </div>
-                            </div>
-
-                            {/* 2. INTERVIEW PASSPORT */}
-                            <div
-                                onClick={() => setSelectedPassport('interview')}
-                                className={`relative p-5 sm:p-6 md:p-8 rounded-2xl sm:rounded-3xl md:rounded-[2.5rem] border-4 transition-all cursor-pointer group flex flex-col ${selectedPassport === 'interview' ? 'border-cyan-600 bg-cyan-50/30 shadow-2xl scale-[1.02] sm:scale-105' : 'border-slate-100 bg-white hover:border-cyan-200 shadow-xl'}`}
-                            >
-                                <div className="absolute -top-4 left-1/2 -translate-x-1/2 px-6 py-1 bg-cyan-600 text-white text-xs font-black rounded-full uppercase tracking-widest shadow-lg">Most Popular</div>
-                                <div className={`absolute top-6 right-6 w-8 h-8 rounded-full border-2 flex items-center justify-center transition-colors ${selectedPassport === 'interview' ? 'bg-cyan-600 border-cyan-600' : 'border-slate-200'}`}>
-                                    {selectedPassport === 'interview' && <Check size={16} className="text-white" strokeWidth={4} />}
-                                </div>
-                                <div className="mb-8">
-                                    <h3 className="text-2xl font-black text-slate-900 mb-2 uppercase tracking-tight">Interview Success Track</h3>
-                                    <div className="flex items-baseline gap-1">
-                                        <span className="text-3xl font-black text-cyan-600">+ {passportSettings.interview.price}</span>
-                                        <span className="text-slate-600 text-sm font-bold">/ Upgrade</span>
-                                    </div>
-                                </div>
-                                <div className="mb-4 text-xs font-black text-cyan-600 uppercase">ALL CAREER SKILL BUILDER BENEFITS +</div>
-                                <ul className="space-y-4 mb-20 flex-1">
-                                    {passportSettings.interview.features.map((item, i) => (
-                                        <li key={i} className="flex gap-3 text-slate-600 text-sm font-medium">
-                                            <Check size={18} className="text-cyan-500 shrink-0" strokeWidth={3} />
-                                            {item}
-                                        </li>
-                                    ))}
-                                </ul>
-                                <div className={`mt-auto text-center font-black uppercase tracking-widest text-xs py-3 rounded-xl transition-colors ${selectedPassport === 'interview' ? 'bg-cyan-600 text-white' : 'bg-slate-100 text-slate-600'}`}>
-                                    {selectedPassport === 'interview' ? 'Selected' : 'Select Package'}
-                                </div>
-                            </div>
-
-                            {/* 3. JOB PASSPORT */}
-                            <div
-                                onClick={() => setSelectedPassport('job')}
-                                className={`relative p-5 sm:p-6 md:p-8 rounded-2xl sm:rounded-3xl md:rounded-[2.5rem] border-4 transition-all cursor-pointer group flex flex-col ${selectedPassport === 'job' ? 'border-rose-600 bg-rose-50/30 shadow-2xl scale-[1.02] sm:scale-105' : 'border-slate-100 bg-white hover:border-rose-200 shadow-xl'}`}
-                            >
-                                <div className={`absolute top-6 right-6 w-8 h-8 rounded-full border-2 flex items-center justify-center transition-colors ${selectedPassport === 'job' ? 'bg-rose-600 border-rose-600' : 'border-slate-200'}`}>
-                                    {selectedPassport === 'job' && <Check size={16} className="text-white" strokeWidth={4} />}
-                                </div>
-                                <div className="mb-8">
-                                    <h3 className="text-2xl font-black text-slate-900 mb-2 uppercase tracking-tight">Job Secure Track</h3>
-                                    <div className="flex items-baseline gap-1">
-                                        <span className="text-3xl font-black text-rose-600">+ {passportSettings.job.price}</span>
-                                        <span className="text-slate-600 text-sm font-bold">/ Upgrade</span>
-                                    </div>
-                                </div>
-                                <div className="mb-4 text-xs font-black text-rose-600 uppercase">ALL INTERVIEW SUCCESS TRACK BENEFITS +</div>
-                                <ul className="space-y-4 mb-20 flex-1">
-                                    {passportSettings.job.features.map((item, i) => (
-                                        <li key={i} className="flex gap-3 text-slate-600 text-sm font-medium">
-                                            <Check size={18} className="text-rose-500 shrink-0" strokeWidth={3} />
-                                            {item}
-                                        </li>
-                                    ))}
-                                </ul>
-                                <div className={`mt-auto text-center font-black uppercase tracking-widest text-xs py-3 rounded-xl transition-colors ${selectedPassport === 'job' ? 'bg-rose-600 text-white' : 'bg-slate-100 text-slate-600'}`}>
-                                    {selectedPassport === 'job' ? 'Selected' : 'Select Package'}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                ...
                 </section>
             )}
+            */}
 
-            {/* 11. PRICING & ENROLLMENT (UPDATED) */}
+            {/* Temporarily hide Pricing & Enrollment section 
             <section className="py-24 bg-slate-50 relative overflow-hidden">
-                <div className="container mx-auto px-4 relative z-10">
-                    <div className="max-w-5xl mx-auto bg-gradient-to-br from-blue-600 to-indigo-900 rounded-[2rem] sm:rounded-[3rem] p-6 sm:p-10 md:p-16 text-white text-center shadow-2xl relative overflow-hidden group">
-                        <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
-                        <div className="absolute bottom-0 left-0 w-64 h-64 bg-blue-400/10 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2"></div>
-
-                        <div className="relative z-10">
-                            <span className="px-6 py-2 bg-white/10 backdrop-blur-md rounded-full text-xs font-black uppercase tracking-widest mb-8 inline-block">
-                                Final Step to Success
-                            </span>
-                            <h2 className="text-3xl md:text-5xl font-black mb-10 leading-tight">Begin Your Professional Transformation</h2>
-
-                            {/* Coupon Input Box (Always Visible) */}
-                            <div className="mb-8 flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
-                                <input
-                                    type="text"
-                                    value={couponInput}
-                                    onChange={(e) => setCouponInput(e.target.value.toUpperCase())}
-                                    onKeyDown={(e) => e.key === 'Enter' && applyCoupon()}
-                                    placeholder="Enter coupon code (e.g. LASAK50)"
-                                    className="flex-1 px-5 py-3 rounded-xl bg-white/10 border border-white/20 text-white placeholder-blue-200 font-bold focus:outline-none focus:border-white/50 backdrop-blur-sm text-sm"
-                                />
-                                <button
-                                    onClick={applyCoupon}
-                                    className="px-6 py-3 bg-green-500 hover:bg-green-400 text-white font-black rounded-xl transition-all text-sm shrink-0"
-                                >
-                                    Apply
-                                </button>
-                            </div>
-                            {couponStatus.type !== 'none' && (
-                                <div className={`mb-6 px-4 py-2 rounded-lg text-sm font-bold inline-block ${couponStatus.type === 'success' ? 'bg-green-500/20 text-green-200 border border-green-400/30' : 'bg-red-500/20 text-red-200 border border-red-400/30'}`}>
-                                    {couponStatus.message}
-                                </div>
-                            )}
-
-                            {/* Custom Amount Toggle */}
-                            <div className="flex bg-white/10 rounded-xl p-1 mb-8 max-w-md mx-auto backdrop-blur-sm">
-                                <button
-                                    onClick={() => setIsCustomPayment(false)}
-                                    className={`flex-1 py-3 rounded-lg text-sm font-black tracking-wide transition-all ${!isCustomPayment ? 'bg-white text-blue-900 shadow-md scale-105' : 'text-blue-200 hover:text-white'}`}
-                                >
-                                    FIXED COURSE AMOUNT
-                                </button>
-                                <button
-                                    onClick={() => setIsCustomPayment(true)}
-                                    className={`flex-1 py-3 rounded-lg text-sm font-black tracking-wide transition-all ${isCustomPayment ? 'bg-white text-blue-900 shadow-md scale-105' : 'text-blue-200 hover:text-white'}`}
-                                >
-                                    MANUALLY ENTER AMOUNT
-                                </button>
-                            </div>
-
-                            {/* Dynamic Display based on selection */}
-                            {isCustomPayment ? (
-                                <div className="mb-12 max-w-xs mx-auto animate-in fade-in zoom-in duration-300">
-                                    <label className="block text-blue-200 text-xs font-black mb-3 uppercase tracking-widest leading-relaxed">
-                                        Enter Amount to Pay Now
-                                    </label>
-                                    <div className="relative">
-                                        <span className="absolute left-5 top-1/2 -translate-y-1/2 text-white/50 text-2xl font-black">₹</span>
-                                        <input
-                                            type="number"
-                                            value={customAmount}
-                                            onChange={(e) => setCustomAmount(e.target.value)}
-                                            placeholder="0"
-                                            min="0"
-                                            className="w-full pl-12 pr-5 py-4 rounded-2xl bg-white/10 border-2 border-white/20 text-white placeholder-blue-200 text-4xl font-black focus:outline-none focus:border-green-400/50 focus:bg-white/20 backdrop-blur-sm transition-all text-center placeholder:opacity-50"
-                                        />
-                                    </div>
-                                    <p className="mt-3 text-white/60 text-xs font-semibold">
-                                        Use this to make partial/installment payments.
-                                    </p>
-                                </div>
-                            ) : (
-                                <div className="flex flex-col items-center gap-4 mb-12 animate-in fade-in zoom-in duration-300">
-                                    {scholarshipDiscount > 0 ? (
-                                        <>
-                                            {/* Original price struck through */}
-                                            <span className="text-2xl font-bold text-blue-200 line-through opacity-70">
-                                                {formatPrice(parsePrice(course.price) +
-                                                    (selectedPassport === 'skills' ? parsePrice(passportSettings.skills.price) :
-                                                        selectedPassport === 'interview' ? parsePrice(passportSettings.interview.price) :
-                                                            parsePrice(passportSettings.job.price)))}
-                                            </span>
-                                            {/* You save badge */}
-                                            <div className="flex items-center gap-2 px-5 py-1.5 bg-yellow-400/20 border border-yellow-400/40 rounded-full">
-                                                <span className="text-yellow-300 font-black text-sm">🎉 You save {formatPrice(scholarshipDiscount)}</span>
-                                            </div>
-                                            {/* Balance to pay */}
-                                            <div className="flex flex-col items-center">
-                                                <span className="text-xs font-black uppercase tracking-widest text-green-300 mb-1">Balance to Pay</span>
-                                                <span className="text-5xl md:text-8xl font-black text-green-300 tracking-tighter drop-shadow-lg">
-                                                    {formatPrice(Math.max(0, parsePrice(course.price) +
-                                                        (selectedPassport === 'skills' ? parsePrice(passportSettings.skills.price) :
-                                                            selectedPassport === 'interview' ? parsePrice(passportSettings.interview.price) :
-                                                                parsePrice(passportSettings.job.price)) - scholarshipDiscount))}
-                                                </span>
-                                            </div>
-                                        </>
-                                    ) : (
-                                        <div className="flex items-baseline justify-center gap-4">
-                                            <span className="text-4xl xs:text-5xl md:text-8xl font-black text-white tracking-tighter">
-                                                {formatPrice(parsePrice(course.price) +
-                                                    (selectedPassport === 'skills' ? parsePrice(passportSettings.skills.price) :
-                                                        selectedPassport === 'interview' ? parsePrice(passportSettings.interview.price) :
-                                                            parsePrice(passportSettings.job.price)))}
-                                            </span>
-                                        </div>
-                                    )}
-                                </div>
-                            )}
-
-                            <div className="flex items-center justify-center mb-8">
-                                <div className="flex items-center gap-2 px-6 py-2 bg-green-500/20 rounded-full border border-green-500/30 inline-flex">
-                                    <Check size={18} className="text-green-400" strokeWidth={4} />
-                                    <span className="text-green-100 font-bold uppercase tracking-widest text-xs">
-                                        {selectedPassport.toUpperCase()} PASSPORT SELECTED
-                                    </span>
-                                </div>
-                            </div>
-
-                            <div className="mb-8 bg-white/10 px-4 py-2 rounded-lg border border-white/20 inline-block backdrop-blur-sm">
-                                <p className="text-sm font-bold text-blue-100 flex items-center justify-center gap-2">
-                                    <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
-                                    EMI options starts from ₹2999
-                                </p>
-                            </div>
-
-                            <div className="flex flex-col md:flex-row gap-6 justify-center items-center">
-                                <div onClick={() => handlePaymentClick('pricing')} className="w-full md:w-auto">
-                                    <React.Suspense fallback={<div className="h-14 w-full md:w-auto bg-slate-100 animate-pulse rounded-2xl"></div>}>
-                                        <RazorpayButton
-                                            ref={pricingPaymentRef}
-                                            amount={isCustomPayment ? (parseInt(customAmount) || 0) : Math.max(0, parsePrice(course.price) +
-                                                (selectedPassport === 'skills' ? parsePrice(passportSettings.skills.price) :
-                                                    selectedPassport === 'interview' ? parsePrice(passportSettings.interview.price) :
-                                                        parsePrice(passportSettings.job.price)) - scholarshipDiscount)}
-                                            courseId={course.id}
-                                            courseTitle={course.title}
-                                            courseCategory={course.category}
-                                            className="px-12 py-5 bg-white text-blue-900 text-xl font-black rounded-2xl hover:bg-blue-50 transition-all shadow-xl hover:scale-105 w-full md:w-auto"
-                                        />
-                                    </React.Suspense>
-                                </div>
-                                <button
-                                    onClick={() => setInquiryModal({
-                                        isOpen: true,
-                                        actionType: 'enroll',
-                                        onSuccess: () => alert('Thank you for your interest!')
-                                    })}
-                                    className="px-12 py-5 bg-blue-500/20 text-white text-xl font-bold rounded-2xl border-2 border-white/20 hover:bg-blue-500/30 transition-all hover:scale-105 flex items-center justify-center gap-3 group/btn w-full md:w-auto"
-                                >
-                                    Confirm Enrollment <ArrowRight size={24} className="group-hover/btn:translate-x-2 transition-transform" />
-                                </button>
-                                <a
-                                    href={`tel:${course.phone || "+917418732525"}`}
-                                    className="px-12 py-5 bg-blue-500/20 text-white text-xl font-bold rounded-2xl border-2 border-white/20 hover:bg-blue-500/30 transition-all flex items-center justify-center gap-3 w-full md:w-auto"
-                                >
-                                    <Phone size={24} /> Talk to Expert
-                                </a>
-                            </div>
-
-                            <p className="mt-12 text-blue-200/80 text-sm font-medium flex items-center justify-center gap-8">
-                                <span className="flex items-center gap-2"><Check size={16} /> Secure Payment</span>
-                                <span className="flex items-center gap-2"><Check size={16} /> ISO Certified</span>
-                                <span className="flex items-center gap-2"><Check size={16} /> Career Guaranteed</span>
-                            </p>
-                        </div>
-                    </div>
-                </div>
+            ...
             </section>
+            */}
 
             {/* Internal Linking & Related Courses Section */}
             <section className="py-20 bg-white">

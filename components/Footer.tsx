@@ -9,13 +9,13 @@ const Footer = React.memo(() => {
   const [departments, setDepartments] = useState<any[]>([]);
   const [policyLinks, setPolicyLinks] = useState<any[]>([]);
   const [contactText, setContactText] = useState<any[]>([
-    { id: 'main-address', type: 'address', label: 'Main Office', branch: 'main', value: '11A, STV Nagar, Peelamedu,\nCoimbatore - 641004', order_num: 0 },
-    { id: 'main-phone', type: 'phone', label: 'Phone', branch: 'main', value: '+91 7418734466', order_num: 1 },
-    { id: 'main-email', type: 'email', label: 'Email', branch: 'main', value: 'info@lasakedu.in', order_num: 2 },
-    { id: 'gandhi-address', type: 'address', label: 'Gandhipuram Branch', branch: 'gandhipuram', value: 'No.655 F Shri Paaththaa Avenue, 1st Floor, Near GP Signal, Gandhipuram', order_num: 3 },
-    { id: 'gandhi-phone', type: 'phone', label: 'Phone', branch: 'gandhipuram', value: '+91 74187 32525', order_num: 4 },
-    { id: 'gandhi-email', type: 'email', label: 'Email', branch: 'gandhipuram', value: 'info@lasakedu.in', order_num: 5 },
+    { id: 'main-address', type: 'address', label: 'Head Office (Peelamedu)', branch: 'main', value: '11A, Thirupati Venkatachalapati, Behind KTM Showroom, Peelamedu, Coimbatore - 641004', order_num: 0 },
+    { id: 'main-phone', type: 'phone', label: 'Phone', branch: 'main', value: '+91 7418 734 466', order_num: 1 },
+    { id: 'gandhi-address', type: 'address', label: 'Branch Office (Gandhipuram)', branch: 'gandhipuram', value: 'No.655 F Shri Paaththaa Avenue, 1st Floor, Near GP Signal, Gandhipuram - 641012', order_num: 2 },
+    { id: 'gandhi-phone', type: 'phone', label: 'Phone', branch: 'gandhipuram', value: '+91 74187 32525', order_num: 3 },
+    { id: 'main-email', type: 'email', label: 'Email', branch: 'main', value: 'info@lasakedu.in', order_num: 4 },
   ]);
+
   const [footerText, setFooterText] = useState({ copyright: '', tagline: '', logo: '' });
   
   useEffect(() => { fetchFooterData(); }, []);
@@ -34,8 +34,29 @@ const Footer = React.memo(() => {
 
         const firestoreContacts = contactData.filter((c: any) => ['address', 'phone', 'email'].includes(c.type));
         if (firestoreContacts.length > 0) {
-          setContactText(firestoreContacts);
+          setContactText(prev => {
+            const merged = [...prev];
+            firestoreContacts.forEach((fc: any) => {
+              // Try to find an existing entry that matches this Firestore entry
+              // Matches if same ID, or same type AND (same branch OR same value)
+              const idx = merged.findIndex(m => 
+                m.id === fc.id || 
+                (m.type === fc.type && (m.branch === fc.branch || m.value.replace(/\s+/g, '') === fc.value.replace(/\s+/g, '')))
+              );
+              
+              if (idx !== -1) {
+                // Overwrite the default with Firestore data
+                merged[idx] = { ...merged[idx], ...fc };
+              } else {
+                // Add new entry from Firestore
+                merged.push(fc);
+              }
+            });
+            return merged.sort((a, b) => (a.order_num || 0) - (b.order_num || 0));
+          });
         }
+
+
       }
 
       const qSettings = query(collection(db, 'site_settings'));
@@ -133,7 +154,8 @@ const Footer = React.memo(() => {
                     <div key={contact.id || idx}>
                       <div className="flex items-center gap-2 mb-1">
                         <MapPin size={14} className="text-blue-400 shrink-0" />
-                        <span className="text-[11px] font-bold text-blue-400 uppercase tracking-widest">{contact.label}</span>
+                        <span className="text-xs font-bold text-blue-400 uppercase tracking-widest">{contact.label}</span>
+
                       </div>
                       <p className="text-slate-200 leading-snug whitespace-pre-line pl-5">{contact.value}</p>
                     </div>

@@ -325,6 +325,7 @@ const Courses = () => {
                   </div>
 
                   <div className="mt-auto space-y-4">
+                    {/* Temporarily hide price and EMI 
                     <div className="mt-4">
                       {course.isFree ? (
                         <span className="text-xl font-bold text-green-600">
@@ -332,17 +333,14 @@ const Courses = () => {
                         </span>
                       ) : (
                         <div className="flex items-center gap-3">
-                          {/* Show old price with strikethrough if it exists */}
                           {course.oldPrice && (
                             <span className="text-base text-gray-700 line-through font-medium">
                               {course.oldPrice}
                             </span>
                           )}
-                          {/* Current price */}
                           <span className="text-2xl font-bold text-slate-900">
                             {course.price}
                           </span>
-                          {/* Offer badge */}
                           {course.oldPrice && (
                             <span className="bg-green-100 text-green-700 text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-wider">
                               Offer
@@ -352,13 +350,12 @@ const Courses = () => {
                       )}
                     </div>
 
-                    {/* EMI Option Badge */}
                     <div className="mb-4">
                       <span className="text-xs font-bold text-blue-600 bg-blue-50 px-2 py-1 rounded border border-blue-100">
                         EMI options starts from ₹2999
                       </span>
                     </div>
-
+                    */}
 
                     <div className="flex flex-col gap-3">
                       <div className="flex gap-3">
@@ -377,7 +374,7 @@ const Courses = () => {
                               }
                             });
                           }}
-                          className={`flex flex-1 items-center justify-center py-3 rounded font-bold text-sm shadow-md hover:shadow-lg transition-all ${course.category === 'Kids'
+                          className={`flex flex-1 items-center justify-center py-4 rounded font-black text-sm shadow-md hover:shadow-lg transition-all ${course.category === 'Kids'
                             ? 'bg-gradient-to-r from-yellow-500 to-orange-500 text-white hover:to-orange-600'
                             : 'bg-blue-600 text-white hover:bg-blue-700'
                             }`}
@@ -403,7 +400,7 @@ const Courses = () => {
                               onSuccess: () => navigate(`/course/${course.id}`)
                             });
                           }}
-                          className={`flex flex-1 items-center justify-center py-3 rounded font-bold text-sm border shadow-sm hover:shadow-md transition-all ${course.category === 'Kids'
+                          className={`flex flex-1 items-center justify-center py-4 rounded font-black text-sm border shadow-sm hover:shadow-md transition-all ${course.category === 'Kids'
                             ? 'border-yellow-200 text-yellow-700 hover:bg-yellow-50'
                             : 'border-slate-200 text-slate-700 hover:bg-slate-50'
                             }`}
@@ -411,6 +408,7 @@ const Courses = () => {
                           Modules
                         </button>
                       </div>
+                      {/* Temporarily hide Razorpay enrollment button 
                       <React.Suspense fallback={<div className="h-12 w-full bg-slate-100 animate-pulse rounded"></div>}>
                         <RazorpayButton
                           amount={Number((course.price || "0").toString().replace(/[^0-9]/g, ''))}
@@ -429,6 +427,7 @@ const Courses = () => {
                             }`}
                         />
                       </React.Suspense>
+                      */}
                     </div>
                   </div>
                 </div>

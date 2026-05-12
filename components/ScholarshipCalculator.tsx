@@ -333,8 +333,8 @@ const ScholarshipCalculator: React.FC<ScholarshipCalculatorProps> = ({
                     <span className="text-[8px] md:text-[10px] uppercase font-bold text-slate-600 tracking-wider">Selected Course</span>
                     <h3 className="text-base md:text-xl font-black text-slate-800 mt-0.5">{courseName}</h3>
                     <div className="flex items-baseline gap-2 mt-2 md:mt-4">
-                      <p className="text-xl md:text-3xl font-black text-blue-600">₹{price.toLocaleString()}</p>
-                      <p className="text-[9px] md:text-sm text-slate-600 font-bold uppercase tracking-tight">Course Fee</p>
+                      <p className="text-xl md:text-3xl font-black text-blue-600">Quote Pending</p>
+                      <p className="text-[9px] md:text-sm text-slate-600 font-bold uppercase tracking-tight">Price on Inquiry</p>
                     </div>
                   </div>
                 )}
@@ -431,17 +431,13 @@ const ScholarshipCalculator: React.FC<ScholarshipCalculatorProps> = ({
                           </div>
                         </div>
                         <div className="space-y-1.5 md:space-y-2 pt-2 border-t border-slate-200">
-                          <div className="flex justify-between text-[11px] md:text-sm">
-                            <span className="text-gray-600">Original Course Fee:</span>
-                            <span className="text-gray-700 line-through">₹{result.originalPrice.toLocaleString()}</span>
-                          </div>
                           <div className="flex justify-between text-[11px] md:text-sm font-bold">
-                            <span className="text-green-600">Scholarship Discount:</span>
-                            <span className="text-green-600">-₹{result.discountAmount.toLocaleString()} ({result.discountPercentage.toFixed(0)}%)</span>
+                            <span className="text-green-600">Scholarship Benefit:</span>
+                            <span className="text-green-600">{result.discountPercentage.toFixed(0)}% Fee Waiver</span>
                           </div>
                           <div className="flex justify-between items-center pt-1.5 md:pt-2 border-t border-dashed border-slate-200">
-                            <span className="text-xs md:text-base text-slate-800 font-black">Final Net Price:</span>
-                            <span className="text-xl md:text-3xl font-black text-blue-600">₹{result.finalPrice.toLocaleString()}</span>
+                            <span className="text-xs md:text-base text-slate-800 font-black">Enrollment Status:</span>
+                            <span className="text-xl md:text-2xl font-black text-blue-600">Quote on Call</span>
                           </div>
                         </div>
                       </div>
@@ -488,8 +484,8 @@ const ScholarshipCalculator: React.FC<ScholarshipCalculatorProps> = ({
                 ) : (
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8">
                     <div className="bg-slate-50 rounded-2xl p-4 md:p-6 opacity-60 grayscale border">
-                      <h3 className="text-base md:text-lg font-bold text-slate-600">Not Eligible</h3>
-                      <p className="text-xl md:text-2xl font-black text-slate-600 mt-1 md:mt-2">₹{result.originalPrice.toLocaleString()}</p>
+                      <h3 className="text-base md:text-lg font-bold text-slate-600">Contact Counselor</h3>
+                      <p className="text-xl md:text-2xl font-black text-slate-600 mt-1 md:mt-2">Price on Inquiry</p>
                     </div>
                     <div className="space-y-3 md:space-y-4">
                       <div className="bg-red-50 rounded-2xl border border-red-100 p-4 md:p-6 flex gap-3 md:gap-4">

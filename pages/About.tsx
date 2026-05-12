@@ -292,38 +292,41 @@ const About = () => {
       {/* 1. Hero / Intro Section */}
       <section className="relative z-10 py-28 overflow-hidden">
 
-        {/* Blue glow background */}
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-100 via-white to-blue-200"></div>
-        <div className="absolute -top-24 -left-24 w-96 h-96 bg-blue-400/30 rounded-full blur-3xl"></div>
-        <div className="absolute top-40 -right-24 w-96 h-96 bg-indigo-400/30 rounded-full blur-3xl"></div>
+        {/* Deep Premium Background */}
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-900 via-indigo-900 to-slate-900"></div>
+        <div className="absolute -top-24 -left-24 w-[500px] h-[500px] bg-blue-500/20 rounded-full blur-[120px] animate-pulse"></div>
+        <div className="absolute top-40 -right-24 w-[500px] h-[500px] bg-indigo-500/20 rounded-full blur-[120px] animate-pulse" style={{ animationDelay: '2s' }}></div>
 
         <div className="relative container mx-auto px-4 max-w-5xl">
 
-          {/* Glass Card */}
+          {/* Premium Glass Card */}
           <div className="
-  bg-gradient-to-br from-blue-900/60 via-indigo-900/55 to-blue-800/60
-  backdrop-blur-2xl
-  border border-white/25
-  rounded-3xl
-  p-10 md:p-14
-  shadow-[0_20px_60px_rgba(0,0,0,0.25)]
-  text-center
-  relative
-">
+            bg-white/10 backdrop-blur-3xl
+            border border-white/30
+            rounded-[2.5rem] md:rounded-[4rem]
+            p-12 md:p-20
+            shadow-[0_40px_100px_-20px_rgba(0,0,0,0.3)]
+            text-center
+            relative
+            overflow-hidden
+          ">
+            {/* Inner Glow Decorative */}
+            <div className="absolute -top-20 -left-20 w-40 h-40 bg-blue-400/20 rounded-full blur-3xl"></div>
 
             <h1
-              className="text-3xl md:text-5xl font-bold font-tech text-white drop-shadow-lg mb-6 leading-tight">
-              {introHero.title}
+              className="text-4xl md:text-6xl lg:text-7xl font-black font-tech text-white mb-8 tracking-tight leading-tight">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-blue-100 to-white">
+                {introHero.title}
+              </span>
             </h1>
 
             <div
-              className="space-y-6 text-lg text-blue-100 leading-relaxed drop-shadow-sm whitespace-pre-wrap"
+              className="space-y-6 text-lg md:text-xl text-slate-100 font-medium leading-relaxed max-w-3xl mx-auto whitespace-pre-wrap"
             >
               <p>
                 {introHero.description}
               </p>
             </div>
-
           </div>
         </div>
       </section>

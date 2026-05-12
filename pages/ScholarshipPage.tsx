@@ -149,7 +149,7 @@ const ScholarshipPage: React.FC = () => {
                                     <option value="">Choose a course...</option>
                                     {courses.map((course) => (
                                         <option key={course.id} value={course.id}>
-                                            {course.title} - {course.price}
+                                            {course.title}
                                         </option>
                                     ))}
                                 </select>
@@ -196,7 +196,7 @@ const ScholarshipPage: React.FC = () => {
                                                         index === 2 ? 'bg-amber-100 text-amber-700' :
                                                             'bg-purple-100 text-purple-700'
                                                     }`}>
-                                                    {rule.discount_type === 'percentage' ? `${rule.discount_value}% OFF` : `₹${rule.discount_value} OFF`}
+                                                    Scholarship Available
                                                 </span>
                                             </div>
                                             <p className="text-sm text-slate-500">

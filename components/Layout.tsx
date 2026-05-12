@@ -44,6 +44,7 @@ const cleanPath = (url: string) => {
 
 const CursorGlow = () => {
   const glowRef = React.useRef<HTMLDivElement>(null);
+  const dotRef = React.useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if ('ontouchstart' in window || navigator.maxTouchPoints > 0) return;
@@ -52,7 +53,10 @@ const CursorGlow = () => {
     const handleMouseMove = (e: MouseEvent) => {
       rafId = requestAnimationFrame(() => {
         if (glowRef.current) {
-          glowRef.current.style.transform = `translate3d(${e.clientX - 250}px, ${e.clientY - 250}px, 0)`;
+          glowRef.current.style.transform = `translate3d(${e.clientX - 200}px, ${e.clientY - 200}px, 0)`;
+        }
+        if (dotRef.current) {
+          dotRef.current.style.transform = `translate3d(${e.clientX - 4}px, ${e.clientY - 4}px, 0)`;
         }
       });
     };
@@ -65,14 +69,21 @@ const CursorGlow = () => {
   }, []);
 
   return (
-    <div
-      ref={glowRef}
-      className="pointer-events-none fixed top-0 left-0 w-[500px] h-[500px] z-[60] opacity-30 blur-[100px] rounded-full will-change-transform"
-      style={{
-        background: 'radial-gradient(circle, rgba(59, 130, 246, 0.4), rgba(147, 51, 234, 0.2), transparent)',
-        pointerEvents: 'none'
-      }}
-    />
+    <>
+      {/* Outer Glow */}
+      <div
+        ref={glowRef}
+        className="pointer-events-none fixed top-0 left-0 w-[400px] h-[400px] z-[60] opacity-40 blur-[80px] rounded-full will-change-transform"
+        style={{
+          background: 'radial-gradient(circle, rgba(37, 99, 235, 0.4), rgba(30, 58, 138, 0.1), transparent)',
+        }}
+      />
+      {/* Center Dot */}
+      <div
+        ref={dotRef}
+        className="pointer-events-none fixed top-0 left-0 w-2 h-2 z-[61] bg-blue-600 rounded-full shadow-[0_0_15px_rgba(37,99,235,1)] will-change-transform"
+      />
+    </>
   );
 };
 
@@ -372,7 +383,9 @@ const Layout: React.FC<LayoutProps> = ({ title, description, children }) => {
         image="/img/lasakedu-logo.png"
       />
       <Navbar />
-      <main className="pt-32 lg:pt-36 flex-grow">{children || <Outlet />}</main>
+      <main className="pt-20 lg:pt-36 flex-grow">{children || <Outlet />}</main>
+
+
       <React.Suspense fallback={<div className="h-40" />}>
         <CompanyTicker />
       </React.Suspense>

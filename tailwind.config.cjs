@@ -59,5 +59,13 @@ module.exports = {
       }
     },
   },
-  plugins: [],
+  plugins: [
+    function({ addUtilities }) {
+      addUtilities({
+        '.pause': {
+          'animation-play-state': 'paused',
+        },
+      })
+    }
+  ],
 }

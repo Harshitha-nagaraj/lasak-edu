@@ -15,7 +15,8 @@ const defaultBranches: Branch[] = [
   {
     id: 'main',
     name: 'Head Office',
-    address: '11A, STV Nagar, Peelamedu, Nava India Signal, Coimbatore - 641004',
+    address: '11A, Thirupati Venkatachalapati, Behind KTM Showroom, Peelamedu, Coimbatore - 641004',
+
     phone: '+91 7418 734 466',
     email: 'info@lasakedu.in',
     directions_url: 'https://maps.google.com/?q=LASAK+EDU+Peelamedu+Coimbatore'

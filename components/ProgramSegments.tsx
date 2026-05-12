@@ -22,7 +22,10 @@ const getIcon = (iconName: string) => {
 
 
 
-const ProgramSegments = ({ segments }: { segments?: any[] }) => {
+const ProgramSegments = ({ segments, onRegister }: { segments?: any[], onRegister?: (title: string, category: string) => void }) => {
+
+  // Build timestamp to force hash update: 2026-05-08T11:21:00Z
+
   const displaySegments = segments && segments.length > 0 ? segments : IMPORTANT_PROGRAM_BLOCKS;
   
   // Duplicate segments for seamless loop
@@ -31,7 +34,8 @@ const ProgramSegments = ({ segments }: { segments?: any[] }) => {
   return (
     <section className="w-full bg-slate-50 py-24 overflow-hidden">
       <div className="container mx-auto px-4 mb-12 text-center">
-        <h2 className="text-3xl md:text-5xl font-black text-slate-900 mb-4 tracking-tight">
+        <h2 className="text-3xl md:text-4xl font-black text-slate-900 mb-4 tracking-tight">
+
           Important Program Segments
         </h2>
         <p className="text-slate-500 text-sm md:text-lg max-w-2xl mx-auto font-medium">
@@ -41,10 +45,10 @@ const ProgramSegments = ({ segments }: { segments?: any[] }) => {
 
       <div className="relative w-full overflow-hidden">
         <div 
-          className="flex animate-scroll space-x-6 px-4 md:px-10 will-change-transform" 
+          className="flex animate-scroll space-x-6 px-4 md:px-10 will-change-transform hover:pause active:pause" 
           style={{ 
             width: 'fit-content',
-            animationDuration: '60s' // Slower for smoother experience
+            animationDuration: '60.1s' // Tiny change to force hash update
           }}
         >
           {duplicatedSegments.map((program, i) => (
@@ -85,7 +89,7 @@ const ProgramSegments = ({ segments }: { segments?: any[] }) => {
 
                     {/* 3. Courses Ticker (Inner Ticker) */}
                     <div className="w-full overflow-hidden relative py-4 my-2 flex-shrink-0">
-                      <div className="flex animate-scroll-horizontal space-x-4 will-change-transform">
+                      <div className="flex animate-scroll-horizontal space-x-4 will-change-transform hover:pause active:pause">
                         {[...(program.categories || []), ...(program.categories || []), ...(program.categories || [])].map((cat: any, idx: number) => (
                           <div
                             key={idx}
@@ -104,13 +108,24 @@ const ProgramSegments = ({ segments }: { segments?: any[] }) => {
 
                     {/* 4. CTA Buttons */}
                     <div className="flex flex-wrap gap-3 md:gap-6 pt-6 flex-shrink-0 pb-4">
-                      <Link
-                        to="/contact"
-                        className="px-6 py-3 md:px-10 md:py-4 bg-white text-slate-900 font-black text-[10px] md:text-base rounded-xl hover:shadow-2xl transition-all duration-300 active:scale-95 flex items-center gap-2 group shadow-xl"
-                      >
-                        <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
-                        Register Now
-                      </Link>
+                      {onRegister ? (
+                        <button
+                          onClick={() => onRegister(program.title, program.categories?.[0]?.name || 'General')}
+                          className="px-6 py-3 md:px-10 md:py-4 bg-white text-slate-900 font-black text-[10px] md:text-base rounded-xl hover:shadow-2xl transition-all duration-300 active:scale-95 flex items-center gap-2 group shadow-xl"
+                        >
+                          <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+                          Register Now
+                        </button>
+                      ) : (
+                        <Link
+                          to="/contact"
+                          className="px-6 py-3 md:px-10 md:py-4 bg-white text-slate-900 font-black text-[10px] md:text-base rounded-xl hover:shadow-2xl transition-all duration-300 active:scale-95 flex items-center gap-2 group shadow-xl"
+                        >
+                          <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+                          Register Now
+                        </Link>
+                      )}
+
                       <Link
                         to="/courses"
                         className="px-6 py-3 md:px-10 md:py-4 bg-transparent border-2 border-white text-white font-black text-[10px] md:text-base rounded-xl hover:bg-white/10 transition-all duration-300 active:scale-95 flex items-center gap-2 group"

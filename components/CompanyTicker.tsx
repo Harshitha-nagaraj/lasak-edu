@@ -29,7 +29,7 @@ const CompanyTicker = React.memo(() => {
       </div>
       <div className="relative overflow-hidden py-6">
         <div
-          className="flex items-center whitespace-nowrap animate-scroll hover:pause space-x-10"
+          className="flex items-center whitespace-nowrap animate-scroll hover:pause active:pause space-x-10"
           style={{ animationDuration: "30s" }}
         >
           {([...logos, ...logos, ...logos].slice(0, 30).filter(logo => logo && logo.trim() !== '')).map((logo, idx) => (

@@ -102,7 +102,7 @@ export const YouTubeScroller = React.memo(({ youtubeVideos }: { youtubeVideos: a
         }}
       >
         <div
-          className={`flex w-max ${youtubeVideos.length >= 3 ? 'animate-scroll-loop' : 'justify-center'}`}
+          className={`flex w-max hover:pause active:pause ${youtubeVideos.length >= 3 ? 'animate-scroll-loop' : 'justify-center'}`}
           style={{ '--duration': `${youtubeVideos.length * 3}s` } as React.CSSProperties}
         >
           {(youtubeVideos.length >= 3
@@ -137,7 +137,7 @@ export const AchieversScroller = React.memo(({ testimonials, cleanPath }: { test
         }}
       >
         <div
-          className={`flex w-max ${testimonials.length >= 3 ? 'animate-scroll-loop' : 'justify-center'}`}
+          className={`flex w-max hover:pause active:pause ${testimonials.length >= 3 ? 'animate-scroll-loop' : 'justify-center'}`}
           style={{ '--duration': `${testimonials.length * 4}s` } as React.CSSProperties}
         >
           {(testimonials.length >= 3

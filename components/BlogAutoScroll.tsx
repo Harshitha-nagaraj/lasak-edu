@@ -57,7 +57,7 @@ const BlogAutoScroll = () => {
         {/* Auto-scroll container — always visible, shows fallback data instantly */}
         <div className="overflow-hidden relative">
           <div 
-            className="flex gap-8 w-max animate-scroll-loop hover:pause"
+            className="flex gap-8 w-max animate-scroll-loop hover:pause active:pause"
             style={{ '--duration': `${blogs.length * 10}s` } as React.CSSProperties}
           >
             {/* Double the blogs for seamless loop */}
