@@ -701,7 +701,7 @@ const CourseDetails = () => {
                                 >
                                     Enquiry now <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
                                 </button>
-                                {/* Temporarily hide payment and scholarship 
+                                {/* Temporarily hide payment
                                 <div onClick={() => handlePaymentClick('hero')} className="w-full sm:w-auto">
                                     <React.Suspense fallback={<div className="h-12 w-full bg-slate-100 animate-pulse rounded-xl"></div>}>
                                         <RazorpayButton
@@ -722,10 +722,10 @@ const CourseDetails = () => {
                                         />
                                     </React.Suspense>
                                 </div>
-                                <button onClick={handleApplyScholarship} className="px-8 py-4 bg-white text-blue-600 border-2 border-blue-600 font-bold rounded-xl hover:bg-blue-50 transition-all flex items-center justify-center gap-2 w-full sm:w-auto">
-                                    Apply Scholarship
-                                </button>
                                 */}
+                                <button onClick={handleApplyScholarship} className="px-8 py-4 bg-white text-blue-600 border-2 border-blue-600 font-bold rounded-xl hover:bg-blue-50 transition-all flex items-center justify-center gap-2 w-full sm:w-auto">
+                                    Scholarship Test
+                                </button>
                             </div>
                         </div>
 

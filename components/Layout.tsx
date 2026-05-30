@@ -249,7 +249,7 @@ const Navbar = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20 lg:h-24">
           <div className="flex items-center pr-2">
-            <Link to="/" className="flex-shrink-0">
+            <Link to="/" className="flex-shrink-0 flex items-center h-full">
               <img 
                 src={cleanPath("/img/lasakedu-logo.png")} 
                 alt="Lasak Edu Logo" 
@@ -257,8 +257,8 @@ const Navbar = () => {
                 height="112" 
                 sizes="224px"
                 fetchpriority="high"
-                style={{ imageRendering: 'crisp-edges' }}
-                className="h-12 md:h-14 lg:h-20 w-auto object-contain transition-all" 
+                style={{ imageRendering: 'auto' }}
+                className="h-14 md:h-16 lg:h-20 w-auto object-contain scale-110 origin-left transition-transform" 
               />
             </Link>
           </div>

@@ -69,35 +69,35 @@ const UserManager = () => {
         if (!newUserEmail || !newUserPassword) return;
 
         try {
-            const { getFirebaseAuth, getFirestoreDb } = await import('../../lib/firebase');
-            const { createUserWithEmailAndPassword, signInWithEmailAndPassword } = await import('firebase/auth');
+            const { getFirestoreDb, initFirebase } = await import('../../lib/firebase');
+            const { initializeApp, deleteApp } = await import('firebase/app');
+            const { getAuth, createUserWithEmailAndPassword } = await import('firebase/auth');
             const { doc, setDoc, serverTimestamp } = await import('firebase/firestore');
 
-            const auth = await getFirebaseAuth();
             const db = await getFirestoreDb();
+            const appInstance = initFirebase();
 
-            // Save current admin's email before we get signed out
-            const adminEmail = auth.currentUser?.email;
-            if (!adminEmail) {
-                alert('Error: Could not identify current admin session.');
-                return;
+            // Create a secondary Firebase app to create the user without logging out the admin
+            const secondaryApp = initializeApp(appInstance.options, "SecondaryApp" + Date.now());
+            const secondaryAuth = getAuth(secondaryApp);
+
+            let userCreated = true;
+            try {
+                await createUserWithEmailAndPassword(secondaryAuth, newUserEmail.trim(), newUserPassword);
+            } catch (createError: any) {
+                if (createError.code === 'auth/email-already-in-use') {
+                    // User exists, we will just assign them the role
+                    userCreated = false;
+                } else {
+                    throw createError; // Rethrow for weak password, etc.
+                }
+            } finally {
+                // Clean up the secondary app to prevent memory leaks
+                await deleteApp(secondaryApp);
             }
 
-            // Ask admin for their own password upfront (needed to restore session)
-            const adminPassword = prompt(
-                `To create the new user, you will be temporarily signed out and back in.\n\nPlease enter YOUR (admin) password to continue:`
-            );
-            if (!adminPassword) {
-                alert('Cancelled. Admin password is required to restore your session.');
-                return;
-            }
-
-            // Step 1: Create the new user's Firebase Auth account
-            // This will automatically sign us in as the new user
-            await createUserWithEmailAndPassword(auth, newUserEmail.trim(), newUserPassword);
-
-            // Step 2: Write the user role to Firestore (while signed in as new user, can still write)
-            const docId = newUserEmail.trim().toLowerCase().replace(/[^a-z0-9]/g, '_');
+            // Write the user role to Firestore (admin is still logged in to the primary app)
+            const docId = newUserEmail.trim().toLowerCase();
             await setDoc(doc(db, 'user_roles', docId), {
                 email: newUserEmail.trim().toLowerCase(),
                 full_name: newUserFullName.trim(),
@@ -105,10 +105,11 @@ const UserManager = () => {
                 created_at: serverTimestamp()
             });
 
-            // Step 3: Sign back in as the admin
-            await signInWithEmailAndPassword(auth, adminEmail, adminPassword);
-
-            alert(`✅ User "${newUserEmail}" created successfully with ${newUserRole} access!\nThey can now login with the email and password you set.`);
+            if (userCreated) {
+                alert(`✅ User "${newUserEmail}" created successfully with ${newUserRole} access!\nThey can now login with the email and password you set.`);
+            } else {
+                alert(`✅ Access granted! "${newUserEmail}" already had an account and was assigned ${newUserRole} access.`);
+            }
 
             setNewUserEmail('');
             setNewUserFullName('');
@@ -118,12 +119,7 @@ const UserManager = () => {
             fetchUsers();
         } catch (error: any) {
             console.error('Error adding user:', error);
-            // Friendly error messages
-            if (error.code === 'auth/email-already-in-use') {
-                alert('⚠ This email already has a Firebase Auth account.\n\nIf they cannot login, use the 🔑 "Send Password Reset" button on their row to send a reset email.');
-            } else if (error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') {
-                alert('❌ Wrong admin password entered. Your session may have been affected.\nPlease refresh the page and log in again.');
-            } else if (error.code === 'auth/weak-password') {
+            if (error.code === 'auth/weak-password') {
                 alert('❌ Password is too weak. Must be at least 6 characters.');
             } else {
                 alert('Error creating user: ' + error.message);

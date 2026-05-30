@@ -32,11 +32,15 @@ interface CalculationResult {
   averagePercentage: number;
   promoCode?: string;
   matchingRule?: ScholarshipRule;
+  isApproved?: boolean;
 }
 
 interface AcademicScores {
   fullName: string;
   phoneNumber: string;
+  email: string;
+  courseChoose: string;
+  department: string;
   tenth: string;
   twelfth: string;
   diploma: string;
@@ -86,6 +90,9 @@ const ScholarshipCalculator: React.FC<ScholarshipCalculatorProps> = ({
   const [scores, setScores] = useState<AcademicScores>({
     fullName: '',
     phoneNumber: '',
+    email: '',
+    courseChoose: courseName || '',
+    department: courseCategory || '',
     tenth: '',
     twelfth: '',
     diploma: '',
@@ -174,7 +181,7 @@ const ScholarshipCalculator: React.FC<ScholarshipCalculatorProps> = ({
   };
 
   const isFormValid = (): boolean => {
-    const hasRequiredInfo = scores.fullName.trim().length > 2 && scores.phoneNumber.trim().length >= 10;
+    const hasRequiredInfo = scores.fullName.trim().length > 2 && scores.phoneNumber.trim().length >= 10 && scores.email.trim().length > 5;
     const hasSomeAcademicScore = !!(scores.tenth || scores.twelfth || scores.diploma || scores.collegeCGPA);
     return hasRequiredInfo && hasSomeAcademicScore;
   };
@@ -196,7 +203,27 @@ const ScholarshipCalculator: React.FC<ScholarshipCalculatorProps> = ({
 
     let calcResult: CalculationResult;
 
-    if (matchingRule) {
+    const isIT = courseCategory === 'IT' || courseCategory === 'CSE/IT';
+    const isMech = courseCategory && courseCategory.toUpperCase().includes('MECH');
+    const isCivil = courseCategory && courseCategory.toUpperCase().includes('CIVIL');
+
+    if (averagePercentage >= 40 && (isIT || isMech || isCivil)) {
+      const finalPrice = Math.floor(Math.random() * (50000 - 45000 + 1)) + 45000;
+      const discountAmount = price > 0 ? Math.max(0, price - finalPrice) : 0;
+      const discountPercentage = price > 0 ? (discountAmount / price) * 100 : 0;
+
+      calcResult = {
+        originalPrice: price,
+        discountAmount,
+        finalPrice,
+        scholarshipName: 'Merit Scholarship',
+        discountPercentage,
+        averagePercentage,
+        promoCode: `LASAK${Math.round(finalPrice/1000)}K`,
+        isApproved: true,
+        matchingRule: matchingRule || { name: 'Merit Scholarship', min_percentage: 40, max_percentage: 100, discount_type: 'fixed', discount_value: discountAmount } as any
+      };
+    } else if (matchingRule) {
       let discountAmount = 0;
       let discountPercentage = 0;
 
@@ -220,7 +247,8 @@ const ScholarshipCalculator: React.FC<ScholarshipCalculatorProps> = ({
         discountPercentage,
         averagePercentage,
         promoCode,
-        matchingRule
+        matchingRule,
+        isApproved: true
       };
     } else {
       calcResult = {
@@ -229,7 +257,8 @@ const ScholarshipCalculator: React.FC<ScholarshipCalculatorProps> = ({
         finalPrice: price,
         scholarshipName: 'No scholarship applicable',
         discountPercentage: 0,
-        averagePercentage
+        averagePercentage,
+        isApproved: false
       };
     }
 
@@ -250,11 +279,13 @@ const ScholarshipCalculator: React.FC<ScholarshipCalculatorProps> = ({
         user_id: user?.uid || null,
         full_name: scores.fullName,
         phone_number: scores.phoneNumber,
+        email: scores.email,
         tenth: parseFloat(scores.tenth) || 0,
         twelfth: parseFloat(scores.twelfth) || 0,
         diploma: parseFloat(scores.diploma) || 0,
         college_cgpa: parseFloat(scores.collegeCGPA) || 0,
-        course_name: courseName,
+        course_name: scores.courseChoose || courseName,
+        department: scores.department || courseCategory,
         course_price: price,
         discount_amount: calcResult.discountAmount,
         final_price: calcResult.finalPrice,
@@ -285,12 +316,20 @@ const ScholarshipCalculator: React.FC<ScholarshipCalculatorProps> = ({
           className="bg-purple-50 rounded-2xl p-4 border border-purple-100"
         >
           <div className="flex items-center gap-2 mb-3">
+            <input type="number" value={price || ''} onChange={(e) => setPrice(parseInt(e.target.value) || 0)} placeholder="Course Fee" className="w-full px-2 py-1.5 rounded-lg border text-sm" />
+          </div>
+          <div className="flex items-center gap-2 mb-3">
             <GraduationCap className="text-purple-600" size={18} />
             <h4 className="font-bold text-slate-800 text-sm">{settings?.modal_title || "Scholarship Calculator"}</h4>
           </div>
           <div className="space-y-3">
             <input type="text" value={scores.fullName} onChange={(e) => updateScore('fullName', e.target.value)} placeholder="Full Name" className="w-full px-2 py-1.5 rounded-lg border text-sm" />
             <input type="tel" value={scores.phoneNumber} onChange={(e) => updateScore('phoneNumber', e.target.value)} placeholder="Phone Number" className="w-full px-2 py-1.5 rounded-lg border text-sm" />
+            <input type="email" value={scores.email} onChange={(e) => updateScore('email', e.target.value)} placeholder="Email Address" className="w-full px-2 py-1.5 rounded-lg border text-sm" />
+            <div className="grid grid-cols-2 gap-2">
+              <input type="text" value={scores.courseChoose} onChange={(e) => updateScore('courseChoose', e.target.value)} placeholder="Course" className="w-full px-2 py-1.5 rounded-lg border text-sm" />
+              <input type="text" value={scores.department} onChange={(e) => updateScore('department', e.target.value)} placeholder="Department" className="w-full px-2 py-1.5 rounded-lg border text-sm" />
+            </div>
             <div className="grid grid-cols-2 gap-2">
               <input type="number" value={scores.tenth} onChange={(e) => updateScore('tenth', e.target.value)} placeholder="10th %" className="w-full px-2 py-1.5 rounded-lg border text-sm" />
               <input type="number" value={scores.twelfth} onChange={(e) => updateScore('twelfth', e.target.value)} placeholder="12th %" className="w-full px-2 py-1.5 rounded-lg border text-sm" />
@@ -332,9 +371,9 @@ const ScholarshipCalculator: React.FC<ScholarshipCalculatorProps> = ({
                   <div className="bg-slate-50 rounded-2xl p-3 md:p-5 border border-slate-100">
                     <span className="text-[8px] md:text-[10px] uppercase font-bold text-slate-600 tracking-wider">Selected Course</span>
                     <h3 className="text-base md:text-xl font-black text-slate-800 mt-0.5">{courseName}</h3>
-                    <div className="flex items-baseline gap-2 mt-2 md:mt-4">
-                      <p className="text-xl md:text-3xl font-black text-blue-600">Quote Pending</p>
-                      <p className="text-[9px] md:text-sm text-slate-600 font-bold uppercase tracking-tight">Price on Inquiry</p>
+                    <div className="mt-3 md:mt-4">
+                      <label className="text-[8px] md:text-[10px] font-bold text-slate-500 uppercase">Course Fee (₹)</label>
+                      <input type="number" value={price || ''} onChange={(e) => setPrice(parseInt(e.target.value) || 0)} className="w-full px-3 py-1.5 md:px-4 md:py-3 rounded-xl border-2 border-slate-100 font-bold outline-none focus:border-purple-500 text-xs md:text-base placeholder:text-slate-300 mt-1" placeholder="Enter Course Fee" />
                     </div>
                   </div>
                 )}
@@ -349,6 +388,20 @@ const ScholarshipCalculator: React.FC<ScholarshipCalculatorProps> = ({
                   <div className="space-y-0.5 md:space-y-1 md:col-span-2">
                     <label className="text-[8px] md:text-[10px] font-bold text-slate-500 uppercase">Phone Number</label>
                     <input type="tel" value={scores.phoneNumber} onChange={(e) => updateScore('phoneNumber', e.target.value)} className="w-full px-3 py-1.5 md:px-4 md:py-3 rounded-xl border-2 border-slate-100 font-bold outline-none focus:border-purple-500 text-xs md:text-base placeholder:text-slate-300" placeholder="7418734466" />
+                  </div>
+                  <div className="space-y-0.5 md:space-y-1 md:col-span-2">
+                    <label className="text-[8px] md:text-[10px] font-bold text-slate-500 uppercase">Email</label>
+                    <input type="email" value={scores.email} onChange={(e) => updateScore('email', e.target.value)} className="w-full px-3 py-1.5 md:px-4 md:py-3 rounded-xl border-2 border-slate-100 font-bold outline-none focus:border-purple-500 text-xs md:text-base placeholder:text-slate-300" placeholder="john@example.com" />
+                  </div>
+                  <div className="grid grid-cols-2 gap-2 md:col-span-2">
+                    <div className="space-y-0.5 md:space-y-1">
+                      <label className="text-[8px] md:text-[10px] font-bold text-slate-500 uppercase">Course</label>
+                      <input type="text" value={scores.courseChoose} onChange={(e) => updateScore('courseChoose', e.target.value)} className="w-full px-2 py-1.5 md:px-4 md:py-3 rounded-xl border-2 border-slate-100 font-bold outline-none focus:border-purple-500 text-xs md:text-base placeholder:text-slate-300" placeholder="Course Name" />
+                    </div>
+                    <div className="space-y-0.5 md:space-y-1">
+                      <label className="text-[8px] md:text-[10px] font-bold text-slate-500 uppercase">Department</label>
+                      <input type="text" value={scores.department} onChange={(e) => updateScore('department', e.target.value)} className="w-full px-2 py-1.5 md:px-4 md:py-3 rounded-xl border-2 border-slate-100 font-bold outline-none focus:border-purple-500 text-xs md:text-base placeholder:text-slate-300" placeholder="Department" />
+                    </div>
                   </div>
                   <div className="grid grid-cols-2 gap-2 md:col-span-2">
                     <div className="space-y-0.5 md:space-y-1">
@@ -392,20 +445,20 @@ const ScholarshipCalculator: React.FC<ScholarshipCalculatorProps> = ({
               onClick={(e) => e.stopPropagation()}
             >
               {/* Popup Header */}
-              <div className={`pt-10 pb-2 md:pt-14 md:pb-3 px-4 md:px-8 text-center relative ${result.discountAmount > 0 ? 'bg-gradient-to-r from-purple-600 to-blue-600' : 'bg-gradient-to-r from-red-500 to-pink-600'}`}>
+              <div className={`pt-10 pb-2 md:pt-14 md:pb-3 px-4 md:px-8 text-center relative ${result.isApproved ? 'bg-gradient-to-r from-purple-600 to-blue-600' : 'bg-gradient-to-r from-red-500 to-pink-600'}`}>
                 <button onClick={() => setShowPopup(false)} className="absolute right-4 top-4 md:right-5 md:top-5 p-2 bg-white/40 hover:bg-white/50 text-white rounded-full transition-all z-50 shadow-sm">
                   <X size={20} className="md:w-6 md:h-6" />
                 </button>
                 <div className="w-10 h-10 md:w-12 md:h-12 bg-white rounded-full flex items-center justify-center mx-auto mb-0.5">
-                  {result.discountAmount > 0 ? <Sparkles className="text-purple-600 w-5 h-5 md:w-6 md:h-6" /> : <Info className="text-red-500 w-5 h-5 md:w-6 md:h-6" />}
+                  {result.isApproved ? <Sparkles className="text-purple-600 w-5 h-5 md:w-6 md:h-6" /> : <Info className="text-red-500 w-5 h-5 md:w-6 md:h-6" />}
                 </div>
                 <h2 className="text-lg md:text-2xl font-black text-white px-2 md:px-4 leading-tight">
-                  {result.discountAmount > 0
+                  {result.isApproved
                     ? (settings?.success_title || "🎉 Congratulations! Your Scholarship Is Approved 🎉")
                     : (settings?.failure_title || "Scholarship Eligibility Update")
                   }
                 </h2>
-                {result.discountAmount > 0 && (
+                {result.isApproved && (
                   <p className="text-white/90 text-[10px] md:text-xs font-medium mt-0.5 max-w-2xl mx-auto leading-tight">
                     {settings?.success_description || "Based on the eligibility details you have provided, your scholarship has been provisionally approved."}
                   </p>
@@ -414,7 +467,7 @@ const ScholarshipCalculator: React.FC<ScholarshipCalculatorProps> = ({
 
               {/* Popup Content */}
               <div className="pt-2 pb-3 px-3 md:pt-3 md:pb-4 md:px-6 overflow-y-auto max-h-[70vh]">
-                {result.discountAmount > 0 ? (
+                {result.isApproved ? (
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 md:gap-4">
                     <div className="space-y-2 md:space-y-3">
                       <div className="bg-slate-50 rounded-2xl border border-slate-100 p-3 md:p-4">
@@ -435,10 +488,25 @@ const ScholarshipCalculator: React.FC<ScholarshipCalculatorProps> = ({
                             <span className="text-green-600">Scholarship Benefit:</span>
                             <span className="text-green-600">{result.discountPercentage.toFixed(0)}% Fee Waiver</span>
                           </div>
-                          <div className="flex justify-between items-center pt-1.5 md:pt-2 border-t border-dashed border-slate-200">
-                            <span className="text-xs md:text-base text-slate-800 font-black">Enrollment Status:</span>
-                            <span className="text-xl md:text-2xl font-black text-blue-600">Quote on Call</span>
-                          </div>
+                          {result.originalPrice > 0 || result.finalPrice > 0 ? (
+                            <>
+                              {result.originalPrice > 0 && (
+                                <div className="flex justify-between items-center pt-1.5 md:pt-2 border-t border-dashed border-slate-200">
+                                  <span className="text-xs md:text-base text-slate-800 font-bold">Original Fee:</span>
+                                  <span className="text-sm md:text-lg font-bold text-slate-400 line-through">₹{result.originalPrice.toLocaleString('en-IN')}</span>
+                                </div>
+                              )}
+                              <div className="flex justify-between items-center pt-1.5 md:pt-2">
+                                <span className="text-xs md:text-base text-slate-800 font-black">Fee to Pay:</span>
+                                <span className="text-xl md:text-2xl font-black text-blue-600">₹{result.finalPrice.toLocaleString('en-IN')}</span>
+                              </div>
+                            </>
+                          ) : (
+                            <div className="flex justify-between items-center pt-1.5 md:pt-2 border-t border-dashed border-slate-200">
+                              <span className="text-xs md:text-base text-slate-800 font-black">Enrollment Status:</span>
+                              <span className="text-xl md:text-2xl font-black text-blue-600">Quote on Call</span>
+                            </div>
+                          )}
                         </div>
                       </div>
                     </div>
