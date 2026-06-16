@@ -1,5 +1,6 @@
 import React, { lazy, Suspense, ReactNode, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import { Toaster } from 'react-hot-toast';
 // Framer motion removed to optimize performance
 
 // Legal & Policy Pages
@@ -129,6 +130,7 @@ const AnimatedRoutes = () => {
 const App = () => {
   return (
     <Router>
+      <Toaster position="top-right" reverseOrder={false} />
       <ScrollToTop />
       <Suspense fallback={<Loader />}>
         <AnimatedRoutes />

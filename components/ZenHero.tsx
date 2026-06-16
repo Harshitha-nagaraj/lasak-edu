@@ -1,6 +1,7 @@
 
 import React from 'react';
 import { ArrowRight, Code, Settings, Home, Database, Sparkles, TrendingUp, Users, Briefcase } from 'lucide-react';
+import EligibilityModal from './EligibilityModal';
 
 const ZenHero = () => {
     const bannerImages = [
@@ -11,6 +12,7 @@ const ZenHero = () => {
     ];
 
     const [currentImage, setCurrentImage] = React.useState(0);
+  const [showEligibility, setShowEligibility] = React.useState(false);
 
     React.useEffect(() => {
         const timer = setInterval(() => {
@@ -83,13 +85,13 @@ const ZenHero = () => {
 
             <div className="container mx-auto px-4 relative z-20 text-center">
                 {/* Trusted Badge */}
-                <div className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-blue-50 border border-blue-100 text-blue-600 text-sm font-black mb-10 shadow-sm">
+                <div className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-blue-50 border border-blue-100 text-blue-600 text-sm font-black mb-4 shadow-sm">
                     <Sparkles size={18} className="animate-pulse text-blue-500" />
                     Trusted by 1000+ Students in Coimbatore
                 </div>
 
                 {/* Header Text */}
-                <h1 className="text-4xl md:text-6xl lg:text-8xl font-black text-slate-900 mb-8 tracking-tight leading-[1.1] font-tech text-center">
+                <h1 className="text-4xl md:text-6xl lg:text-8xl font-black text-slate-900 mb-4 tracking-tight leading-[1.1] font-tech text-center">
                     <span className="relative inline-block">
                         Accelerate Your <br />
                         <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 bg-[length:200%_auto] animate-gradient-flow">
@@ -105,13 +107,25 @@ const ZenHero = () => {
                     </span>
                 </h1>
                 
-                <p className="text-slate-500 text-lg md:text-xl max-w-2xl mx-auto mb-16 font-medium leading-relaxed">
+                <p className="text-slate-500 text-lg md:text-xl max-w-2xl mx-auto mb-8 font-medium leading-relaxed">
                     Industry-standard courses designed to get you hired in top MNCs. <br className="hidden md:block" />
                     Master skills with real-world project experience.
                 </p>
+                    <button
+                        type="button"
+                        onClick={() => setShowEligibility(true)}
+                        className="mt-6 mb-12 px-12 py-5 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-black text-lg rounded-full shadow-2xl shadow-blue-400/40 hover:from-blue-700 hover:to-indigo-700 hover:shadow-blue-500/50 hover:scale-105 transition-all duration-300 animate-pulse-soft relative overflow-hidden"
+                        style={{ boxShadow: '0 0 30px rgba(99,102,241,0.35), 0 8px 30px rgba(37,99,235,0.25)' }}
+                    >
+                        <span className="relative z-10">🎯 Check Your Eligibility</span>
+                        <span className="absolute inset-0 bg-white/10 rounded-full scale-0 hover:scale-100 transition-transform duration-500" />
+                    </button>
+                    {showEligibility && <EligibilityModal onClose={() => setShowEligibility(false)} />}
+
+
 
                 {/* Course Pills Grid */}
-                <div className="flex flex-wrap justify-center gap-5 mb-24 max-w-5xl mx-auto">
+                <div className="flex flex-wrap justify-center gap-5 mb-12 max-w-5xl mx-auto">
                     {[
                         { name: 'Full Stack Development', icon: <Code size={20} />, color: 'bg-purple-50 text-purple-600 border-purple-100 shadow-purple-900/5' },
                         { name: 'Mechanical CAD/CAM', icon: <Settings size={20} />, color: 'bg-blue-50 text-blue-600 border-blue-100 shadow-blue-900/5' },

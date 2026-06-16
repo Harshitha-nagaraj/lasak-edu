@@ -1,4 +1,5 @@
 import React, { lazy, useEffect, useRef } from 'react';
+import { useUserRole } from '../../hooks/useUserRole';
 import { COURSES } from '../../constants/courseDetails';
 import { Routes, Route, Navigate } from 'react-router-dom';
 
@@ -34,11 +35,12 @@ const PolicyContentManager = lazy(() => import('../../pages/admin/PolicyContentM
 const SEOManager = lazy(() => import('../../pages/admin/SEOManager'));
 const SEOEditor = lazy(() => import('../../pages/admin/SEOEditor'));
 const Setup = lazy(() => import('../../pages/admin/Setup'));
+const EligibilityTests = lazy(() => import('../../pages/admin/EligibilityTests'));
 const UserManager = lazy(() => import('../../pages/admin/UserManager'));
 const MOUManager = lazy(() => import('../../pages/admin/MOUManager'));
 const MOUEditor = lazy(() => import('../../pages/admin/MOUEditor'));
 const ScholarshipManager = lazy(() => import('../../pages/admin/ScholarshipManager'));
-const CouponManager = lazy(() => import('../../pages/admin/CouponManager'));
+
 const PassportManager = lazy(() => import('../../pages/admin/PassportManager'));
 const NewsManager = lazy(() => import('../../pages/admin/NewsManager'));
 const NewsEditor = lazy(() => import('../../pages/admin/NewsEditor'));
@@ -48,9 +50,12 @@ const ProgramSegmentsManager = lazy(() => import('../../pages/admin/ProgramSegme
 const LearningEcosystemManager = lazy(() => import('../../pages/admin/LearningEcosystemManager'));
 
 const AdminRoutes = () => {
+  const { role, loading: roleLoading } = useUserRole();
   const cleanupRef = useRef(false);
 
   useEffect(() => {
+    if (roleLoading) return;
+    if (role === 'sales') return;
     if (cleanupRef.current) return;
     cleanupRef.current = true;
 
@@ -96,7 +101,28 @@ const AdminRoutes = () => {
     };
 
     deepCleanup();
-  }, []);
+  }, [role, roleLoading]);
+
+  if (roleLoading) {
+    return (
+      <div className="p-8 flex items-center justify-center min-h-[400px]">
+        <div className="w-10 h-10 border-4 border-blue-600 border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
+
+  if (role === 'sales') {
+    return (
+      <Routes>
+        <Route element={<AdminLayout />}>
+          <Route index element={<Navigate to="enquiries" replace />} />
+          <Route path="enquiries" element={<EnquiryManager />} />
+          <Route path="eligibility-tests" element={<EligibilityTests />} />
+          <Route path="*" element={<Navigate to="enquiries" replace />} />
+        </Route>
+      </Routes>
+    );
+  }
 
   return (
     <Routes>
@@ -137,7 +163,7 @@ const AdminRoutes = () => {
         <Route path="seo/edit" element={<SEOEditor />} />
         <Route path="users" element={<UserManager />} />
         <Route path="scholarships" element={<ScholarshipManager />} />
-        <Route path="coupons" element={<CouponManager />} />
+
         <Route path="passports" element={<PassportManager />} />
         <Route path="mous" element={<MOUManager />} />
         <Route path="mous/new" element={<MOUEditor />} />
@@ -147,6 +173,7 @@ const AdminRoutes = () => {
         <Route path="program-segments" element={<ProgramSegmentsManager />} />
         <Route path="learning-ecosystem" element={<LearningEcosystemManager />} />
         <Route path="setup" element={<Setup />} />
+        <Route path="eligibility-tests" element={<EligibilityTests />} />
       </Route>
       {/* Fallback for within admin */}
       <Route path="*" element={<Navigate to="dashboard" replace />} />

@@ -1,0 +1,102 @@
+[
+  {
+    "question": "What is the primary purpose of civil engineering?",
+    "options": ["Designing software", "Constructing buildings and infrastructure", "Developing mobile apps", "Analyzing financial markets"],
+    "correct": 1
+  },
+  {
+    "question": "Which material is most commonly used for road pavement?",
+    "options": ["Concrete", "Steel", "Asphalt", "Wood"],
+    "correct": 2
+  },
+  {
+    "question": "What does the term 'load bearing' refer to?",
+    "options": ["Weight capacity of a structure", "Electrical current", "Software execution time", "Water flow rate"],
+    "correct": 0
+  },
+  {
+    "question": "Which software is frequently used for structural analysis?",
+    "options": ["AutoCAD", "SAP2000", "Photoshop", "Blender"],
+    "correct": 1
+  },
+  {
+    "question": "What is a typical unit for measuring stress in materials?",
+    "options": ["Newton", "Pascal", "Watt", "Volt"],
+    "correct": 1
+  },
+  {
+    "question": "Which of the following is a type of bridge?",
+    "options": ["Truss", "Binary", "Quantum", "Pixel"],
+    "correct": 0
+  },
+  {
+    "question": "What is the main purpose of a retaining wall?",
+    "options": ["Prevent soil erosion", "Store data", "Generate electricity", "Provide internet connectivity"],
+    "correct": 0
+  },
+  {
+    "question": "Which factor is critical when designing a foundation?",
+    "options": ["Soil bearing capacity", "Screen resolution", "Audio bitrate", "Color depth"],
+    "correct": 0
+  },
+  {
+    "question": "What does HVAC stand for?",
+    "options": ["Heating, Ventilation, and Air Conditioning", "Hyperlink Video Access Control", "High Voltage AC", "Human Vision And Cognition"],
+    "correct": 0
+  },
+  {
+    "question": "Which of these is a common method for soil stabilization?",
+    "options": ["Geotextiles", "CSS Grid", "React Hooks", "SVG Filters"],
+    "correct": 0
+  },
+  {
+    "question": "What is the purpose of a culvert?",
+    "options": ["Allow water to flow under a road", "Compress images", "Encrypt data", "Host a website"],
+    "correct": 0
+  },
+  {
+    "question": "Which discipline deals with water supply and sanitation?",
+    "options": ["Hydrology", "Astronomy", "Pharmacology", "Linguistics"],
+    "correct": 0
+  },
+  {
+    "question": "What is the typical design life of a concrete structure?",
+    "options": ["50 years", "5 years", "500 years", "1 year"],
+    "correct": 0
+  },
+  {
+    "question": "Which code is commonly referenced for building design in the US?",
+    "options": ["International Building Code (IBC)", "ISO 9001", "IEEE 802.11", "WCAG 2.1"],
+    "correct": 0
+  },
+  {
+    "question": "What does the term 'piling' refer to?",
+    "options": ["Driving deep foundation elements into soil", "Stacking pancakes", "Encoding video streams", "Creating layers in Photoshop"],
+    "correct": 0
+  },
+  {
+    "question": "Which factor does NOT affect concrete strength?",
+    "options": ["Water-cement ratio", "Curing temperature", "Ambient light color", "Aggregate size"],
+    "correct": 2
+  },
+  {
+    "question": "What is a common material for highway guardrails?",
+    "options": ["Steel", "Glass", "Silicone", "Paper"],
+    "correct": 0
+  },
+  {
+    "question": "Which instrument is used to measure soil compaction?",
+    "options": ["Proctor test", "Oscilloscope", "Thermometer", "Barometer"],
+    "correct": 0
+  },
+  {
+    "question": "What does 'EIA' stand for in civil projects?",
+    "options": ["Environmental Impact Assessment", "Electronic Interface Adapter", "Economic Integration Act", "Emergency Intervention Alert"],
+    "correct": 0
+  },
+  {
+    "question": "Which of these is a recycled construction material?",
+    "options": ["Recycled aggregate", "Pure gold", "Diamond chips", "Fresh water"],
+    "correct": 0
+  }
+]

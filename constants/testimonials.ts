@@ -7,7 +7,7 @@ export const TESTIMONIALS: StudentStory[] = [
     name: 'Vishnu Lakshmi',
     company: 'LMW - COIMBATORE',
     role: 'Design Engineer',
-    image: '/img/vishnu-lakshmi-s.webp',
+    image: '/img/placedstudnets/1.png',
     quote: 'Proud to start my career with a great opportunity.',
     package: '7 LPA'
   },
@@ -16,34 +16,34 @@ export const TESTIMONIALS: StudentStory[] = [
     name: 'Ashok G',
     company: 'CADOPT',
     role: 'Design Engineer',
-    image: '/img/ashok-g.webp',
+    image: '/img/placedstudnets/2.png',
     quote: 'Happy to begin my journey as a Design Engineer.',
     package: '3.5 LPA'
   },
   {
     id: 's3',
-    name: 'Saravana Kumar R',
+    name: 'Muthulingam K',
     company: 'CADOPT',
     role: 'Design Engineer',
-    image: '/img/saravana-kumar-r.webp',
+    image: '/img/placedstudnets/3.png',
     quote: 'Great learning experience that shaped my career.',
     package: '3 LPA'
   },
   {
     id: 's4',
-    name: 'ChandraLeka G.K.',
-    company: 'CADOPT',
+    name: 'Kishore sp',
+    company: 'L&T',
     role: 'Design Engineer',
-    image: '/img/ms-chandraleka-k.webp',
+    image: '/img/placedstudnets/4.png',
     quote: 'Achieving this milestone feels amazing.',
-    package: '3.2 LPA'
+    package: '4 LPA'
   },
   {
     id: 's5',
-    name: 'Dharsan V',
-    company: 'DESIGNTECH',
+    name: 'Kishore',
+    company: 'CADOPT',
     role: 'Design Engineer',
-    image: '/img/mr-dharsan-v.webp',
+    image: '/img/placedstudnets/6.png',
     quote: 'Excited to start my professional journey.',
     package: '3.5 LPA'
   },
@@ -52,7 +52,7 @@ export const TESTIMONIALS: StudentStory[] = [
     name: 'Lokkesh V',
     company: 'CADOpt',
     role: 'Design Engineer',
-    image: '/img/mr-lokkesh-v.webp',
+    image: '/img/placedstudnets/7.png',
     quote: 'Grateful for this rewarding job opportunity.',
     package: '3.7 LPA'
   },

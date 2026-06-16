@@ -1,0 +1,102 @@
+[
+  {
+    "question": "What does IT stand for?",
+    "options": ["Information Technology", "Internet Technology", "Integrated Technology", "Internal Trade"],
+    "correct": 0
+  },
+  {
+    "question": "What is considered the \"brain\" of a computer?",
+    "options": ["RAM", "CPU (Central Processing Unit)", "Hard Disk", "Monitor"],
+    "correct": 1
+  },
+  {
+    "question": "Which of the following is an input device?",
+    "options": ["Monitor", "Printer", "Keyboard", "Speaker"],
+    "correct": 2
+  },
+  {
+    "question": "What does 'WWW' stand for?",
+    "options": ["World Wide Web", "World Wide Writers", "World Wide Work", "Web World Wide"],
+    "correct": 0
+  },
+  {
+    "question": "Which of the following is an Operating System?",
+    "options": ["Google Chrome", "Windows", "MS Paint", "YouTube"],
+    "correct": 1
+  },
+  {
+    "question": "What is the main purpose of RAM in a computer?",
+    "options": ["Temporary working memory", "Permanent file storage", "Displaying images", "Printing documents"],
+    "correct": 0
+  },
+  {
+    "question": "Which of the following is NOT a web browser?",
+    "options": ["Google Chrome", "Mozilla Firefox", "Microsoft Edge", "Google Search Engine"],
+    "correct": 3
+  },
+  {
+    "question": "What is the full form of PC?",
+    "options": ["Personal Computer", "Private Computer", "Personal Calculator", "Public Computer"],
+    "correct": 0
+  },
+  {
+    "question": "Which device connects a computer to the Internet?",
+    "options": ["Router/Modem", "Printer", "Keyboard", "CPU"],
+    "correct": 0
+  },
+  {
+    "question": "What keyboard shortcut is used to copy text in Windows?",
+    "options": ["Ctrl + C", "Ctrl + V", "Ctrl + X", "Ctrl + Z"],
+    "correct": 0
+  },
+  {
+    "question": "What keyboard shortcut is used to paste text in Windows?",
+    "options": ["Ctrl + C", "Ctrl + V", "Ctrl + X", "Ctrl + Z"],
+    "correct": 1
+  },
+  {
+    "question": "Which of the following is used to store files permanently?",
+    "options": ["RAM", "Hard Disk Drive (HDD/SSD)", "Cache Memory", "CPU Registers"],
+    "correct": 1
+  },
+  {
+    "question": "What does PDF stand for?",
+    "options": ["Portable Document Format", "Personal Data File", "Printable Document File", "Portable Directory File"],
+    "correct": 0
+  },
+  {
+    "question": "Which program is commonly used to write text documents?",
+    "options": ["Microsoft Word", "Microsoft Excel", "Microsoft Paint", "Calculator"],
+    "correct": 0
+  },
+  {
+    "question": "What digits does the binary number system use?",
+    "options": ["0 and 1", "1 to 10", "A to Z", "0 to 9"],
+    "correct": 0
+  },
+  {
+    "question": "Which of the following is a search engine?",
+    "options": ["Google", "Windows", "Photoshop", "WhatsApp"],
+    "correct": 0
+  },
+  {
+    "question": "Which key deletes characters to the left of the text cursor?",
+    "options": ["Backspace", "Delete", "Enter", "Spacebar"],
+    "correct": 0
+  },
+  {
+    "question": "What type of software is Microsoft Office?",
+    "options": ["Application Software", "System Software", "Programming Language", "Operating System"],
+    "correct": 0
+  },
+  {
+    "question": "Which of the following is a portable storage device?",
+    "options": ["USB Flash Drive (Pen drive)", "Keyboard", "Monitor", "CPU"],
+    "correct": 0
+  },
+  {
+    "question": "What is the Internet?",
+    "options": ["A global network of connected computers", "A type of database software", "A computer hardware brand", "A coding language"],
+    "correct": 0
+  }
+]

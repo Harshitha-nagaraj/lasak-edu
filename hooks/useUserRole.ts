@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-export type UserRole = 'admin' | 'editor' | 'viewer';
+export type UserRole = 'admin' | 'editor' | 'viewer' | 'sales';
 
 export const useUserRole = () => {
     const [role, setRole] = useState<UserRole | null>(null);
@@ -75,6 +75,7 @@ export const useUserRole = () => {
         isAdmin: role === 'admin',
         isEditor: role === 'editor' || role === 'admin',
         isViewer: role === 'viewer',
+        isSales: role === 'sales',
         canEdit: role === 'admin' || role === 'editor',
         canManageUsers: role === 'admin',
     };

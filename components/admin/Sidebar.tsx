@@ -21,11 +21,12 @@ const Sidebar = () => {
         return location.pathname === path || (path !== '/admin/dashboard' && location.pathname.startsWith(path));
     };
 
-    const { isAdmin, isEditor, email } = useUserRole();
+    const { isAdmin, isEditor, role, email } = useUserRole();
 
     const menuItems = [
         { icon: <LayoutDashboard size={20} />, label: 'Dashboard', path: '/admin/dashboard' },
         { icon: <MessageSquare size={20} />, label: 'Enquiries', path: '/admin/enquiries' },
+        { icon: <HelpCircle size={20} />, label: 'Eligibility Tests', path: '/admin/eligibility-tests' },
         { icon: <BookOpen size={20} />, label: 'Courses', path: '/admin/courses' },
         { icon: <Layers size={20} />, label: 'Course Categories', path: '/admin/categories' },
         { icon: <Briefcase size={20} />, label: 'Partners', path: '/admin/partners' },
@@ -44,7 +45,7 @@ const Sidebar = () => {
         { icon: <Briefcase size={20} />, label: 'Learning Ecosystem', path: '/admin/learning-ecosystem' },
         { icon: <MessageSquare size={20} />, label: 'Popups', path: '/admin/popup' },
         { icon: <GraduationCap size={20} />, label: 'Scholarships', path: '/admin/scholarships' },
-        { icon: <Tag size={20} />, label: 'Coupons', path: '/admin/coupons' },
+
         { icon: <Briefcase size={20} />, label: 'MOUs', path: '/admin/mous' },
         { icon: <Info size={20} />, label: 'About Content', path: '/admin/about-content' },
         { icon: <HelpCircle size={20} />, label: 'Policy Content', path: '/admin/policy-content' },
@@ -93,6 +94,11 @@ const Sidebar = () => {
                     {menuItems.map((item) => {
                         if ((item as any).adminOnly && !isAdmin) return null;
 
+                        // Restrict visibility for the sales team
+                        if (role === 'sales' && item.path !== '/admin/enquiries' && item.path !== '/admin/eligibility-tests') {
+                            return null;
+                        }
+
                         return (
                             <button
                                 key={item.path + item.label}
@@ -123,7 +129,9 @@ const Sidebar = () => {
                             A
                         </div>
                         <div className="flex-1 min-w-0">
-                            <h4 className="text-sm font-semibold text-gray-900 truncate">{isAdmin ? 'Administrator' : isEditor ? 'Editor' : 'Viewer'}</h4>
+                            <h4 className="text-sm font-semibold text-gray-900 truncate">
+                                {isAdmin ? 'Administrator' : isEditor ? 'Editor' : role === 'sales' ? 'Sales Team' : 'Viewer'}
+                            </h4>
                             <p className="text-xs text-gray-500 truncate">{email || 'Loading...'}</p>
                         </div>
                     </div>

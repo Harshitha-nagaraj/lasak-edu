@@ -7,7 +7,7 @@ interface UserData {
     email: string;
     full_name?: string;
     phone_number?: string;
-    role?: 'admin' | 'editor' | 'viewer';
+    role?: 'admin' | 'editor' | 'viewer' | 'sales';
     created_at: string;
 }
 
@@ -18,10 +18,10 @@ const UserManager = () => {
     const [newUserEmail, setNewUserEmail] = useState('');
     const [newUserFullName, setNewUserFullName] = useState('');
     const [newUserPassword, setNewUserPassword] = useState('');
-    const [newUserRole, setNewUserRole] = useState<'admin' | 'editor' | 'viewer'>('viewer');
+    const [newUserRole, setNewUserRole] = useState<'admin' | 'editor' | 'viewer' | 'sales'>('viewer');
     const [isAdding, setIsAdding] = useState(false);
     const [editingId, setEditingId] = useState<string | null>(null);
-    const [editRole, setEditRole] = useState<'admin' | 'editor' | 'viewer'>('viewer');
+    const [editRole, setEditRole] = useState<'admin' | 'editor' | 'viewer' | 'sales'>('viewer');
     const [showNewPassword, setShowNewPassword] = useState(false);
 
     useEffect(() => {
@@ -51,7 +51,7 @@ const UserManager = () => {
                     email: role.email,
                     full_name: profile?.full_name || role.full_name,
                     phone_number: profile?.phone_number,
-                    role: role.role as 'admin' | 'editor' | 'viewer',
+                    role: role.role as 'admin' | 'editor' | 'viewer' | 'sales',
                     created_at: profile?.created_at || (role.created_at?.toDate ? role.created_at.toDate().toISOString() : role.created_at)
                 };
             });
@@ -268,6 +268,7 @@ const UserManager = () => {
                             >
                                 <option value="viewer">Viewer</option>
                                 <option value="editor">Editor</option>
+                                <option value="sales">Sales Team</option>
                                 <option value="admin">Admin</option>
                             </select>
                         </div>
@@ -322,6 +323,7 @@ const UserManager = () => {
                                             >
                                                 <option value="viewer">Viewer</option>
                                                 <option value="editor">Editor</option>
+                                                <option value="sales">Sales Team</option>
                                                 <option value="admin">Admin</option>
                                             </select>
                                         </div>
@@ -330,7 +332,9 @@ const UserManager = () => {
                                             ? 'bg-purple-100 text-purple-700 border-purple-200'
                                             : user.role === 'editor'
                                                 ? 'bg-blue-100 text-blue-700 border-blue-200'
-                                                : 'bg-slate-100 text-slate-600 border-slate-200'
+                                                : user.role === 'sales'
+                                                    ? 'bg-amber-100 text-amber-700 border-amber-200'
+                                                    : 'bg-slate-100 text-slate-600 border-slate-200'
                                             }`}>
                                             {user.role || 'No Access'}
                                         </span>

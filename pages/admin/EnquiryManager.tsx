@@ -26,6 +26,35 @@ const EnquiryManager = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedEnquiry, setSelectedEnquiry] = useState<Enquiry | null>(null);
 
+    const downloadCSV = () => {
+        const headers = ['Name', 'Mobile', 'Email', 'Qualification', 'Course Interested', 'Status', 'Source', 'Coupon Code', 'Scholarship Discount', 'Date', 'Message'];
+        const rows = filteredEnquiries.map(e => [
+            e.full_name ?? '',
+            e.phone ?? '',
+            e.email ?? '',
+            e.qualification ?? '',
+            e.department ?? '',
+            e.is_read ? 'Processed' : 'New Lead',
+            e.source ?? '',
+            e.promo_code ?? '',
+            e.scholarship_discount ?? 0,
+            e.created_at ? new Date(e.created_at).toLocaleString() : '',
+            e.message ?? ''
+        ]);
+
+        const csvContent = [headers, ...rows]
+            .map(row => row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(','))
+            .join('\n');
+
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `lasakedu_enquiries_${new Date().toISOString().slice(0, 10)}.csv`;
+        link.click();
+        URL.revokeObjectURL(url);
+    };
+
     useEffect(() => {
         fetchEnquiries();
     }, []);
@@ -48,7 +77,7 @@ const EnquiryManager = () => {
                     id: doc.id,
                     ...data,
                     // Robust field mapping for backward compatibility and safety
-                    full_name: data.full_name || data.fullName || 'Unknown',
+                    full_name: data.full_name || data.fullName || data.name || 'Unknown',
                     email: data.email || 'No email',
                     phone: data.phone || 'No phone',
                     qualification: data.qualification || '',
@@ -61,7 +90,7 @@ const EnquiryManager = () => {
             });
 
             // Safe filter
-            const safeEnquiries = fetchedEnquiries.filter(e => e && e.full_name);
+            const safeEnquiries = fetchedEnquiries.filter(e => e);
 
             safeEnquiries.sort((a: any, b: any) => {
                 const aTime = new Date(a.created_at || 0).getTime();
@@ -93,6 +122,7 @@ const EnquiryManager = () => {
     };
 
     const deleteEnquiry = async (id: string) => {
+        if (!canEdit) return;
         if (!confirm('Are you sure you want to delete this enquiry?')) return;
         try {
             const { getFirestoreDb } = await import('../../lib/firebase');
@@ -124,6 +154,12 @@ const EnquiryManager = () => {
                     <p className="text-gray-500">Track and manage student enquiries from the website</p>
                 </div>
                 <div className="flex items-center gap-4">
+                    <button
+                        onClick={downloadCSV}
+                        className="inline-flex items-center gap-2 px-5 py-2.5 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700 transition text-sm active:scale-95 shadow-sm"
+                    >
+                        ⬇️ Download CSV
+                    </button>
                     <div className="bg-blue-50 text-blue-700 px-4 py-2 rounded-xl text-sm font-semibold border border-blue-100">
                         {enquiries.length} Total Submission{enquiries.length !== 1 ? 's' : ''}
                     </div>

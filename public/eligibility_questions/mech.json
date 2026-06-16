@@ -1,0 +1,102 @@
+[
+  {
+    "question": "What is the primary purpose of AutoCAD in mechanical engineering?",
+    "options": ["3D modeling", "Circuit simulation", "Database management", "Text editing"],
+    "correct": 0
+  },
+  {
+    "question": "Which software is commonly used for finite element analysis?",
+    "options": ["SolidWorks", "ANSYS", "SketchUp", "Photoshop"],
+    "correct": 1
+  },
+  {
+    "question": "What does CAM stand for?",
+    "options": ["Computer Aided Manufacturing", "Computer Automated Media", "Creative Art Management", "Circuit Analysis Module"],
+    "correct": 0
+  },
+  {
+    "question": "Which material is best for high temperature applications?",
+    "options": ["Aluminum", "Steel", "Copper", "Plastic"],
+    "correct": 1
+  },
+  {
+    "question": "What is the function of a gear train?",
+    "options": ["Increase voltage", "Transmit torque", "Store energy", "Cool the engine"],
+    "correct": 1
+  },
+  {
+    "question": "Which principle explains why a car can accelerate?",
+    "options": ["Newton's First Law", "Newton's Second Law", "Newton's Third Law", "Conservation of Energy"],
+    "correct": 1
+  },
+  {
+    "question": "In fluid dynamics, Reynolds number indicates what?",
+    "options": ["Viscosity", "Flow speed", "Turbulent vs laminar flow", "Pressure"],
+    "correct": 2
+  },
+  {
+    "question": "Which process converts raw material into a finished product?",
+    "options": ["Manufacturing", "Designing", "Prototyping", "Testing"],
+    "correct": 0
+  },
+  {
+    "question": "What is a common method for rapid prototyping?",
+    "options": ["3D printing", "Milling", "Casting", "Forging"],
+    "correct": 0
+  },
+  {
+    "question": "Which of these is a CAD software?",
+    "options": ["MATLAB", "SolidWorks", "Excel", "Word"],
+    "correct": 1
+  },
+  {
+    "question": "What does CNC stand for?",
+    "options": ["Computer Numeric Control", "Control Network Computer", "Circuit Noise Control", "Computer Neural Circuit"],
+    "correct": 0
+  },
+  {
+    "question": "Which property measures a material's resistance to deformation?",
+    "options": ["Hardness", "Ductility", "Malleability", "Toughness"],
+    "correct": 0
+  },
+  {
+    "question": "What is the purpose of a bill of materials (BOM)?",
+    "options": ["List components", "Schedule tasks", "Track expenses", "Design UI"],
+    "correct": 0
+  },
+  {
+    "question": "Which machining process removes material using a rotating cutting tool?",
+    "options": ["Milling", "Welding", "Casting", "Molding"],
+    "correct": 0
+  },
+  {
+    "question": "What does the term 'factor of safety' refer to?",
+    "options": ["Design margin", "Load capacity", "Material cost", "Production speed"],
+    "correct": 0
+  },
+  {
+    "question": "Which analysis determines stress distribution in a part?",
+    "options": ["Thermal analysis", "Stress analysis", "Fluid analysis", "Acoustic analysis"],
+    "correct": 1
+  },
+  {
+    "question": "What is the main advantage of using composite materials?",
+    "options": ["High weight", "Low strength", "Tailored properties", "High cost"],
+    "correct": 2
+  },
+  {
+    "question": "Which standard is commonly used for fasteners?",
+    "options": ["ISO 9001", "DIN 933", "ISO 14001", "ASTM D638"],
+    "correct": 1
+  },
+  {
+    "question": "What does 'tolerance' specify in manufacturing?",
+    "options": ["Color", "Dimension variation limits", "Power consumption", "Software version"],
+    "correct": 1
+  },
+  {
+    "question": "Which testing method checks a part's fatigue life?",
+    "options": ["Tensile test", "Impact test", "Cyclic loading test", "Hardness test"],
+    "correct": 2
+  }
+]
