@@ -138,6 +138,7 @@ const SiteSettingsManager = () => {
                 const fms = settings.find(s => s.key === 'contact_form_settings');
                 if (fms) setFormSettings(fms.value);
 
+                const cp = settings.find(s => s.key === 'contact_page_content');
                 if (cp) setContactPageSettings(cp.value);
 
                 // Fallbacks if data is empty but settings were found (rare) or if settings not found

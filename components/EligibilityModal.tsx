@@ -135,6 +135,9 @@ export const EligibilityModal: React.FC<EligibilityModalProps> = ({ onClose }) =
   // Questions Bank State (dynamically fetched from Firestore)
   const [questionsBank, setQuestionsBank] = useState<Record<string, Question[]>>(QUESTION_BANK);
 
+  // Counsellors list (dynamically fetched from Firestore)
+  const [counsellors, setCounsellors] = useState<string[]>(['Lakshman', 'Sangeetha']);
+
   useEffect(() => {
     const loadDynamicQuestions = async () => {
       try {
@@ -158,7 +161,27 @@ export const EligibilityModal: React.FC<EligibilityModalProps> = ({ onClose }) =
         console.error('Failed to load dynamic eligibility questions:', err);
       }
     };
+
+    const loadDynamicCounsellors = async () => {
+      try {
+        const { getFirestoreDb } = await import('../lib/firebase');
+        const { doc, getDoc } = await import('firebase/firestore');
+        const db = await getFirestoreDb();
+        const docRef = doc(db, 'eligibilityConfig', 'counsellors');
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          if (data && Array.isArray(data.counsellors)) {
+            setCounsellors(data.counsellors);
+          }
+        }
+      } catch (err) {
+        console.error('Failed to load dynamic counsellors:', err);
+      }
+    };
+
     loadDynamicQuestions();
+    loadDynamicCounsellors();
   }, []);
 
   const questions: Question[] = selectedCourse ? (questionsBank[selectedCourse] ?? []).slice(0, 20) : [];
@@ -290,8 +313,9 @@ export const EligibilityModal: React.FC<EligibilityModalProps> = ({ onClose }) =
                         onChange={e => setForm({ ...form, [field.key]: e.target.value })}
                       >
                         <option value="">Select Counsellor</option>
-                        <option value="Lakshman">Lakshman</option>
-                        <option value="Sangeetha">Sangeetha</option>
+                        {counsellors.map(c => (
+                          <option key={c} value={c}>{c}</option>
+                        ))}
                       </select>
                     ) : (
                       <input

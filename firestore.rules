@@ -62,6 +62,13 @@ service cloud.firestore {
     match /learning_ecosystem/{id} { allow read: if true; allow write: if request.auth != null; }
     match /program_segments/{id} { allow read: if true; allow write: if request.auth != null; }
     
+    // Eligibility collections
+    match /eligibilityConfig/{configId} { allow read: if true; allow write: if request.auth != null; }
+    match /eligibilityTests/{testId} {
+      allow create: if true;
+      allow read, update, delete: if request.auth != null;
+    }
+    
     // User Management
     match /user_roles/{userId} {
       allow read, write: if request.auth != null;

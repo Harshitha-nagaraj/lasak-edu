@@ -118,10 +118,12 @@ const EligibilityTests: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   
-  // Tab State: submissions vs questions edit
-  const [activeTab, setActiveTab] = useState<'submissions' | 'questions'>('submissions');
+  // Tab State: submissions vs questions edit vs counsellors
+  const [activeTab, setActiveTab] = useState<'submissions' | 'questions' | 'counsellors'>('submissions');
   const [questionsBank, setQuestionsBank] = useState<Record<string, TestQuestion[]>>({});
   const [selectedEditCourse, setSelectedEditCourse] = useState('Data Analytics');
+  const [counsellors, setCounsellors] = useState<string[]>([]);
+  const [newCounsellor, setNewCounsellor] = useState('');
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
@@ -168,12 +170,33 @@ const EligibilityTests: React.FC = () => {
       }
     };
 
+    const loadCounsellors = async () => {
+      try {
+        const db = await getFirestoreDb();
+        const docRef = doc(db, 'eligibilityConfig', 'counsellors');
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          if (data && Array.isArray(data.counsellors)) {
+            setCounsellors(data.counsellors);
+            return;
+          }
+        }
+        setCounsellors(['Lakshman', 'Sangeetha']);
+      } catch (e: any) {
+        console.error(e);
+        toast.error('Failed to load counsellors from database');
+        setCounsellors(['Lakshman', 'Sangeetha']);
+      }
+    };
+
     fetchResults();
     loadQuestions();
+    loadCounsellors();
   }, []);
 
   useEffect(() => {
-    if (isSales && activeTab === 'questions') {
+    if (isSales && (activeTab === 'questions' || activeTab === 'counsellors')) {
       setActiveTab('submissions');
     }
   }, [isSales, activeTab]);
@@ -377,6 +400,52 @@ const EligibilityTests: React.FC = () => {
     setSaving(false);
   };
 
+  const handleAddCounsellor = () => {
+    const name = newCounsellor.trim();
+    if (!name) {
+      toast.error('Please enter a counsellor name');
+      return;
+    }
+    if (counsellors.includes(name)) {
+      toast.error('This counsellor is already in the list');
+      return;
+    }
+    setCounsellors(prev => [...prev, name]);
+    setNewCounsellor('');
+    toast.success(`${name} added! Make sure to save changes.`);
+  };
+
+  const handleDeleteCounsellor = (index: number) => {
+    const deletedName = counsellors[index];
+    setCounsellors(prev => prev.filter((_, i) => i !== index));
+    toast.success(`${deletedName} removed! Make sure to save changes.`);
+  };
+
+  const handleCounsellorNameChange = (index: number, value: string) => {
+    setCounsellors(prev => {
+      const updated = [...prev];
+      updated[index] = value;
+      return updated;
+    });
+  };
+
+  const handleSaveCounsellors = async () => {
+    if (isSales) return;
+    setSaving(true);
+    try {
+      const db = await getFirestoreDb();
+      await setDoc(doc(db, 'eligibilityConfig', 'counsellors'), {
+        counsellors: counsellors.map(c => c.trim()).filter(Boolean),
+        updatedAt: new Date().toISOString()
+      });
+      toast.success('Counsellor list saved successfully!');
+    } catch (e: any) {
+      console.error(e);
+      toast.error(e.message ?? 'Failed to save counsellors');
+    }
+    setSaving(false);
+  };
+
   if (loading) return (
     <div className="p-8 flex items-center justify-center min-h-[400px]">
       <div className="flex flex-col items-center gap-3">
@@ -402,12 +471,20 @@ const EligibilityTests: React.FC = () => {
               📋 Test Submissions
             </button>
             {!isSales && (
-              <button
-                onClick={() => setActiveTab('questions')}
-                className={`px-4 py-2 text-xs font-black rounded-lg transition-all ${activeTab === 'questions' ? 'bg-white text-blue-600 shadow-sm' : 'text-slate-500 hover:text-slate-900'}`}
-              >
-                ✏️ Edit Questions
-              </button>
+              <>
+                <button
+                  onClick={() => setActiveTab('questions')}
+                  className={`px-4 py-2 text-xs font-black rounded-lg transition-all ${activeTab === 'questions' ? 'bg-white text-blue-600 shadow-sm' : 'text-slate-500 hover:text-slate-900'}`}
+                >
+                  ✏️ Edit Questions
+                </button>
+                <button
+                  onClick={() => setActiveTab('counsellors')}
+                  className={`px-4 py-2 text-xs font-black rounded-lg transition-all ${activeTab === 'counsellors' ? 'bg-white text-blue-600 shadow-sm' : 'text-slate-500 hover:text-slate-900'}`}
+                >
+                  👥 Manage Counsellors
+                </button>
+              </>
             )}
           </div>
         </div>
@@ -510,7 +587,7 @@ const EligibilityTests: React.FC = () => {
             </div>
           )}
         </>
-      ) : (
+      ) : activeTab === 'questions' ? (
         <div className="space-y-6 animate-fadeIn">
           {/* Course selector & Save button */}
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
@@ -596,6 +673,81 @@ const EligibilityTests: React.FC = () => {
               ))}
             </div>
           )}
+        </div>
+      ) : (
+        <div className="space-y-6 animate-fadeIn">
+          {/* Header & Save Button */}
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
+            <div>
+              <h3 className="text-lg font-black text-slate-800">Counsellors Settings</h3>
+              <p className="text-sm text-slate-500">Add, edit, or delete counsellors who can be assigned to students.</p>
+            </div>
+            <button
+              onClick={handleSaveCounsellors}
+              disabled={saving}
+              className="px-6 py-2.5 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 disabled:opacity-50 text-white font-black rounded-xl transition shadow-lg shadow-green-100 text-sm active:scale-95"
+            >
+              {saving ? 'Saving...' : '💾 Save Counsellors'}
+            </button>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {/* Add Counsellor Form */}
+            <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm h-fit space-y-4">
+              <h4 className="font-bold text-slate-800 text-base">Add New Counsellor</h4>
+              <div className="space-y-2">
+                <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider">Counsellor Name</label>
+                <input
+                  type="text"
+                  value={newCounsellor}
+                  onChange={e => setNewCounsellor(e.target.value)}
+                  placeholder="e.g. Lakshman"
+                  className="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm text-slate-800 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100 transition"
+                />
+              </div>
+              <button
+                type="button"
+                onClick={handleAddCounsellor}
+                className="w-full bg-blue-600 text-white py-2.5 rounded-xl font-bold text-sm hover:bg-blue-700 transition active:scale-95"
+              >
+                ➕ Add to List
+              </button>
+            </div>
+
+            {/* Counsellors List */}
+            <div className="lg:col-span-2 bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+              <div className="flex justify-between items-center border-b border-slate-100 pb-3">
+                <h4 className="font-bold text-slate-800 text-base">Counsellors List</h4>
+                <span className="bg-slate-100 text-slate-600 text-xs font-bold px-2.5 py-1 rounded-full">{counsellors.length} Total</span>
+              </div>
+
+              {counsellors.length === 0 ? (
+                <div className="text-center py-8 text-slate-400 font-medium">No counsellors added yet. Add one from the form.</div>
+              ) : (
+                <div className="space-y-3 max-h-[400px] overflow-y-auto pr-1">
+                  {counsellors.map((cName, idx) => (
+                    <div key={idx} className="flex items-center gap-3 bg-slate-50 p-3 rounded-xl border border-slate-100 hover:border-slate-200 transition">
+                      <span className="text-slate-400 font-bold text-sm">{idx + 1}.</span>
+                      <input
+                        type="text"
+                        value={cName}
+                        onChange={e => handleCounsellorNameChange(idx, e.target.value)}
+                        className="flex-1 bg-transparent border-none focus:outline-none text-slate-800 font-semibold focus:bg-white focus:ring-2 focus:ring-blue-100 focus:border-blue-500 rounded px-2 py-1 transition"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => handleDeleteCounsellor(idx)}
+                        className="text-red-500 hover:text-red-700 hover:bg-red-50 p-1.5 rounded-lg transition"
+                        title="Delete Counsellor"
+                      >
+                        🗑️
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
         </div>
       )}
     </div>
